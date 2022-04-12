@@ -1,0 +1,3 @@
+connectionList={}
+handles=[]
+assertList=['']

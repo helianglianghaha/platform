@@ -1,0 +1,107 @@
+[2021-09-04 16:17:57,600] - logger.py[line:31] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2021-09-04 16:17:57,600] - logger.py[line:31] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2021-09-04 16:17:57,771] - logger.py[line:31] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2021-09-04 16:17:58,089] - logger.py[line:31] - fuc:__console- INFO: response:[]
+[2021-09-04 16:18:01,423] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:18:01,489] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:18:01,507] - logger.py[line:31] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2021-09-04 16:18:01,553] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:18:01,617] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:18:01,624] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:18:01,648] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:18:01,650] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:18:01,674] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:18:28,735] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 16:18:28,736] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:18:34,294] - logger.py[line:31] - fuc:__console- INFO: call batchExecutingCases()；document：批量执行用例；args:<QueryDict: {'[{"testcase_id":1}]': ['']}>
+[2021-09-04 16:18:35,430] - logger.py[line:31] - fuc:__console- INFO: *********没有元素只有参数******* 函数:openbrowser()prams:https://szjw-bss-web.m1.yunniao.cn CHROME
+[2021-09-04 16:19:12,832] - logger.py[line:31] - fuc:__console- INFO: ********既有元素又有参数*******script_testDataName:输入账号-函数sendKeys()-prams：13200000000
+[2021-09-04 16:19:12,888] - logger.py[line:31] - fuc:__console- INFO: driver信息为<selenium.webdriver.remote.webdriver.WebDriver (session="63f92904f3cc9b13b10cb705e57447d4")>------定位的元素是：//*[@id="app"]/div/form/div[2]/div/div/input------传参13200000000
+[2021-09-04 16:19:29,185] - logger.py[line:31] - fuc:__console- INFO: ********既有元素又有参数*******script_testDataName:输入密码-函数sendKeys()-prams：guanliYUAN132
+[2021-09-04 16:19:29,186] - logger.py[line:31] - fuc:__console- INFO: driver信息为<selenium.webdriver.remote.webdriver.WebDriver (session="63f92904f3cc9b13b10cb705e57447d4")>------定位的元素是：//*[@id="app"]/div/form/div[3]/div/div/input------传参guanliYUAN132
+[2021-09-04 16:19:31,613] - logger.py[line:31] - fuc:__console- INFO: *********只有元素没有参数*******script_testDataName：点击登录-函数：clickElement()
+[2021-09-04 16:19:31,614] - logger.py[line:31] - fuc:__console- INFO: driver信息为<selenium.webdriver.remote.webdriver.WebDriver (session="63f92904f3cc9b13b10cb705e57447d4")>------定位的元素是：//*[@id="app"]/div/form/div[4]/button------
+[2021-09-04 16:22:58,377] - logger.py[line:31] - fuc:__console- INFO: call batchExecutingCases()；document：批量执行用例；args:<QueryDict: {'[{"testcase_id":1}]': ['']}>
+[2021-09-04 16:23:03,119] - logger.py[line:31] - fuc:__console- INFO: *********没有元素只有参数******* 函数:openbrowser()prams:https://szjw-bss-web.m1.yunniao.cn CHROME
+[2021-09-04 16:23:27,413] - logger.py[line:31] - fuc:__console- INFO: ********既有元素又有参数*******script_testDataName:输入账号-函数sendKeys()-prams：13200000000
+[2021-09-04 16:23:27,414] - logger.py[line:31] - fuc:__console- INFO: driver信息为<selenium.webdriver.remote.webdriver.WebDriver (session="5ca203403ce9fae6e3cc1852a827298b")>------定位的元素是：//*[@id="app"]/div/form/div[2]/div/div/input------传参13200000000
+[2021-09-04 16:23:31,738] - logger.py[line:31] - fuc:__console- INFO: ********既有元素又有参数*******script_testDataName:输入密码-函数sendKeys()-prams：guanliYUAN132
+[2021-09-04 16:23:31,738] - logger.py[line:31] - fuc:__console- INFO: driver信息为<selenium.webdriver.remote.webdriver.WebDriver (session="5ca203403ce9fae6e3cc1852a827298b")>------定位的元素是：//*[@id="app"]/div/form/div[3]/div/div/input------传参guanliYUAN132
+[2021-09-04 16:23:33,383] - logger.py[line:31] - fuc:__console- INFO: *********只有元素没有参数*******script_testDataName：点击登录-函数：clickElement()
+[2021-09-04 16:23:33,383] - logger.py[line:31] - fuc:__console- INFO: driver信息为<selenium.webdriver.remote.webdriver.WebDriver (session="5ca203403ce9fae6e3cc1852a827298b")>------定位的元素是：//*[@id="app"]/div/form/div[4]/button------
+[2021-09-04 16:24:28,052] - logger.py[line:31] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['UI']}>
+[2021-09-04 16:37:14,717] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 16:37:14,717] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 16:37:14,717] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:37:15,551] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['雷鸟-H5']}>
+[2021-09-04 16:37:15,595] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['雷鸟-H5']}>
+[2021-09-04 16:37:16,279] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['雷鸟-H5']}>
+[2021-09-04 16:37:16,279] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['雷鸟-H5']}>
+[2021-09-04 16:37:16,279] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['雷鸟-H5']}>
+[2021-09-04 16:37:17,445] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 16:37:17,447] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:49:18,035] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:49:18,124] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:49:18,185] - logger.py[line:31] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2021-09-04 16:49:18,185] - logger.py[line:31] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2021-09-04 16:49:18,185] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:49:18,185] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:49:18,255] - logger.py[line:31] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2021-09-04 16:49:18,255] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:49:18,265] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:49:18,955] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:49:18,955] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:49:18,975] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:15,293] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:15,295] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:15,339] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:52:15,340] - logger.py[line:31] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2021-09-04 16:52:15,576] - logger.py[line:31] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2021-09-04 16:52:15,630] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:52:15,649] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:15,665] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:15,677] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:52:15,734] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:25,287] - logger.py[line:31] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2021-09-04 16:52:25,298] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:52:25,322] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:25,363] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:25,421] - logger.py[line:31] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2021-09-04 16:52:25,423] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:25,435] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:52:25,449] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:25,465] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:52:25,479] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:56:05,629] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:56:05,641] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:56:05,644] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:56:05,660] - logger.py[line:31] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2021-09-04 16:56:05,749] - logger.py[line:31] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2021-09-04 16:56:06,082] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:56:06,082] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:56:06,082] - logger.py[line:31] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2021-09-04 16:56:06,083] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:56:06,083] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:56:06,105] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:56:06,156] - logger.py[line:31] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2021-09-04 16:56:27,624] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 16:56:27,624] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 16:56:27,624] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 16:56:27,624] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 17:22:48,097] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 17:22:48,097] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 17:22:53,210] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['雷鸟-H5']}>
+[2021-09-04 17:22:53,216] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['雷鸟-H5']}>
+[2021-09-04 17:23:02,384] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['雷鸟-H5']}>
+[2021-09-04 17:23:02,387] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['雷鸟-H5']}>
+[2021-09-04 17:23:13,097] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 17:23:13,137] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 17:23:19,549] - logger.py[line:31] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2021-09-04 17:23:19,628] - logger.py[line:31] - fuc:__console- INFO: response:[]
+[2021-09-04 17:28:59,530] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 17:28:59,530] - logger.py[line:31] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['V 1.1']}>
+[2021-09-04 17:28:59,530] - logger.py[line:31] - fuc:__console- INFO: call selectUiTestCase()；document：查询测试用例；args:<QueryDict: {'modelData': ['V 1.1']}>
+[2021-09-04 17:36:30,726] - logger.py[line:31] - fuc:__console- INFO: call batchExecutingCases()；document：批量执行用例；args:<QueryDict: {'[{"testcase_id":1}]': ['']}>
+[2021-09-04 17:36:31,898] - logger.py[line:31] - fuc:__console- INFO: *********没有元素只有参数******* 函数:openbrowser()prams:https://szjw-bss-web.m1.yunniao.cn CHROME
+[2021-09-04 17:38:20,030] - logger.py[line:31] - fuc:__console- INFO: call batchExecutingCases()；document：批量执行用例；args:<QueryDict: {'[{"testcase_id":1}]': ['']}>
+[2021-09-04 17:38:21,133] - logger.py[line:31] - fuc:__console- INFO: *********没有元素只有参数******* 函数:openbrowser()prams:https://szjw-bss-web.m1.yunniao.cn CHROME

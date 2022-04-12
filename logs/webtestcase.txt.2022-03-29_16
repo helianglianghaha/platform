@@ -1,0 +1,24 @@
+[2022-03-29 16:47:23,516] - logger.py[line:32] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-03-29 16:47:23,519] - logger.py[line:32] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-03-29 16:47:23,527] - logger.py[line:32] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}]
+[2022-03-29 16:47:28,180] - logger.py[line:32] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-03-29 16:47:28,182] - logger.py[line:32] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-03-29 16:47:28,180] - logger.py[line:32] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+}>
+[2022-03-29 16:47:28,182] - logger.py[line:32] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-03-29 16:47:28,182] - logger.py[line:32] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2022-03-29 16:47:28,182] - logger.py[line:32] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-03-29 16:47:28,182] - logger.py[line:32] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2022-03-29 16:47:28,197] - logger.py[line:32] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}]
+[2022-03-29 16:47:28,219] - logger.py[line:32] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2022-03-29 16:47:28,225] - logger.py[line:32] - fuc:__console- INFO: cookies:[]
+[2022-03-29 16:47:28,231] - logger.py[line:32] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
+[2022-03-29 16:47:28,238] - logger.py[line:32] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-03-29 16:50:00,309] - logger.py[line:32] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['集团首页']}>
+[2022-03-29 16:50:00,311] - logger.py[line:32] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['集团首页']}>
+[2022-03-29 16:50:01,937] - logger.py[line:32] - fuc:__console- INFO: call selectVersionList()；document：获取到项目信息；args:<QueryDict: {'modelData': ['8']}>
+[2022-03-29 16:50:06,624] - logger.py[line:32] - fuc:__console- INFO: call apiRequest()；document：单接口调试；args:<QueryDict: {'pId': ['4'], 'cookiesValue': ['false'], 'addPassWordFree': ['false'], 'passWordFree': ['false'], 'modelData': ['8'], 'versionData': ['6'], 'apiName': ['集团看板-saasGetCurrentUserProjectsTreeService'], 'apiHost': ['test.custom.persagy.com'], 'apiRequest': ['http'], 'apiMethod': ['2'], 'apiUrl': ['/polymerize/groupBoard/getGroupBoardList'], 'apiBody': ['{"projectIdList":[{"contents":[{"projectLocalId":"3304830001","type":"0","partition_project_id":"Pj3304830001","partition_project_name":"桐乡吾悦广场","selected":"1","id":"Pj3304830001","title":"桐乡吾悦广场"}],"type":"1","partition_project_id":"62eb5f643b474b0aa27b999737b943fe","partition_project_name":"保利集团","selected":"0","id":"62eb5f643b474b0aa27b999737b943fe","title":"保利集团"}],"projectType":2,"microclimateArea":null,"climaticRegionCode":null,"timeFrom":"20220201","timeTo":"20220228","column":null,"sort":null}'], 'addCookiesValue': [''], 'apiExtractName': [''], 'apiExtractExpression': [''], 'apiExtractResponse': [''], 'apiAssert': ['success'], 'apiResponse': ['undefined'], 'apiExtract': ['undefined']}>
+[2022-03-29 16:50:06,625] - logger.py[line:32] - fuc:__console- INFO: args=<quality.view.API_version.API_function.requestObject object at 0x0000020C7B8C9978>
+[2022-03-29 16:50:06,625] - logger.py[line:32] - fuc:__console- INFO: call requestApi()；document：request请求；
+[2022-03-29 16:50:06,626] - logger.py[line:32] - fuc:__console- INFO: args=<quality.view.API_version.API_function.requestObject object at 0x0000020C7B8C9978>
+[2022-03-29 16:50:06,627] - logger.py[line:32] - fuc:__console- INFO: call _requestData()；document：仅包含请求参数；

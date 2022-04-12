@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/platform.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/QualityPlatform/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/QualityPlatform/logs/webtestcase.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/QualityPlatform/logs/webtestcase.txt.2021-09-04_11" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/QualityPlatform/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/QualityPlatform/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/QualityPlatform/wsgi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/geckodriver.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/logs/webtestcase.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/logs/webtestcase.txt.2022-03-29_16" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/logs/webtestcase.txt.2022-04-05_10" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/logs/xunjian.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/0.05.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/tab.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/加载.jpeg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/添加.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media/节能量.jmx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/apps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/common/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/common/commonbase.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/common/functionlist.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/common/logger.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/common/msg.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/migrations/0001_initial.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/migrations/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/pageObject/comPage/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/pageObject/comPage/page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/base/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/base/context.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/base/librarycomponent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/email/Email.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/email/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/keywords/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/keywords/alert.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/keywords/browsermanagement.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/keywords/connectioncache.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/keywords/cookies.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/keywords/element.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/keywords/javascript.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/keywords/webdrivertools.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/locatorsList/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/locatorsList/elementfinderList.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/prams.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/utils/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/seleniumData/utils/typeslist.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/test/test2222.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/util/Util.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/util/mutil.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API/API.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API/APIClass.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API/API_url.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API/model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API_version/API_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API_version/API_function.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API_version/API_model.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API_version/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/API_version/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/UI/UIFunction.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/UI/UI_API.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/UI/UI_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/UI/UI_sendQiXin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/UI/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/UI/test01.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/map/map.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/map/map_url.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/project/custom_desc.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/project/login.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/project/token.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/report/quality_analysis.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/report/report.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/report/test_result_analysis.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/view/user/user.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/xunJian/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/quality/xunJian/batchXunJian.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/2021_10_12_11_48_07-断言-下一步-23-5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/app.2a25bb56fd6b57358f4ac5e40656e329.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/app.2a25bb56fd6b57358f4ac5e40656e329.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/static/fonts/element-icons.535877f.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/css/static/fonts/element-icons.732389d.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/css/app.2a25bb56fd6b57358f4ac5e40656e329.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/css/app.2a25bb56fd6b57358f4ac5e40656e329.css.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/fonts/element-icons.535877f.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/fonts/element-icons.732389d.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/js/app.b13e32d3cd15fe3aa46e.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/js/app.b13e32d3cd15fe3aa46e.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/js/manifest.3ad1d5771e9b13dbdad2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/js/manifest.3ad1d5771e9b13dbdad2.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/js/vendor.ea3b19f5566c50e3d0d1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/dist/static/js/vendor.ea3b19f5566c50e3d0d1.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fonts/element-icons.535877f.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/fonts/element-icons.732389d.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/app.b13e32d3cd15fe3aa46e.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/app.b13e32d3cd15fe3aa46e.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/manifest.3ad1d5771e9b13dbdad2.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/manifest.3ad1d5771e9b13dbdad2.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/vendor.ea3b19f5566c50e3d0d1.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/js/vendor.ea3b19f5566c50e3d0d1.js.map" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/test/TestReport.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webtestcase" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webtestcase.txt" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-9" />
+    <option name="width" value="1240" />
+    <option name="height" value="665" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="platform" type="b2602c69:ProjectViewProjectNode" />
+              <item name="platform" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../vue" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="platform" type="Python.DjangoServer" factoryName="Django server">
+      <module name="platform" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="DJANGO_SETTINGS_MODULE" value="QualityPlatform.settings" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <option name="port" value="8000" />
+      <option name="host" value="" />
+      <option name="additionalOptions" value="" />
+      <option name="browserUrl" value="" />
+      <option name="runTestServer" value="false" />
+      <option name="runNoReload" value="false" />
+      <option name="useCustomRunCommand" value="false" />
+      <option name="customRunCommand" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="" />
+      <created>1649724499857</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1649724499857</updated>
+      <workItem from="1649724501143" duration="295000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="295000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <layout>
+      <window_info id="Favorites" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Database Changes" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Python Console" />
+      <window_info anchor="bottom" id="Terminal" weight="0.36876357" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3286334" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="SciView" />
+      <window_info anchor="right" id="Database" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+</project>
