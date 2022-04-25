@@ -379,7 +379,7 @@ def selectApiCases(request):
     '''查询接口用例'''
     import ast
     modeldata_name = request.POST.get("tableData")
-    sql = "select testapi_id,testmodelData,Modelversion_id_id,testapiHost,testapiname,testapiMethod,testapiUrl,testapiBody,testapiAssert,testcookiesValue,testaddPassWordFree,testpassWordFree,testapiRequest,testapiExtractName,testapiExtractExpression,testapiExtractResponse,testaddCookiesValue,testapiHeader from quality_testapi where Modelversion_id_id=(select Modelversion_id from quality_modelversion where modeldata_name=" + "\'" + modeldata_name + "\'" + ")"
+    sql = "select testapi_id,testmodelData,Modelversion_id_id,testapiHost,testapiname,testapiMethod,testapiUrl,testapiBody,testapiAssert,testcookiesValue,testaddPassWordFree,testpassWordFree,testapiRequest,testapiExtract,testaddCookiesValue,testapiHeader from quality_testapi where Modelversion_id_id=(select Modelversion_id from quality_modelversion where modeldata_name=" + "\'" + modeldata_name + "\'" + ")"
     data = commonList().getModelData(sql)
     for case in range(len(data)):
         print(data[case])
@@ -387,6 +387,8 @@ def selectApiCases(request):
             data[case]["testapiAssert"] = (eval(data[case]["testapiAssert"]))
         if data[case]["testapiHeader"]:
             data[case]["testapiHeader"] = (eval(data[case]["testapiHeader"]))
+        if data[case]["testapiExtract"]:
+            data[case]["testapiExtract"] = (eval(data[case]["testapiExtract"]))
     return JsonResponse(data, safe=False)
 
 
@@ -407,9 +409,8 @@ def saveApiTestCase(request):
     apiName = requestData["apiName"]
     testaddCookiesValue = requestData['addCookiesValue']
     apiHost = requestData["apiHost"]
-    apiExtractName = requestData['apiExtractName']
-    apiExtractExpression = requestData['apiExtractExpression']
-    apiExtractResponse = requestData['apiExtractResponse']
+    apiExtract = requestData['apiExtract']
+
     apiMethod = requestData["apiMethod"]
     apiHeader = requestData['apiHeader']
     apiUrl = requestData["apiUrl"]
@@ -433,9 +434,8 @@ def saveApiTestCase(request):
         _testapi.testapiBody = apiBody
         # _testapi.testapiExtract=apiExtract
 
-        _testapi.testapiExtractName = apiExtractName
-        _testapi.testapiExtractExpression = apiExtractExpression
-        _testapi.testapiExtractResponse = apiExtractResponse
+        _testapi.testapiExtract= apiExtract
+
 
         _testapi.testapiAssert = apiAssert
         # _testapi.testapiResponse=apiResponse
@@ -460,9 +460,8 @@ def saveApiTestCase(request):
         _testapi.testapiHeader = apiHeader
         # _testapi.testapiExtract=apiExtract
         _testapi.testaddCookiesValue = testaddCookiesValue
-        _testapi.testapiExtractName = apiExtractName
-        _testapi.testapiExtractExpression = apiExtractExpression
-        _testapi.testapiExtractResponse = apiExtractResponse
+        _testapi.testapiExtract= apiExtract
+
 
         _testapi.testapiAssert = apiAssert
         # _testapi.testapiResponse=apiResponse
@@ -482,120 +481,135 @@ def saveApiTestCase(request):
 @msgMessage
 def todoBatchExection(request):
     '''批量执行接口用例'''
-    try:
-        dataList = request.POST.items()
-        print("dataList", dataList)
+    # try:
+    dataList = request.POST.items()
+    print("dataList", dataList)
 
-        for test_list in dataList:
-            print(test_list)
-            caseList = json.loads(test_list[0])
+    for test_list in dataList:
+        print(test_list)
+        caseList = json.loads(test_list[0])
 
-            # 判断列表是否为空
-            if len(list(caseList)) == 0:
-                data = {
-                    "code": 10002,
-                    "msg": "接口用例为空,请选择接口用例",
-                }
-                return JsonResponse(data, safe=False)
-            # 判断是否是单个项目
+        # 判断列表是否为空
+        if len(list(caseList)) == 0:
+            data = {
+                "code": 10002,
+                "msg": "接口用例为空,请选择接口用例",
+            }
+            return JsonResponse(data, safe=False)
+        # 判断是否是单个项目
 
-            # 判断是否是多个项目
+        # 判断是否是多个项目
 
-            # 判断列表是否为一个元素
-            if len(list(caseList)) == 1:
-                caseList = str(caseList[0])
-                sql = 'select * from quality_testapi where testapi_id = ' + caseList
-            else:
-                caseList = str(tuple(caseList))
-                sql = 'select * from quality_testapi where testapi_id in ' + caseList
-            print("sql", sql)
-            caseList = commonList().getModelData(sql)
-            print(caseList)
-            nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            executing_testmd = APITest().Hashlib()
-            for caseData in caseList:
+        # 判断列表是否为一个元素
+        if len(list(caseList)) == 1:
+            caseList = str(caseList[0])
+            sql = 'select * from quality_testapi where testapi_id = ' + caseList
+        else:
+            caseList = str(tuple(caseList))
+            sql = 'select * from quality_testapi where testapi_id in ' + caseList
+        print("sql", sql)
+        caseList = commonList().getModelData(sql)
+        print(caseList)
+        nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        executing_testmd = APITest().Hashlib()
+        for caseData in caseList:
 
-                # 过滤参数存在变量重新赋值
-                from .API_function import responseExecuting
-                caseDataSort = responseExecuting().sortVariable(caseData)
+            # 过滤参数存在变量重新赋值
+            from .API_function import responseExecuting
+            caseDataSort = responseExecuting().sortVariable(caseData)
 
-                print('caseData', caseDataSort)
-                testapi_id = caseDataSort['testapi_id']
-                testmodelData = caseDataSort['testmodelData']
-                Modelversion_id_id = caseDataSort['Modelversion_id_id']
-                testapiRequest = caseDataSort['testapiRequest']
-                testapiHost = caseDataSort['testapiHost']
+            print('caseData', caseDataSort)
+            testapi_id = caseDataSort['testapi_id']
+            testmodelData = caseDataSort['testmodelData']
+            Modelversion_id_id = caseDataSort['Modelversion_id_id']
+            testapiRequest = caseDataSort['testapiRequest']
+            testapiHost = caseDataSort['testapiHost']
 
-                # testapiname=caseData['testapiname']
-                testapiMethod = str(caseData['testapiMethod'])
-                testapiUrl = caseData['testapiUrl']
-                testapiBody = caseData['testapiBody']
-                # testapiExtract=caseData['testapiExtract']
-                testapiAssert = caseData['testapiAssert']
-                url = testapiRequest + "://" + testapiHost + testapiUrl
-                print('testcookiesValue', caseData['testcookiesValue'])
-                if caseData['testcookiesValue'] == 'true':
+            testapiAssert=eval(caseDataSort["testapiAssert"])
+            # testapiname=caseData['testapiname']
+            testapiMethod = str(caseData['testapiMethod'])
+            testapiUrl = caseData['testapiUrl']
+            testapiBody = caseData['testapiBody']
+            # testapiExtract=caseData['testapiExtract']
+            testapiAssert = caseData['testapiAssert']
+            url = testapiRequest + "://" + testapiHost + testapiUrl
+            print('testcookiesValue', caseData['testcookiesValue'])
 
-                    # 查询登录接口
-                    sql = "select * from quality_testapi where testapiname='登录' and Modelversion_id_id=" + str(
-                        Modelversion_id_id)
-                    loginData = commonList().getModelData(sql)
+            from quality.view.API_version.API_function import responseExecuting
+            if caseData['testcookiesValue'] == 'true':
 
-                    login_url = "https://" + loginData[0]['testapiHost'] + loginData[0]['testapiUrl']
-                    login_data = loginData[0]['testapiBody']
-                    response = APITest().updataCookies(login_url, login_data)
-                    testapiResponse = APITest().apiRequest(url, testapiBody, testapiMethod, response)
+                # 查询登录接口
+                sql = "select * from quality_testapi where testapiname='登录' and Modelversion_id_id=" + str(
+                    Modelversion_id_id)
+                loginData = commonList().getModelData(sql)
 
-                    _testCases = Testapi.objects.get(testapi_id=testapi_id)
-                    _testCases.teststatuscode = testapiResponse.status_code
-                    _testCases.testencoding = testapiResponse.encoding
-                    _testCases.testurl = testapiResponse.url
-                    _testCases.testheader = testapiResponse.headers
-                    _testCases.testapiResponse = str(bytes.decode(testapiResponse.content))[0:980]
-                    if len(testapiAssert) != 0 and testapiAssert in str(bytes.decode(testapiResponse.content)):
-                        _testCases.testresult = 1
-                    else:
-                        _testCases.testresult = 2
-                    _testCases.save()
+                login_url = "https://" + loginData[0]['testapiHost'] + loginData[0]['testapiUrl']
+                login_data = loginData[0]['testapiBody']
+                response = APITest().updataCookies(login_url, login_data)
+                testapiResponse = APITest().apiRequest(url, testapiBody, testapiMethod, response)
 
-                    _executing = Executinglog()
-                    _executing.executing_name = nowtime
-                    _executing.executing_testmd = executing_testmd
-                    _executing.executing_testapi_id = testapi_id
-                    _executing.executing_starttime = datetime.datetime.now()
-                    _executing.save()
+                _testCases = Testapi.objects.get(testapi_id=testapi_id)
+                _testCases.teststatuscode = testapiResponse.status_code
+                _testCases.testencoding = testapiResponse.encoding
+                _testCases.testurl = testapiResponse.url
+                _testCases.testheader = testapiResponse.headers
+                _testCases.testapiResponse = str(bytes.decode(testapiResponse.content))[0:980]
 
+                returnDataList = responseExecuting().assertApiData(testapiResponse, testapiAssert, testapiResponse.status_code)
+                _testCases.testapiAssert = returnDataList["assertData"]
+
+                if len(testapiAssert) != 0 and "fail" not in returnDataList["resultList"]:
+                    _testCases.testresult = 1
                 else:
-                    testapiResponse = APITest().requestNoCookie(url, testapiBody, testapiMethod)
-                    _testCases = Testapi.objects.get(testapi_id=testapi_id)
-                    _testCases.testapiResponse = bytes.decode(testapiResponse.content)[0:980]
-                    _testCases.teststatuscode = testapiResponse.status_code
-                    _testCases.testencoding = testapiResponse.encoding
-                    _testCases.testheader = testapiResponse.headers
-                    _testCases.testurl = testapiResponse.url
+                    _testCases.testresult = 2
+                _testCases.save()
 
-                    if len(testapiAssert) != 0 and testapiAssert in str(bytes.decode(testapiResponse.content)):
-                        _testCases.testresult = 1
-                    else:
-                        _testCases.testresult = 2
-                    _testCases.save()
+                _executing = Executinglog()
+                _executing.executing_name = nowtime
+                _executing.executing_testmd = executing_testmd
+                _executing.executing_testapi_id = testapi_id
+                _executing.executing_starttime = datetime.datetime.now()
+                _executing.save()
 
-                    _executing = Executinglog()
-                    _executing.executing_name = nowtime
-                    _executing.executing_testmd = executing_testmd
-                    _executing.executing_testapi_id = testapi_id
-                    _executing.executing_starttime = datetime.datetime.now()
-                    _executing.save()
-        data = {
-            "code": 200,
-            "msg": "接口用例执行成功",
-            "label": executing_testmd
-        }
-    except Exception as e:
-        data = {
-            "code": 10001,
-            "msg": "接口用例执行出错,出错原因：" + str(e),
-        }
+            else:
+                testapiResponse = APITest().requestNoCookie(url, testapiBody, testapiMethod)
+                _testCases = Testapi.objects.get(testapi_id=testapi_id)
+                _testCases.testapiResponse = bytes.decode(testapiResponse.content)[0:980]
+                _testCases.teststatuscode = testapiResponse.status_code
+                _testCases.testencoding = testapiResponse.encoding
+                _testCases.testheader = testapiResponse.headers
+                _testCases.testurl = testapiResponse.url
+
+                returnDataList=responseExecuting().assertApiData(testapiResponse,testapiAssert,testapiResponse.status_code)
+                _testCases.testapiAssert=returnDataList["assertData"]
+
+                if len(testapiAssert) != 0 and  "fail" not in returnDataList["resultList"]:
+                    _testCases.testresult = 1
+                else:
+                    _testCases.testresult = 2
+
+                # if len(testapiAssert) != 0 and testapiAssert in str(bytes.decode(testapiResponse.content)):
+                #     _testCases.testresult = 1
+                # else:
+                #     _testCases.testresult = 2
+                _testCases.save()
+
+                _executing = Executinglog()
+                _executing.executing_name = nowtime
+                _executing.executing_testmd = executing_testmd
+                _executing.executing_testapi_id = testapi_id
+                _executing.executing_starttime = datetime.datetime.now()
+                _executing.save()
+    data = {
+        "code": 200,
+        "msg": "接口用例执行成功",
+        "label": executing_testmd
+    }
+    # except Exception as e:
+    #     data = {
+    #         "code": 10001,
+    #         "msg": "接口用例执行出错,出错原因：" + str(e),
+    #     }
 
     return JsonResponse(data, safe=False)
 

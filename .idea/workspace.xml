@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QualityPlatform/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/quality/view/API_version/API_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API_version/API_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/quality/view/API_version/API_function.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API_version/API_function.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/quality/view/API_version/API_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API_version/API_model.py" afterDir="false" />
@@ -16,11 +15,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_function.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3172">
-              <caret line="129" column="13" selection-start-line="129" selection-start-column="13" selection-end-line="129" selection-end-column="13" />
+            <state relative-caret-position="332">
+              <caret line="72" column="116" selection-start-line="72" selection-start-column="116" selection-end-line="72" selection-end-column="116" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -29,10 +28,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_data.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="479">
+              <caret line="607" column="28" lean-forward="true" selection-start-line="607" selection-start-column="28" selection-end-line="607" selection-end-column="28" />
+              <folding>
+                <element signature="e#45#90#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="130">
-              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="500">
+              <caret line="32" column="37" selection-start-line="32" selection-start-column="37" selection-end-line="32" selection-end-column="37" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -43,7 +54,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/QualityPlatform/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1066">
+            <state relative-caret-position="1326">
               <caret line="51" column="31" selection-start-line="51" selection-start-column="16" selection-end-line="51" selection-end-column="31" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
@@ -53,21 +64,9 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_data.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="785" column="24" lean-forward="true" selection-start-line="785" selection-start-column="24" selection-end-line="785" selection-end-column="24" />
-              <folding>
-                <element signature="e#45#90#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/QualityPlatform/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="329">
+            <state relative-caret-position="2938">
               <caret line="115" lean-forward="true" selection-start-line="115" selection-end-line="115" />
             </state>
           </provider>
@@ -90,10 +89,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/quality/view/API_version/API_function.py" />
-        <option value="$PROJECT_DIR$/quality/view/API_version/API_data.py" />
-        <option value="$PROJECT_DIR$/quality/view/API_version/API_model.py" />
         <option value="$PROJECT_DIR$/QualityPlatform/settings.py" />
+        <option value="$PROJECT_DIR$/quality/view/API_version/API_model.py" />
+        <option value="$PROJECT_DIR$/quality/view/API_version/API_data.py" />
+        <option value="$PROJECT_DIR$/quality/view/API_version/API_function.py" />
       </list>
     </option>
   </component>
@@ -204,7 +203,8 @@
       <workItem from="1649772319758" duration="4666000" />
       <workItem from="1650713026367" duration="2118000" />
       <workItem from="1650811939559" duration="3361000" />
-      <workItem from="1650856888541" duration="297000" />
+      <workItem from="1650856888541" duration="2621000" />
+      <workItem from="1650867397892" duration="13490000" />
     </task>
     <task id="LOCAL-00001" summary="后端整体推送">
       <created>1649724864730</created>
@@ -213,11 +213,18 @@
       <option name="project" value="LOCAL" />
       <updated>1649724864730</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="新增header和assert断言">
+      <created>1650857252901</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1650857252902</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14102000" />
+    <option name="totallyTimeSpent" value="29916000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -230,19 +237,20 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20948827" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21162046" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.52277654" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.24295011" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3329718" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3308026" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.36827195" />
@@ -259,22 +267,13 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="后端整体推送" />
-    <option name="LAST_COMMIT_MESSAGE" value="后端整体推送" />
+    <MESSAGE value="新增header和assert断言" />
+    <option name="LAST_COMMIT_MESSAGE" value="新增header和assert断言" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_function.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3172">
-          <caret line="129" column="13" selection-start-line="129" selection-start-column="13" selection-end-line="129" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/QualityPlatform/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1066">
+        <state relative-caret-position="1326">
           <caret line="51" column="31" selection-start-line="51" selection-start-column="16" selection-end-line="51" selection-end-column="31" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
@@ -282,30 +281,40 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_data.py">
+    <entry file="file://$PROJECT_DIR$/QualityPlatform/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="785" column="24" lean-forward="true" selection-start-line="785" selection-start-column="24" selection-end-line="785" selection-end-column="24" />
-          <folding>
-            <element signature="e#45#90#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="2938">
+          <caret line="115" lean-forward="true" selection-start-line="115" selection-end-line="115" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="130">
-          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
+        <state relative-caret-position="500">
+          <caret line="32" column="37" selection-start-line="32" selection-start-column="37" selection-end-line="32" selection-end-column="37" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/QualityPlatform/settings.py">
+    <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="115" lean-forward="true" selection-start-line="115" selection-end-line="115" />
+        <state relative-caret-position="479">
+          <caret line="607" column="28" lean-forward="true" selection-start-line="607" selection-start-column="28" selection-end-line="607" selection-end-column="28" />
+          <folding>
+            <element signature="e#45#90#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/quality/view/API_version/API_function.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="332">
+          <caret line="72" column="116" selection-start-line="72" selection-start-column="116" selection-end-line="72" selection-end-column="116" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

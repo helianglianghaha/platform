@@ -25,9 +25,8 @@ class Testapi(models.Model):
     testapiUrl = models.CharField(max_length=1000, verbose_name="请求URL")
     testapiBody = models.CharField(max_length=1000, verbose_name="请求参数")
     testaddCookiesValue = models.CharField(max_length=50, verbose_name="添加cookies")
-    testapiExtractName = models.CharField(max_length=50, verbose_name="正则名称")
-    testapiExtractExpression = models.CharField(max_length=100, verbose_name="正则表达式")
-    testapiExtractResponse = models.CharField(max_length=1000, verbose_name="提取响应值")
+    testapiExtract = models.CharField(max_length=1000, verbose_name="正则")
+
     testapiHeader = models.CharField(max_length=500, verbose_name="请求头")
 
     testapiAssert = models.CharField(max_length=1000, verbose_name="断言")

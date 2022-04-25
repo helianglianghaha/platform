@@ -47,6 +47,68 @@ class responseExecuting():
 
         return  variableList
 
+    @msglogger
+    def assertApiData(self,response,assertData,responseCode):
+        '''
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段对应值长度是否正常
+        4：字段总个数是否正确
+        5：Sql自查询
+        '''
+        assertData=eval(assertData)
+        resultData={
+            "assertData":[],
+            "resultList":[]
+        }
+        #处理返回值信息
+        if isinstance(assertData,list):
+            for oneAssertData in assertData:
+                if oneAssertData["assertType"]=='1':
+                    if oneAssertData["assertVariable"]==str(responseCode):
+                        oneAssertData['assertResult']="success"
+                        resultData["resultList"].append("success")
+                    else:
+                        oneAssertData['assertResult']="code状态码和返回状态码不一致"+"预期的状态码是"+str(oneAssertData["assertVariable"])+"实际的状态码是"+str(responseCode)
+                        resultData["resultList"].append("fail")
+                if oneAssertData["assertType"] == '2':
+                    if oneAssertData['assertVariable'] in response:
+                        oneAssertData['assertResult'] = "success"
+                        resultData["resultList"].append("success")
+                    else:
+                        oneAssertData['assertResult']="字段不在返回值中"
+                        resultData["resultList"].append("fail")
+                if oneAssertData["assertType"]=='3':
+                    jsonData=self.sortResponsData(oneAssertData['assertVariable'],response)
+                    if jsonData==oneAssertData["assertVariAbleValue"]:
+                        oneAssertData['assertResult'] = "success"
+                        resultData["resultList"].append("success")
+                    else:
+                        oneAssertData['assertResult'] = "json字段值与预期不符"+"预期json值是"+str(oneAssertData["assertVariAbleValue"])+"实际json值是"+str(jsonData)
+                        resultData["resultList"].append("fail")
+                if oneAssertData["assertType"]=='5':
+                    pass
+            resultData["assertData"]=assertData
+            return  resultData
+        else:
+            log.info("assertData不为list，请校验数据后再试试吧")
+    def sortResponsData(self,assertJsonValue,response):
+        '''返回值信息处理'''
+        for jsonData in response:
+            if isinstance(response[jsonData],list):
+                return  self.sortResponsData(assertJsonValue,response[jsonData])
+            else:
+                if assertJsonValue==response[jsonData]:
+                    return  response[jsonData]
+                else:
+                    pass
+
+
+
+
+
+
 
 
 
