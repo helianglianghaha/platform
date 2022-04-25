@@ -70,23 +70,28 @@ class responseExecuting():
                         oneAssertData['assertResult']="success"
                         resultData["resultList"].append("success")
                     else:
-                        oneAssertData['assertResult']="code状态码和返回状态码不一致"+"预期的状态码是"+str(oneAssertData["assertVariable"])+"实际的状态码是"+str(responseCode)
+                        oneAssertData['assertResult']="预期的状态码是"+str(oneAssertData["assertVariable"])+"实际的状态码是"+str(responseCode)
                         resultData["resultList"].append("fail")
                 if oneAssertData["assertType"] == '2':
-                    if oneAssertData['assertVariable'] in response:
+
+                    if oneAssertData['assertVariable'] in str(bytes.decode(response.content)):
                         oneAssertData['assertResult'] = "success"
                         resultData["resultList"].append("success")
                     else:
                         oneAssertData['assertResult']="字段不在返回值中"
                         resultData["resultList"].append("fail")
                 if oneAssertData["assertType"]=='3':
-                    jsonData=self.sortResponsData(oneAssertData['assertVariable'],response)
-                    if jsonData==oneAssertData["assertVariAbleValue"]:
-                        oneAssertData['assertResult'] = "success"
-                        resultData["resultList"].append("success")
-                    else:
-                        oneAssertData['assertResult'] = "json字段值与预期不符"+"预期json值是"+str(oneAssertData["assertVariAbleValue"])+"实际json值是"+str(jsonData)
-                        resultData["resultList"].append("fail")
+                    import  json,re
+                    jsonData=re.findall(oneAssertData['assertVariable'],str(bytes.decode(response.content)))
+                    print('jsonData',jsonData)
+                    # jsonData=self.sortResponsData(oneAssertData['assertVariable'],json.loads(response.content))
+                    if len(jsonData)>0:
+                        if jsonData[0]==oneAssertData["assertVariAbleValue"]:
+                            oneAssertData['assertResult'] = "success"
+                            resultData["resultList"].append("success")
+                        else:
+                            oneAssertData['assertResult'] ="预期json值是"+str(oneAssertData["assertVariAbleValue"])+"实际json值是"+str(jsonData)
+                            resultData["resultList"].append("fail")
                 if oneAssertData["assertType"]=='5':
                     pass
             resultData["assertData"]=assertData
@@ -95,12 +100,27 @@ class responseExecuting():
             log.info("assertData不为list，请校验数据后再试试吧")
     def sortResponsData(self,assertJsonValue,response):
         '''返回值信息处理'''
-        for jsonData in response:
-            if isinstance(response[jsonData],list):
-                return  self.sortResponsData(assertJsonValue,response[jsonData])
+        if isinstance(response,list):
+            data=self.sortListResponse(assertJsonValue,response)
+        else:
+            data=self.sortDictResponse(assertJsonValue,response)
+        return  data
+    def sortListResponse(self,assertJsonValue,response):
+        '''过滤列表'''
+        for sortData in response:
+            if isinstance(sortData,list):
+                data=self.sortListResponse(assertJsonValue,sortData)
             else:
-                if assertJsonValue==response[jsonData]:
-                    return  response[jsonData]
+                data=self.sortDictResponse(assertJsonValue,sortData)
+        return  data
+    def sortDictResponse(self,assertJsonValue,response):
+        '''过滤字典'''
+        for dictData in response:
+            if isinstance(response(dictData),list):
+                return self.sortListResponse(assertJsonValue,response(dictData))
+            else:
+                if dictData==assertJsonValue:
+                    return  response[dictData]
                 else:
                     pass
 

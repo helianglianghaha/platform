@@ -266,6 +266,9 @@ def selectReportList(request):
     sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
               + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
     print('sql_num', sql_num)
+    # for testCase in range (len(TestcaseList)):
+    #     TestcaseList[testCase]['testapiAssert']=eval(TestcaseList[testCase]['testapiAssert'])
+    #     # TestcaseList[testCase]['testapiResponse']=eval(TestcaseList[testCase]['testapiResponse'])
     TestcaseNum = commonList().getModelData(sql_num)
     data = {
         "code": 200,
