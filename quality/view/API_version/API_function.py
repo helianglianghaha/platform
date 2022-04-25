@@ -126,7 +126,7 @@ class requestObject(responseExecuting):
     cookies：请求cookies
     '''
     def __init__(self,url,header,data,method,cookies,apiExtractName,apiExtractExpression,passWordFree,addPassWordFree):
-        print('初始化request')
+        # print('初始化request')
         self.url=url
         self.header=header
         self.data=data
