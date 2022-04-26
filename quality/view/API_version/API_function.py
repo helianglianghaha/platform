@@ -53,7 +53,7 @@ class responseExecuting():
         接口断言
         1：code状态码
         2：字段是否存在
-        3：字段对应值长度是否正常
+        3：字段值是否一致
         4：字段总个数是否正确
         5：Sql自查询
         '''
@@ -81,48 +81,30 @@ class responseExecuting():
                         oneAssertData['assertResult']="字段不在返回值中"
                         resultData["resultList"].append("fail")
                 if oneAssertData["assertType"]=='3':
-                    import  json,re
-                    jsonData=re.findall(oneAssertData['assertVariable'],str(bytes.decode(response.content)))
-                    print('jsonData',jsonData)
+                    import re,jsonpath,json
+                    # print('=======返回值========',bytes.decode(response.content))
+                    print('获取变量',oneAssertData['assertVariable'])
+                    sourceData=json.loads(bytes.decode(response.content))
+                    print('sourceData',sourceData)
+                    jsonData=jsonpath.jsonpath(sourceData,oneAssertData['assertVariable'])
+                    print('====jsonData=======',jsonData)
                     # jsonData=self.sortResponsData(oneAssertData['assertVariable'],json.loads(response.content))
                     if len(jsonData)>0:
-                        if jsonData[0]==oneAssertData["assertVariAbleValue"]:
+                        if str(jsonData[0])==oneAssertData["assertVariAbleValue"]:
                             oneAssertData['assertResult'] = "success"
                             resultData["resultList"].append("success")
                         else:
                             oneAssertData['assertResult'] ="预期json值是"+str(oneAssertData["assertVariAbleValue"])+"实际json值是"+str(jsonData)
                             resultData["resultList"].append("fail")
+                    else:
+                        oneAssertData['assertResult'] = "提取的值为空"
                 if oneAssertData["assertType"]=='5':
                     pass
             resultData["assertData"]=assertData
             return  resultData
         else:
             log.info("assertData不为list，请校验数据后再试试吧")
-    def sortResponsData(self,assertJsonValue,response):
-        '''返回值信息处理'''
-        if isinstance(response,list):
-            data=self.sortListResponse(assertJsonValue,response)
-        else:
-            data=self.sortDictResponse(assertJsonValue,response)
-        return  data
-    def sortListResponse(self,assertJsonValue,response):
-        '''过滤列表'''
-        for sortData in response:
-            if isinstance(sortData,list):
-                data=self.sortListResponse(assertJsonValue,sortData)
-            else:
-                data=self.sortDictResponse(assertJsonValue,sortData)
-        return  data
-    def sortDictResponse(self,assertJsonValue,response):
-        '''过滤字典'''
-        for dictData in response:
-            if isinstance(response(dictData),list):
-                return self.sortListResponse(assertJsonValue,response(dictData))
-            else:
-                if dictData==assertJsonValue:
-                    return  response[dictData]
-                else:
-                    pass
+
 
 
 
