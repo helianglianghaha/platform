@@ -6,6 +6,7 @@ from quality.common.logger import Log
 from quality.common.msg import msglogger
 from ..API.APIClass import  APITest
 from django.db import connection
+from pymysql import  converters
 log=Log()
 class responseExecuting():
     '''
@@ -17,7 +18,22 @@ class responseExecuting():
     addPassWordFree：提取cookies
     '''
     def __init__(self):
-        pass
+        # conv=converters.conversions
+        # conv[246]=float
+        # conv[10] = str
+        # conv[7]  = str
+        # conv[12] = str
+        # conv[11] = str
+        self.db_config={
+            'host': 'rm-uf60nso6wlf92lhtjzo.mysql.rds.aliyuncs.com',
+            'user': 'root1',
+            'password': 'Goodlearning2021@@',
+            'port': 3306,
+            'database':'lz_ems',
+            'charset':'utf8',
+            # 'conv':'conv'
+        }
+
 
     @msglogger
     def sortVariable(self,variableList):
@@ -82,13 +98,8 @@ class responseExecuting():
                         resultData["resultList"].append("fail")
                 if oneAssertData["assertType"]=='3':
                     import re,jsonpath,json
-                    # print('=======返回值========',bytes.decode(response.content))
-                    print('获取变量',oneAssertData['assertVariable'])
                     sourceData=json.loads(bytes.decode(response.content))
-                    print('sourceData',sourceData)
                     jsonData=jsonpath.jsonpath(sourceData,oneAssertData['assertVariable'])
-                    print('====jsonData=======',jsonData)
-                    # jsonData=self.sortResponsData(oneAssertData['assertVariable'],json.loads(response.content))
                     if len(jsonData)>0:
                         if str(jsonData[0])==oneAssertData["assertVariAbleValue"]:
                             oneAssertData['assertResult'] = "success"
@@ -99,11 +110,44 @@ class responseExecuting():
                     else:
                         oneAssertData['assertResult'] = "提取的值为空"
                 if oneAssertData["assertType"]=='5':
-                    pass
+                    returnData=self.assertSelectSqlData(oneAssertData['assertVariable'])
+                    if str(returnData)==oneAssertData["assertVariAbleValue"]:
+                        oneAssertData['assertResult'] = "success"
+                        resultData["resultList"].append("success")
+                    else:
+                        oneAssertData['assertResult'] = "预期sql查询值是" + str(
+                        oneAssertData["assertVariAbleValue"]) + "实际sql查询值是" + str(returnData)
+                        resultData["resultList"].append("fail")
             resultData["assertData"]=assertData
             return  resultData
         else:
             log.info("assertData不为list，请校验数据后再试试吧")
+    def assertSelectSqlData(self,assertData):
+        '''sql查询断言'''
+        import  pymysql
+        from pymysql.cursors import DictCursor#结果以字典的形式返回
+        #创建连接
+        conn=pymysql.connect(**self.db_config)
+
+        #创建游标
+        cursor=conn.cursor(DictCursor)
+
+        #执行sql语句
+        cursor.execute(assertData)
+
+        sqlData=cursor.fetchall()
+
+        # print(type(sqlData['energy_data']))
+        print("获取到的sql语句是",assertData)
+        print("断言sql自查询获取到的数据是：",(sqlData))
+
+
+
+        #关闭游标和数据库
+        cursor.close()
+        conn.close()
+        return  sqlData
+
 
 
 
