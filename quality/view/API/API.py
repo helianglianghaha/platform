@@ -174,13 +174,13 @@ def executeScript(request):
         os.makedirs(ant_build+projectName[0]["modelData"]+"/"+modelData)
 
     #创建测试报告文件夹
-    testReportAddress='/data/wwwroot/TestPlat/platForm/static/'
+    testReportAddress='/data/wwwroot/platform/static/'
     if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData):
         os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/")
         os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/")
 
     #创建日志文件
-    log_path="/data/wwwroot/TestPlat/platForm/logs/"
+    log_path="/data/wwwroot/platform/logs/"
     if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData):
         os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/")
         os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
@@ -207,7 +207,7 @@ def executeScript(request):
                 pass
             else:
                 print("=========================复制接口脚本=======================")
-                sourceFilePath='/data/wwwroot/TestPlat/platForm/media/'+fileName
+                sourceFilePath='/data/wwwroot/platform/media/'+fileName
                 shutil.copyfile(sourceFilePath,fullFilePath)
     else:#性能
         for fileUrl in fileUrlList:
@@ -217,12 +217,12 @@ def executeScript(request):
                 pass
             else:
                 print("========================复制性能脚本=================")
-                sourceFilePath = '/data/wwwroot/TestPlat/platForm/media/' + fileName
+                sourceFilePath = '/data/wwwroot/platform/media/' + fileName
                 shutil.copyfile(sourceFilePath, fullFilePath)
 
     # 执行脚本前清除数据
-    performanceReportPath = '/data/wwwroot/TestPlat/platForm/static/' + projectName[0]["modelData"] + '/' + modelData + '/PerformanceReport/*'
-    apiReportPatb = '/data/wwwroot/TestPlat/platForm/static/' + projectName[0]["modelData"] + '/' + modelData + '/ApiReport/*'
+    performanceReportPath = '/data/wwwroot/platform/static/' + projectName[0]["modelData"] + '/' + modelData + '/PerformanceReport/*'
+    apiReportPatb = '/data/wwwroot/platform/static/' + projectName[0]["modelData"] + '/' + modelData + '/ApiReport/*'
 
 
 
