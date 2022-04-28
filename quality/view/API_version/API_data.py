@@ -311,27 +311,30 @@ def selectSingleVersion(request):
 @msgMessage
 def copyApiTestCases(request):
     '''复制接口测试用例'''
-    # cookiesValue = request.POST.get("testaddCookiesValue")
-    addPassWordFree = request.POST.get("testaddPassWordFree")
-    passWordFree = request.POST.get("testpassWordFree")
-    modelData = (request.POST.get("testmodelData"))
-    versionData = (request.POST.get("Modelversion_id_id"))
-    apiRequest = request.POST.get('testapiRequest')
-    apiName = request.POST.get("testapiname")
-    testaddCookiesValue = request.POST.get('testaddCookiesValue')
-    apiHost = request.POST.get("testapiHost")
-    apiExtractName = request.POST.get('testapiExtractName')
-    apiExtractExpression = request.POST.get('testapiExtractExpression')
-    apiExtractResponse = request.POST.get('testapiExtractResponse')
-    apiMethod = request.POST.get("testapiMethod")
-    apiUrl = request.POST.get("testapiUrl")
-    apiBody = request.POST.get("testapiBody")
-    # apiExtract=request.POST.get("apiExtract")
-    apiAssert = request.POST.get("testapiAssert")
-    # apiResponse = request.POST.get("apiResponse")
+    requestData = json.loads(request.body)
+    
+    # cookiesValue = requestData("testaddCookiesValue")
+    addPassWordFree = requestData["testaddPassWordFree"]
+    passWordFree = requestData["testpassWordFree"]
+    modelData = requestData["testmodelData"]
+    print('modelData',modelData)
+    versionData = (requestData["Modelversion_id_id"])
+    apiRequest = requestData['testapiRequest']
+    apiName = requestData["testapiname"]
+    testaddCookiesValue = requestData['testaddCookiesValue']
+    apiHost = requestData["testapiHost"]
+    apiExtractName = requestData['testapiExtract']
+
+    apiMethod = requestData["testapiMethod"]
+    apiUrl = requestData["testapiUrl"]
+    apiBody = requestData["testapiBody"]
+    apiExtract=requestData["testapiExtract"]
+    apiHeader = requestData["testapiHeader"]
+    apiAssert = requestData["testapiAssert"]
+    # apiResponse = request.POST.get["apiResponse"]
 
     _testapi = Testapi()
-    _testapi.testmodelData = int(modelData)
+    _testapi.testmodelData = (modelData)
     _testapi.Modelversion_id_id = versionData
     _testapi.testapiHost = apiHost
     _testapi.testapiname = apiName
@@ -339,11 +342,11 @@ def copyApiTestCases(request):
     _testapi.testapiRequest = apiRequest
     _testapi.testapiUrl = apiUrl
     _testapi.testapiBody = apiBody
-    # _testapi.testapiExtract=apiExtract
+    _testapi.testapiExtract=apiExtract
+    _testapi.testapiHeader = apiHeader
     _testapi.testaddCookiesValue = testaddCookiesValue
     _testapi.testapiExtractName = apiExtractName
-    _testapi.testapiExtractExpression = apiExtractExpression
-    _testapi.apiExtractResponse = apiExtractResponse
+
 
     _testapi.testapiAssert = apiAssert
     # _testapi.testapiResponse = apiResponse
@@ -403,6 +406,7 @@ def saveApiTestCase(request):
     '''保存接口用例'''
     print(json.loads(request.body))
     requestData = json.loads(request.body)
+    
     pId = requestData["pId"]
     cookiesValue = requestData["cookiesValue"]
     addPassWordFree = requestData["addPassWordFree"]
@@ -529,15 +533,19 @@ def todoBatchExection(request):
             testapiRequest = caseDataSort['testapiRequest']
             testapiHost = caseDataSort['testapiHost']
 
+            testapiHeader=eval(caseDataSort['testapiHeader'])
             testapiAssert=eval(caseDataSort["testapiAssert"])
+            # print('testapiHeader',testapiHeader)
+
             # testapiname=caseData['testapiname']
             testapiMethod = str(caseData['testapiMethod'])
             testapiUrl = caseData['testapiUrl']
+
             testapiBody = caseData['testapiBody']
-            # testapiExtract=caseData['testapiExtract']
+            testapiExtract=eval(caseData['testapiExtract'])
             testapiAssert = caseData['testapiAssert']
             url = testapiRequest + "://" + testapiHost + testapiUrl
-            print('testcookiesValue', caseData['testcookiesValue'])
+            print('testapiExtract', testapiExtract)
 
             from quality.view.API_version.API_function import responseExecuting
             if caseData['testcookiesValue'] == 'true':
@@ -576,13 +584,15 @@ def todoBatchExection(request):
                 _executing.save()
 
             else:
-                testapiResponse = APITest().requestNoCookie(url, testapiBody, testapiMethod)
+                testapiResponse = APITest().requestNoCookie(url, testapiBody, testapiMethod,testapiHeader)
+                testapiExtract=responseExecuting().extractApiData(testapiResponse,testapiExtract)
                 _testCases = Testapi.objects.get(testapi_id=testapi_id)
                 _testCases.testapiResponse = bytes.decode(testapiResponse.content)[0:980]
                 _testCases.teststatuscode = testapiResponse.status_code
                 _testCases.testencoding = testapiResponse.encoding
                 _testCases.testheader = testapiResponse.headers
                 _testCases.testurl = testapiResponse.url
+                _testCases.testapiExtract=testapiExtract
 
                 returnDataList=responseExecuting().assertApiData(testapiResponse,testapiAssert,testapiResponse.status_code)
                 _testCases.testapiAssert=returnDataList["assertData"]

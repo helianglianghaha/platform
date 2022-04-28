@@ -43,11 +43,13 @@ class APITest:
         m2=hashlib.md5()
         m2.update(now.encode("utf8"))
         return m2.hexdigest()
-    def requestNoCookie(self,url,data,requestMethod):
+    def requestNoCookie(self,url,data,requestMethod,testapiHeader):
         '''接口请求没有cookies'''
-        header = {
-            'Content-Type': 'application/json'
-        }
+        #处理请求头数据
+        header=self._sortHeader(testapiHeader)
+        # header = {
+        #     'Content-Type': 'application/json'
+        # }
         if requestMethod=='1':
             response=requests.get(url=url,data=data.encode(),headers=header)
         if requestMethod == '2':
@@ -57,6 +59,26 @@ class APITest:
         if requestMethod=='4':
             response=requests.delete(url=url,data=data.encode(),headers=header)
         return  response
+    def _sortHeader(self,testapiHeader):
+        '''过滤请求头'''
+        if len(testapiHeader)==0:
+            header = {
+                'Content-Type': 'application/json'
+            }
+            return  header
+        else:
+            finalHeader={}
+            for headerData in testapiHeader:
+                print('headerData',headerData)
+                if  headerData['key']=='':
+                    pass
+                else:
+                    header={}
+                    header[headerData['key']]=headerData['value']
+                    finalHeader.update(header)
+            if  'Content-Type' not in finalHeader.keys():
+                finalHeader['Content-Type']='application/json'
+            return finalHeader
     def login(self,url,data):
         '''登录获取cookies'''
         global cookies

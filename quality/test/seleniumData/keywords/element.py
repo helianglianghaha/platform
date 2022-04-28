@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 from quality.common.logger import Log
 from quality.view.API_version.API_model import Testpicture, Testscript
-import time, os, win32gui, win32con
+#import time, os, win32gui, win32con
 from quality.test.seleniumData.prams import connectionList, handles
 from selenium.common.exceptions import TimeoutException
 # from prams import connectionList

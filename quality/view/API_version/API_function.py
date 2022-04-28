@@ -1,4 +1,4 @@
-import requests,re
+import requests,re,json,jsonpath
 # import cookieslib,urll
 # from quality.common.commonbase
 from quality.common.commonbase import commonList
@@ -6,6 +6,7 @@ from quality.common.logger import Log
 from quality.common.msg import msglogger
 from ..API.APIClass import  APITest
 from django.db import connection
+from quality.view.API_version.API_model import Testvariable
 from pymysql import  converters
 log=Log()
 class responseExecuting():
@@ -18,12 +19,6 @@ class responseExecuting():
     addPassWordFree：提取cookies
     '''
     def __init__(self):
-        # conv=converters.conversions
-        # conv[246]=float
-        # conv[10] = str
-        # conv[7]  = str
-        # conv[12] = str
-        # conv[11] = str
         self.db_config={
             'host': 'rm-uf60nso6wlf92lhtjzo.mysql.rds.aliyuncs.com',
             'user': 'root1',
@@ -31,7 +26,6 @@ class responseExecuting():
             'port': 3306,
             'database':'lz_ems',
             'charset':'utf8',
-            # 'conv':'conv'
         }
 
 
@@ -62,6 +56,61 @@ class responseExecuting():
                     variableList[variable]=(APITest()._sortString(variableList[variable]))
 
         return  variableList
+    def extractApiData(self,response,testapiExtract):
+        '''
+        返回结果提取
+        1:jsonpath提取数据
+        2:URL提取数据
+        3:提取cookies
+        '''
+        print('extractApiData++++++testapiExtract',testapiExtract)
+        if len(testapiExtract)!=0:
+            for extractData in testapiExtract:
+                if extractData['apiExtractType']=='1':
+                    sourceData = json.loads(bytes.decode(response.content))
+                    jsonData = jsonpath.jsonpath(sourceData, extractData['apiExtractExpression'])
+                    print('jsonData',jsonData)
+                    if len(jsonData)==0:
+                        extractData['apiExtractResponse']="提取的值为空"
+                    else:
+                        extractData['apiExtractResponse']=jsonData[0]
+
+                        #提取的值非空可以保存
+                        self.saveExtractData(extractData)
+                if extractData['apiExtractType']=='2':
+                    pass
+                if extractData['apiExtractType'] == '3':
+                    extractCookie=response.cookies
+                    extractCookie=requests.utils.dict_from_cookiejar(extractCookie)
+                    print('extractCookie',extractCookie)
+                    if len(extractCookie)==0:
+                        extractData['apiExtractResponse'] = "提取的cookies为空"
+                    else:
+                        extractData['apiExtractResponse']=str(extractCookie)
+
+                        # 提取的值非空可以保存
+                        self.saveExtractData(extractData)
+            #保存提取全局变量
+            # self.saveExtractData(testapiExtract)
+        else:
+            log.info("提取列表为空")
+        return  testapiExtract
+    def saveExtractData(self,extractdata):
+        '''提取保存的值放到全局变量'''
+        # for extract in extractdata:
+        print('extractdata',extractdata)
+        extractList=Testvariable.objects.filter(variableKey=extractdata['apiExtractName'])
+        if len(extractList)==0:
+            _saveVariable = Testvariable()
+            _saveVariable.variableKey=extractdata['apiExtractName']
+            _saveVariable.variableValue=str(extractdata['apiExtractResponse'])
+            _saveVariable.save()
+        else:
+            print('extractdata', extractdata)
+            _saveVariable=Testvariable.objects.get(variableKey=extractdata['apiExtractName'])
+            _saveVariable.variableKey = extractdata['apiExtractName']
+            _saveVariable.variableValue = (extractdata['apiExtractResponse'])
+            _saveVariable.save()
 
     @msglogger
     def assertApiData(self,response,assertData,responseCode):

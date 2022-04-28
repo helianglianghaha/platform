@@ -18,6 +18,9 @@ from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
 #上传文件
 
+# def sortProjectData(request):
+#     '''查找'''
+
 def upload(request):
     data=[]
     print('上传文件',request.POST)
