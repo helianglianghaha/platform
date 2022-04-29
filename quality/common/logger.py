@@ -1,7 +1,7 @@
 # coding:utf-8
 import logging,os,time,functools
 from logging.handlers import RotatingFileHandler,TimedRotatingFileHandler
-# log_path=os.getcwd()+'\\' + 'logs' + '\\'
+# log_path=os.getcwd()+'/' + 'logs' + '/'
 # log_path='E:\\TestPlatClone\\TestPlat\\platForm\\' + 'logs' + '\\'
 log_path='D:\\testPlatForm\\TestPlat\\platForm\\logs'
 class Log:

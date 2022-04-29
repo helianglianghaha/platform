@@ -33,10 +33,10 @@ def upload(request):
     #     content.append(line)
 
     #测试
-    path="D:\\testPlatForm\\TestPlat\\platForm\\media"
+    #path="D:\\testPlatForm\\TestPlat\\platForm\\media"
 
     #线上
-    # path="/data/wwwroot/TestPlat/platForm/media"
+    path="/data/wwwroot/platform/media"
     fileName=os.path.join(path, req.name)
     # 打开特定的文件进行二进制的写操作
     destination = open(fileName, 'wb+')
@@ -289,7 +289,7 @@ def readScriptLog(request):
     modelData = request.POST.get('modelData')
 
     #创建目录
-    log_path="/data/wwwroot/TestPlat/platForm/logs"
+    log_path="/data/wwwroot/platform/logs"
     if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData):
         os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData)
         os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/")
@@ -302,10 +302,10 @@ def readScriptLog(request):
     print("executeType",executeType)
     print("Type",type(executeType))
     if executeType=='0' or executeType==False :
-        path = "/data/wwwroot/TestPlat/platForm/logs/" + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text"
+        path = "/data/wwwroot/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text"
         print("API",path)
     if executeType=='1' or executeType==True :
-        path = "/data/wwwroot/TestPlat/platForm/logs/" + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text"
+        path = "/data/wwwroot/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text"
         print("性能",path)
     logger=open(path,"r",encoding='UTF-8',errors='ignore')
     loglist=logger.readlines()
@@ -320,7 +320,7 @@ def readScriptLog(request):
 #读取日志记录
 def readlog(request):
     try:
-        logger=open("E:\\testPlatfrom\\platForm\\logs","r",encoding='UTF-8',errors='ignore')
+        logger=open("/data/wwwroot/platform/logs","r",encoding='UTF-8',errors='ignore')
         loglist=logger.readlines()
         logger.close()
         data={

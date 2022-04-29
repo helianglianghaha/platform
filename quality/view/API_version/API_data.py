@@ -263,19 +263,34 @@ def selectReportList(request):
     sql = "select * from quality_executinglog a,quality_testapi b where a.executing_testmd=" + "\'" + executing_testmd + "\'" + "and a.executing_testapi_id=b.testapi_id"
     # print('sql',sql)
     TestcaseList = commonList().getModelData(sql)
+
+    # 获取执行人姓名
+    username = request.session.get('username', False)
+
+    # 获取执行脚本项目
+    Modelversion_id_id = TestcaseList[0]['Modelversion_id_id']
+    selectVersion = 'select modeldata_name from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
+    versionNameList = commonList().getModelData(selectVersion)
+    versionName = versionNameList[0]["modeldata_name"]
+
     sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
               + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
     print('sql_num', sql_num)
+    testResult=[]
     for testCase in range (len(TestcaseList)):
+        print((TestcaseList[testCase]['testapiBody']))
         TestcaseList[testCase]['testheader']=eval(TestcaseList[testCase]['testheader'])
-        TestcaseList[testCase]['testapiBody'] = eval(TestcaseList[testCase]['testapiBody'])
+        TestcaseList[testCase]['testapiBody'] = json.loads(TestcaseList[testCase]['testapiBody'])
         # TestcaseList[testCase]['testapiResponse']=eval(TestcaseList[testCase]['testapiResponse'])
     TestcaseNum = commonList().getModelData(sql_num)
     data = {
         "code": 200,
         "msg": "获取报告成功",
         "testCaseList": TestcaseList,
-        "testCaseNums": TestcaseNum
+        "testCaseNums": TestcaseNum,
+        "testResult":testResult,
+        "username":username,
+        "version":versionName
     }
     return JsonResponse(data, safe=False)
 
@@ -504,6 +519,12 @@ def todoBatchExection(request):
                 "msg": "接口用例为空,请选择接口用例",
             }
             return JsonResponse(data, safe=False)
+        # 获取执行人姓名
+        username = request.session.get('username', False)
+
+
+
+
         # 判断是否是单个项目
 
         # 判断是否是多个项目
@@ -518,6 +539,14 @@ def todoBatchExection(request):
         print("sql", sql)
         caseList = commonList().getModelData(sql)
         print(caseList)
+
+        # 获取执行脚本项目
+        Modelversion_id_id = caseList[0]['Modelversion_id_id']
+        selectVersion = 'select modeldata_name from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
+        versionNameList = commonList().getModelData(selectVersion)
+        versionName = versionNameList[0]["modeldata_name"]
+
+
         nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         executing_testmd = APITest().Hashlib()
         for caseData in caseList:
@@ -526,7 +555,7 @@ def todoBatchExection(request):
             from .API_function import responseExecuting
             caseDataSort = responseExecuting().sortVariable(caseData)
 
-            print('caseData', caseDataSort)
+            # print('caseData', caseDataSort)
             testapi_id = caseDataSort['testapi_id']
             testmodelData = caseDataSort['testmodelData']
             Modelversion_id_id = caseDataSort['Modelversion_id_id']
@@ -545,7 +574,7 @@ def todoBatchExection(request):
             testapiExtract=eval(caseData['testapiExtract'])
             testapiAssert = caseData['testapiAssert']
             url = testapiRequest + "://" + testapiHost + testapiUrl
-            print('testapiExtract', testapiExtract)
+            # print('testapiExtract', testapiExtract)
 
             from quality.view.API_version.API_function import responseExecuting
             if caseData['testcookiesValue'] == 'true':
@@ -613,6 +642,8 @@ def todoBatchExection(request):
                 _executing.executing_testmd = executing_testmd
                 _executing.executing_testapi_id = testapi_id
                 _executing.executing_starttime = datetime.datetime.now()
+                _executing.executing_userName=username
+                _executing.executing_versionName=versionName
                 _executing.save()
     data = {
         "code": 200,
@@ -685,7 +716,7 @@ def apiRequest(request):
             data = {
                 "code": 200,
                 "msg": "接口用例执行成功",
-                "data": (responseData.content[0:3000]).decode(),
+                "data": eval(bytes.decode(responseData.content)),
                 "apiName": apiName
             }
         except Exception as e:
@@ -703,13 +734,13 @@ def apiRequest(request):
         #     _getToken(apiExtractName,apiExtractExpression,responseData,passWordFree,addPassWordFree)
         # else:
         #     pass
-        print((responseData.url))
+        # print((responseData.url))
         log.info('response:%s' % responseData.content)
         try:
             data = {
                 "code": 200,
                 "msg": "接口用例执行成功",
-                "data": (responseData.content[0:3000]).decode(),
+                "data": eval(bytes.decode(responseData.content)),
                 "apiName": apiName
             }
         except Exception as e:
@@ -730,17 +761,17 @@ def _getToken(ExtractName, ExtractExpression, responseData, passWordFree, addPas
     获取token
     '''
     if addPassWordFree == 'true':
-        print('提取cookies==================================', responseData.cookies)
+        # print('提取cookies==================================', responseData.cookies)
         cookieslist = responseData.cookies
         cookie = requests.utils.dict_from_cookiejar(cookieslist)  # 将cookies转换成字典
-        print('获取的字典列表是%s' % cookie)
+        # print('获取的字典列表是%s' % cookie)
     else:
         if passWordFree == 'true':
             tokenString = responseData.url
-            print('tokenString1111', tokenString)
+            # print('tokenString1111', tokenString)
         else:
             tokenString = (responseData.content).decode('utf-8')
-            print('tokenString', tokenString)
+            # print('tokenString', tokenString)
         variable = re.findall(ExtractExpression, tokenString)
         if len(variable) == 0:
             log.info('获取的token为空')
@@ -794,7 +825,7 @@ def selectExecuting(request):
 @loginRequired
 @msgMessage
 def selectCaseTime(request):
-    print("获取到的日志报告", request.POST)
+    # print("获取到的日志报告", request.POST)
     executing_name = request.POST.get("executing_name")
     sql = 'select * from quality_executinglog where executing_testmd=' + "\'" + executing_name + "\'"
     data = commonList().getModelData(sql)

@@ -131,6 +131,7 @@ class responseExecuting():
         if isinstance(assertData,list):
             for oneAssertData in assertData:
                 if oneAssertData["assertType"]=='1':
+                    # print('开始处理断言信息',oneAssertData)
                     if oneAssertData["assertVariable"]==str(responseCode):
                         oneAssertData['assertResult']="success"
                         resultData["resultList"].append("success")
@@ -148,16 +149,20 @@ class responseExecuting():
                 if oneAssertData["assertType"]=='3':
                     import re,jsonpath,json
                     sourceData=json.loads(bytes.decode(response.content))
+                    print(oneAssertData)
                     jsonData=jsonpath.jsonpath(sourceData,oneAssertData['assertVariable'])
-                    if len(jsonData)>0:
-                        if str(jsonData[0])==oneAssertData["assertVariAbleValue"]:
-                            oneAssertData['assertResult'] = "success"
-                            resultData["resultList"].append("success")
-                        else:
-                            oneAssertData['assertResult'] ="预期json值是"+str(oneAssertData["assertVariAbleValue"])+"实际json值是"+str(jsonData)
-                            resultData["resultList"].append("fail")
-                    else:
+                    print('jsonData',jsonData)
+                    if not isinstance(jsonData,bool):
+                        if len(jsonData)>0:
+                            if str(jsonData[0])==oneAssertData["assertVariAbleValue"]:
+                                oneAssertData['assertResult'] = "success"
+                                resultData["resultList"].append("success")
+                            else:
+                                oneAssertData['assertResult'] ="预期json值是"+str(oneAssertData["assertVariAbleValue"])+"实际json值是"+str(jsonData)
+                                resultData["resultList"].append("fail")
                         oneAssertData['assertResult'] = "提取的值为空"
+                    else:
+                        oneAssertData['assertResult'] = "提取的表达式有问题"
                 if oneAssertData["assertType"]=='5':
                     returnData=self.assertSelectSqlData(oneAssertData['assertVariable'])
                     if str(returnData)==oneAssertData["assertVariAbleValue"]:
