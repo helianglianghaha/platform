@@ -214,15 +214,15 @@ class responseExecuting():
 
 
     @msglogger
-    def executing(self,response,passWordFree,addPassWordFree,apiExtractName,apiExtractExpression):
+    def executing(self,response,passWordFree,addPassWordFree,apiExtractName):
         print('executing')
         log.info('passWordFree=%s&&&addPassWordFree=%s&&&apiExtractName=%s&&&apiExtractExpression=%s'%(passWordFree,addPassWordFree,apiExtractName,apiExtractExpression))
         if passWordFree and not addPassWordFree:
-            self._execuPassWord(response,apiExtractName,apiExtractExpression)
+            self._execuPassWord(response,apiExtractName)
         elif addPassWordFree and not passWordFree:
-            self._execuAddPass(response,apiExtractName,apiExtractExpression)
+            self._execuAddPass(response,apiExtractName)
         elif passWordFree and addPassWordFree:
-            self._execuPassAddWord(response,apiExtractName,apiExtractExpression)
+            self._execuPassAddWord(response,apiExtractName)
         else:
             print('不需要提取')
     @msglogger
@@ -287,7 +287,7 @@ class requestObject(responseExecuting):
     data:请求参数
     cookies：请求cookies
     '''
-    def __init__(self,url,header,data,method,cookies,apiExtractName,apiExtractExpression,passWordFree,addPassWordFree):
+    def __init__(self,url,header,data,method,cookies,apiExtractName,passWordFree,addPassWordFree):
         # print('初始化request')
         self.url=url
         self.header=header
@@ -295,7 +295,6 @@ class requestObject(responseExecuting):
         self.method = method
         self.cookies=cookies
         self.apiExtractName=apiExtractName
-        self.apiExtractExpression=apiExtractExpression
         self.passWordFree=passWordFree
         self.addPassWordFree=addPassWordFree
         responseExecuting.__init__(self)
@@ -312,19 +311,19 @@ class requestObject(responseExecuting):
             return ("header为空")
         elif self.data=='' and self.cookies=='':
             __response=self._requestDataCookies()
-            self.executing(__response,self.passWordFree,self.addPassWordFree,self.apiExtractName,self.apiExtractExpression)
+            # self.executing(__response,self.passWordFree,self.addPassWordFree,self.apiExtractName)
             return __response
         elif self.data=='' and self.cookies!='':
             __response=self._requestCookies()
-            self.executing(__response,self.passWordFree,self.addPassWordFree,self.apiExtractName,self.apiExtractExpression)
+            # self.executing(__response,self.passWordFree,self.addPassWordFree,self.apiExtractName)
             return __response
         elif self.cookies=='' and self.data!='':
             __response=self._requestData(self.method)
-            self.executing(__response,self.passWordFree,self.addPassWordFree,self.apiExtractName,self.apiExtractExpression)
+            # self.executing(__response,self.passWordFree,self.addPassWordFree,self.apiExtractName)
             return __response
         else:
             __response=requests.get(url=self.url,headers=self.header,data=self.data,cookies=self.cookies)
-            self.executing(__response,self.passWordFree,self.addPassWordFree,self.apiExtractName,self.apiExtractExpression)
+            # self.executing(__response,self.passWordFree,self.addPassWordFree,self.apiExtractName)
             return __response
     @msglogger
     def _requestDataCookies(self):

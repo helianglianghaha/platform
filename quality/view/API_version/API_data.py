@@ -664,27 +664,28 @@ def todoBatchExection(request):
 @msgMessage
 def apiRequest(request):
     '''单接口调试'''
-    cookiesValue = request.POST.get("cookiesValue")
-    versionData = request.POST.get("versionData")
-    apiName = request.POST.get("apiName")
-    apiHost = request.POST.get("apiHost")
-    apiMethod = request.POST.get("apiMethod")
-    apiUrl = request.POST.get("apiUrl")
-    apiBody = request.POST.get("apiBody")
-    apiRequest = request.POST.get('apiRequest')
-    addPassWordFree = request.POST.get('addPassWordFree')
+    requestData = json.loads(request.body)
+    print('单接口请求',requestData)
+    cookiesValue = requestData["cookiesValue"]
+    versionData = requestData["versionData"]
+    apiName = requestData["apiName"]
+    apiHost = requestData["apiHost"]
+    apiMethod = requestData["apiMethod"]
+    apiUrl = requestData["apiUrl"]
+    apiBody = requestData["apiBody"]
+    apiRequest = requestData['apiRequest']
+    addPassWordFree = requestData['addPassWordFree']
     if addPassWordFree == "false":
         addPassWordFree = False
     else:
         addPassWordFree = True
-    addCookiesValue = request.POST.get('addCookiesValue')
+    addCookiesValue = requestData['addCookiesValue']
     # if addCookiesValue=="false":
     #     addCookiesValue=False
     # else:
     #     addCookiesValue=True
-    apiExtractName = request.POST.get("apiExtractName")
-    apiExtractExpression = request.POST.get("apiExtractExpression")
-    passWordFree = request.POST.get('passWordFree')
+    apiExtractName = requestData["apiExtract"]
+    passWordFree = requestData['passWordFree']
     if passWordFree == 'false':
         passWordFree = False
     else:
@@ -696,11 +697,23 @@ def apiRequest(request):
     url = apiRequest + "://" + apiHost + apiUrl
     method = apiMethod
     data = apiBody
-    header = {
-        'Content-Type': 'application/json;charset=UTF-8',
-        'Connection': 'keep-alive',
-        'Accept': '*/*'
-    }
+    apiHeader=eval(requestData['apiHeader'])
+    if apiHeader:
+        header = {
+            'Content-Type': 'application/json;charset=UTF-8',
+        }
+        for headerList in apiHeader:
+            if headerList['key']=='':
+                pass
+            else:
+                header[headerList['key']]=headerList["value"]
+        print('header',header)
+    else:
+        header = {
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Connection': 'keep-alive',
+            'Accept': '*/*'
+        }
     if addCookiesValue:
         sql = 'select cookie_name,cookie_value from quality_testcookies where cookie_name=' + "\'" + addCookiesValue + "\'"
         cookieList = commonList().getModelData(sql)
@@ -709,26 +722,19 @@ def apiRequest(request):
         # url='http://a.iyunxiao.com/mkp?go=http://mkp.yunxiao.com'
         cookie[cookieList[0]['cookie_name']] = cookieList[0]['cookie_value']
         responseData = requestObject(url, header, data, method, cookies=cookie, apiExtractName=apiExtractName,
-                                     apiExtractExpression=apiExtractExpression, passWordFree=passWordFree,
+                                     passWordFree=passWordFree,
                                      addPassWordFree=addPassWordFree).requestApi()
         log.info('response:%s' % responseData.content)
-        try:
-            data = {
-                "code": 200,
-                "msg": "接口用例执行成功",
-                "data": eval(bytes.decode(responseData.content)),
-                "apiName": apiName
-            }
-        except Exception as e:
-            data = {
-                "code": 200,
-                "msg": "接口用例执行成功",
-                "data": 'json解析失败，但请求成功了可以查看日志内容',
-                "apiName": apiName
-            }
+        data = {
+            "code": 200,
+            "msg": "接口用例执行成功",
+            "data": json.loads(bytes.decode(responseData.content)),
+            "apiName": apiName
+        }
+
     else:
         responseData = requestObject(url, header, data, method, cookies='', apiExtractName=apiExtractName,
-                                     apiExtractExpression=apiExtractExpression, passWordFree=passWordFree,
+                                passWordFree=passWordFree,
                                      addPassWordFree=addPassWordFree).requestApi()
         # if apiExtractName or passWordFree or addPassWordFree:
         #     _getToken(apiExtractName,apiExtractExpression,responseData,passWordFree,addPassWordFree)
@@ -736,20 +742,20 @@ def apiRequest(request):
         #     pass
         # print((responseData.url))
         log.info('response:%s' % responseData.content)
-        try:
-            data = {
-                "code": 200,
-                "msg": "接口用例执行成功",
-                "data": eval(bytes.decode(responseData.content)),
-                "apiName": apiName
-            }
-        except Exception as e:
-            data = {
-                "code": 200,
-                "msg": "接口用例执行成功",
-                "data": 'json解析失败，但请求成功了可以查看日志内容',
-                "apiName": apiName
-            }
+        # try:
+        data = {
+            "code": 200,
+            "msg": "接口用例执行成功",
+            "data": json.loads(bytes.decode(responseData.content)),
+            "apiName": apiName
+        }
+        # except Exception as e:
+        #     data = {
+        #         "code": 200,
+        #         "msg": "接口用例执行成功",
+        #         "data": 'json解析失败，但请求成功了可以查看日志内容',
+        #         "apiName": apiName
+        #     }
     return JsonResponse(data, safe=False)
 
 
