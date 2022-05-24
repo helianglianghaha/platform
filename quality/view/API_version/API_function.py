@@ -27,6 +27,14 @@ class responseExecuting():
             'database':'lz_ems',
             'charset':'utf8',
         }
+        self.test_db_config={
+            'host': '192.168.100.89',
+            'user': 'apm',
+            'password': 'persagy@2021',
+            'port': 9934,
+            'database':'persagy_test',
+            'charset':'utf8',
+        }
 
 
     @msglogger
@@ -160,7 +168,9 @@ class responseExecuting():
                             else:
                                 oneAssertData['assertResult'] ="预期json值是"+str(oneAssertData["assertVariAbleValue"])+"实际json值是"+str(jsonData)
                                 resultData["resultList"].append("fail")
-                        oneAssertData['assertResult'] = "提取的值为空"
+                        else:
+                            oneAssertData['assertResult'] = "提取的值为空"
+                            resultData["resultList"].append("fail")
                     else:
                         oneAssertData['assertResult'] = "提取的表达式有问题"
                 if oneAssertData["assertType"]=='5':
@@ -181,7 +191,7 @@ class responseExecuting():
         import  pymysql
         from pymysql.cursors import DictCursor#结果以字典的形式返回
         #创建连接
-        conn=pymysql.connect(**self.db_config)
+        conn=pymysql.connect(**self.test_db_config)
 
         #创建游标
         cursor=conn.cursor(DictCursor)
@@ -280,6 +290,73 @@ class responseExecuting():
         cursor = connection.cursor()
         cursor.execute(varr)
         print(cursor)
+class createData():
+    '''冷站智控造数据'''
+    def createSqlData(self,requestData):
+        '''执行sql造数据'''
+
+        sql=''
+    def executeTime(self,sqlTime):
+        '''时间处理'''
+        pass
+    def sortDingMessage(self,totalData,Modelversion_id_id,executing_testmd,versionName,executName):
+        '''分类处理信息'''
+        print("开始执行分类处理信息")
+        for versionList in range(len(totalData)):
+            for version in eval(totalData[versionList]['version']):
+                print('Modelversion_id_id',Modelversion_id_id)
+                print('version',version)
+                if Modelversion_id_id == version:
+                    # 机器人地址
+                    ding_url = totalData[versionList]["robotAddress"]
+                    # 测试报告地址
+                    testReportAddress = 'http://127.0.0.1:8080/#/reportManage?label=' + executing_testmd
+                    print("开始发送消息")
+                    self.sendDingMessageTotal(ding_url, testReportAddress, executing_testmd, versionName,
+                                                      executName)
+    def sendDingMessageTotal(self,url,testReportUrl,executing_testmd,versionName,executName):
+        '''
+        发送钉钉消息
+        url:机器人地址
+        testReportUrl:测试报告地址
+        executing_testmd：测试报告md5值
+        versionName：版本名称
+        executName：执行人
+        '''
+        print("开始执行消息通知")
+
+
+        HEADERS={
+            "Content-Type":"application/json;charset=utf-8"
+        }
+        # 获取用例执行后的通过率，返回成功或失败
+        sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
+                  + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
+        TestcaseNum = commonList().getModelData(sql_num)
+        if int(TestcaseNum[0]['count_fail'])!=0:
+            exectResult='执行失败'
+        else:
+            exectResult='执行成功'
+
+        message='【'+versionName+'】'+"接口自动化巡检\n"\
+                '【执行人】'+executName+'\n'\
+                '【运行结果】'+exectResult+'\n'\
+                '【执行通过率】'+str(int(TestcaseNum[0]['count_success'])/int(TestcaseNum[0]['total']))+'\n'\
+                '【运行URL地址】'+testReportUrl+'\n'
+
+        String_message={
+            "msgtype":"text",
+            "text":{"content":message},
+            "at":{
+                "atMobiles":[
+                    "15342209907"
+                ],
+                "isAtAll":0
+            }
+        }
+        String_textMsg=json.dumps(String_message)
+        response=requests.post(url,data=String_textMsg,headers=HEADERS)
+
 class requestObject(responseExecuting):
     '''
     url:请求URL

@@ -5,7 +5,7 @@ from quality.view.API.model import Modeldata
 from quality.view.API.model import Modelversion
 from quality.view.API_version.API_model import Testapi
 from quality.view.API_version.API_model import Executinglog
-from quality.view.API_version.API_model import Testvariable, Testcookies
+from quality.view.API_version.API_model import Testvariable, Testcookies,Dingmessage
 
 from django.core import serializers
 from quality.common.logger import Log
@@ -279,8 +279,8 @@ def selectReportList(request):
     testResult=[]
     for testCase in range (len(TestcaseList)):
         print((TestcaseList[testCase]['testapiBody']))
-        TestcaseList[testCase]['testheader']=eval(TestcaseList[testCase]['testheader'])
-        TestcaseList[testCase]['testapiBody'] = json.loads(TestcaseList[testCase]['testapiBody'])
+        TestcaseList[testCase]['testheader']=eval((TestcaseList[testCase]['testheader']))
+        TestcaseList[testCase]['testapiBody'] =eval((TestcaseList[testCase]['testapiBody']))
         # TestcaseList[testCase]['testapiResponse']=eval(TestcaseList[testCase]['testapiResponse'])
     TestcaseNum = commonList().getModelData(sql_num)
     data = {
@@ -542,9 +542,10 @@ def todoBatchExection(request):
 
         # 获取执行脚本项目
         Modelversion_id_id = caseList[0]['Modelversion_id_id']
-        selectVersion = 'select modeldata_name from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
+        selectVersion = 'select modeldata_name,modeldata_id_id from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
         versionNameList = commonList().getModelData(selectVersion)
         versionName = versionNameList[0]["modeldata_name"]
+        modelDataID=versionNameList[0]["modeldata_id_id"]
 
 
         nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -645,6 +646,28 @@ def todoBatchExection(request):
                 _executing.executing_userName=username
                 _executing.executing_versionName=versionName
                 _executing.save()
+    #查询当前运行版本是否有消息通知
+    dingMessageSql='select ding_version version ,ding_address robotAddress from quality_dingmessage  a where a.ding_message=\'True\'and ding_version is not NULL'
+    data = commonList().getModelData(dingMessageSql)
+    print('data',data)
+    if len(data)==0:
+        pass
+    else:
+        from .API_function import createData
+        createData().sortDingMessage(data,modelDataID,executing_testmd,versionName,username)
+
+    # for versionList in range(len(data)) :
+    #     for version in eval(data[versionList]['version']):
+    #         if Modelversion_id_id ==version:
+    #             #机器人地址
+    #             ding_url=data["ding_address"]
+    #             #测试报告地址
+    #             testReportAddress='http://127.0.0.1:8080/#/reportManage?label='+executing_testmd
+    #             createData().sendDingMessageTotal(ding_url,testReportAddress,executing_testmd,versionName,username)
+    #         else:
+    #             pass
+
+    #生成报告后URL地址
     data = {
         "code": 200,
         "msg": "接口用例执行成功",
@@ -657,8 +680,209 @@ def todoBatchExection(request):
     #     }
 
     return JsonResponse(data, safe=False)
+#造数据接口
+def createData(request):
+    '''造数据接口'''
+    requestData = json.loads(request.body)
 
 
+#冷站智控小工具
+def executTools(request):
+    '''
+    主要测试计算问题
+    执行率  已执行数量\已发策略数量
+    响应率：（已执行数量+未执行备注数量）/已发策略数量
+    核算节能量
+    核算节能量
+    同比节能率
+    同比节能量
+    '''
+    requestData = json.loads(request.body)
+    print('冷站测试小工具', requestData)
+    jituan_project_id=requestData['jituan_project_id']#集团ID
+    partition_project_id=requestData['partition_project_id']#广场ID
+    partition_building_id = requestData['partition_building_id']#建筑ID
+    equmentID = requestData['equmentID']#设备ID
+    startTime=requestData['startTime']
+    endTime=requestData['endTime']
+
+    #获取当前时间段
+    nowtime=datetime.datetime.now()
+    dateYear=nowtime.year
+    dateMonth=nowtime.month
+    if len(startTime)==0 or len(endTime)==0:
+        if (dateMonth)<10:
+            dateMonth='0'+str(dateMonth)
+            if int(dateMonth)-1>=0:
+                lastYear=dateYear
+                lastMont=str(int(dateMonth)-1)
+            else:
+                lastYear=str(int(dateYear)-1)
+                lastMont='12'
+        dateDay=nowtime.day
+        if (dateDay)<10:
+            dateDay='0'+dateDay
+        currDate = str(dateYear) + str(dateMonth) + str(dateDay) + "000000"
+        lastDate = str(lastYear) + str(lastMont) + str(dateDay) + "000000"
+        startMonth=str(lastYear) +"-"+ str(lastMont)+"-"+"01"+" 00:00:00"
+        endMonth = str(lastYear) +"-"+ str(lastMont) +"-"+ str(dateDay) + " 23:59:59"
+        startMonthLast=str(lastYear-1) +"-"+ str(lastMont)+"-"+"01"+" 00:00:00"
+        endMonthLast=str(lastYear-1) +"-"+ str(lastMont) +"-"+ str(dateDay) + " 23:59:59"
+
+        #室内温度满足率 开始时间 结束时间
+        startIndoorRateDate=str(dateYear) + str(dateMonth-1) + str(dateDay)
+        endIndoorRateDate=str(dateYear) + str(dateMonth) + str(dateDay)
+    else:
+        currDate=endTime
+        lastDate=startTime
+        startMonth=startTime[0:4]+"-"+startTime[4:6]+"-"+"01 00:00:00"
+        endMonth=startTime[0:4]+"-"+startTime[4:6]+"-"+"31 23:59:59"
+        startMonthLast = str(int(startTime[0:4])-1) + "-" + startTime[4:6] + "-" + "01 00:00:00"
+        endMonthLast=str(int(startTime[0:4])-1)+"-"+startTime[4:6]+"-"+"31 23:59:59"
+
+        #室内温度满足率
+        startIndoorRateDate=startTime[0:8]
+        endIndoorRateDate=endTime[0:8]
+
+        #当日室内温度满足率
+        currIndoorDate=endTime[0:4]+"-"+endTime[4:6]+"-"+endTime[6:8]+" 00:00:00"
+
+
+    totallist={}
+
+    #执行率计算 已执行数量\已发策略数量
+    sql='SELECT( SUM( CASE WHEN a.is_executed = 1 THEN 1 ELSE 0 END ) ) / (COUNT(*)) executedRate,' \
+        '(SUM( CASE WHEN a.is_executed = 1 THEN 1 ELSE 0 END ) + SUM( CASE WHEN a.is_executed = 0 AND a.remarks IS NOT NULL THEN 1 ELSE 0 END ) ) / (COUNT(*)) executedRemarkRate ' \
+        'FROM chiller_command a WHERE a.project_id = \''+partition_project_id+'\' AND ( a.create_time BETWEEN \' '+lastDate+'\' AND \''+currDate+'\')'
+    print('sql',sql)
+    #执行sql
+    from .API_function import responseExecuting
+    executedRate=responseExecuting().assertSelectSqlData(sql)
+    print('executedRate',executedRate)
+    if executedRate[0]['executedRate']:
+        totallist['executedRate']=round(executedRate[0]['executedRate'],2)
+        totallist['executedRemarkRate']=round(executedRate[0]['executedRemarkRate'],2)
+    else:
+        totallist['executedRate']='数据为空'
+        totallist['executedRemarkRate']='数据为空'
+    #核算节能量
+    saveEnergySql='select c_energy_saving from t_energy_saving   where  c_project_id= \''+partition_project_id+'\''
+    energySaveData = responseExecuting().assertSelectSqlData(saveEnergySql)
+    if len(energySaveData)>0:
+        totallist['energySaving']=energySaveData[0]['c_energy_saving']
+    else:
+        totallist['energySaving']="节能量数据为空"
+        totallist['energySavingRate']="节能量数据为空无法计算"
+    #核算节能率 -（核算节能量/今年冷站总能耗）
+
+
+    #同比节能量-（上年冷站总能耗-今年冷站总能耗）
+
+    sameEnergySavingSql='select sum(energy_value) sameEnergySaving from tb_coldstation_sub_energy_day where project_id=\''\
+                        +partition_project_id+'\'and subitem_id=\'EI10102010101001\''+' and date_time >= \''+startMonth+'\' and date_time <= \''+endMonth+'\''
+    sameEnergySaving=responseExecuting().assertSelectSqlData(sameEnergySavingSql)
+
+    sameEnergySavingSqlLast='select sum(energy_value) sameEnergySaving from tb_coldstation_sub_energy_day where project_id=\''\
+                        +partition_project_id+'\'and subitem_id=\'EI10102010101001\''+' and date_time >= \''+startMonthLast+'\' and date_time <= \''+endMonthLast+'\''
+    sameEnergySavingLast = responseExecuting().assertSelectSqlData(sameEnergySavingSqlLast)
+
+    if isinstance(sameEnergySaving[0]["sameEnergySaving"],int):
+        totallist['sameEnergySaving']=sameEnergySavingLast[0]['sameEnergySaving']-sameEnergySaving[0]['sameEnergySaving']
+        totallist['sameEnergySavingRate']=(sameEnergySavingLast[0]['sameEnergySaving']-sameEnergySaving[0]['sameEnergySaving'])/sameEnergySaving[0]['sameEnergySaving']
+    else:
+        totallist['sameEnergySaving']="同比节能量数据为空"
+        totallist['sameEnergySavingRate']='同比节能率为空'
+
+    #同微气候区核算节能量
+
+
+    #单日室内温度满足率-单日多系统-rpt_day_project_chiller_v2
+    currIndoorRateSql='select sum(tindoor_fill_rate) currindoorRate from rpt_day_project_chiller_v2 WHERE project_id=\''+partition_project_id+'\'and tindoor_fill_rate <> \'-9999\' and (date_time BETWEEN \''+currIndoorDate+'\' and \''+currIndoorDate+'\')'
+    currIndoorRate=responseExecuting().assertSelectSqlData(currIndoorRateSql)
+
+    if currIndoorRate[0]['currindoorRate']:
+        totallist['currIndoorTate'] = currIndoorRate[0]['currindoorRate']
+    else:
+        totallist['currIndoorTate']=0
+    # 室内温度满足率-rpt_day_space_chiller_v2
+    indoorRateSql='select avg(tindoor_fill_rate) indoorRate from rpt_day_space_chiller_v2 WHERE project_id=\''+partition_project_id+'\'and tindoor_fill_rate <> \'-9999\' and (date BETWEEN \''+startIndoorRateDate+'\' and \''+endIndoorRateDate+'\')'
+    indoorRate=responseExecuting().assertSelectSqlData(indoorRateSql)
+    if indoorRate[0]['indoorRate']:
+        totallist['indoorRate']=indoorRate[0]['indoorRate']
+    else:
+        totallist['indoorRate']=0
+
+    data={
+        "code":200,
+        "msg":totallist
+    }
+    return JsonResponse(data, safe=False)
+#核算节能量检查接口
+def checkEnergySaving(request):
+    '''核算节能量检查接口'''
+    requestData = json.loads(request.body)
+    print('核算节能量',requestData)
+
+    data={
+        "code":200,
+        "msg":"成功"
+    }
+    return JsonResponse(data, safe=False)
+
+#保存钉钉消息配置
+def saveDingMessage(request):
+    '''保存钉钉消息配置'''
+    requestData = json.loads(request.body)
+    print("钉钉消息配置",requestData)
+    openMessage=requestData['openMessage']
+    openXunJian=requestData['openXunJian']
+    robotAddress = requestData['robotAddress']
+    versionList = requestData['versionList']
+    dingID=requestData['dingID']
+
+    _dingMessage=Dingmessage()
+    if dingID:
+        _dingMessage.ding_id=dingID
+        _dingMessage.ding_address=robotAddress
+        _dingMessage.ding_xunjian=openXunJian
+        _dingMessage.ding_message=openMessage
+        _dingMessage.ding_version=versionList
+        _dingMessage.save()
+
+        data={
+            "code":200,
+            "msg":'编辑钉钉消息配置成功'
+        }
+    else:
+        _dingMessage.ding_address = robotAddress
+        _dingMessage.ding_xunjian = openXunJian
+        _dingMessage.ding_message = openMessage
+        _dingMessage.ding_version = versionList
+        _dingMessage.save()
+        data = {
+            "code": 200,
+            "msg": '新增钉钉消息配置成功'
+        }
+    return JsonResponse(data, safe=False)
+
+#查询钉钉消息
+def selectDingMessage(request):
+    '''查询钉钉消息配置'''
+    sql = 'select *  from quality_dingmessage'
+    data = commonList().getModelData(sql)
+    return JsonResponse(data, safe=False)
+#删除钉钉消息
+def delDingMessage(request):
+    '''删除钉钉消息配置'''
+    requestData = json.loads(request.body)
+    dingID = requestData['ding_id']
+    _delDing=Dingmessage.objects.get(ding_id=dingID)
+    _delDing.delete()
+    data={
+        'code':200,
+        "msg":"删除配置成功"
+    }
+    return  JsonResponse(data,safe=False)
 # 单接口接口请求
 @loginRequired
 @msgMessage
@@ -849,7 +1073,6 @@ def deleteExecutingLog(request):
     data = {
         "code": 200,
         "msg": "删除日志成功",
-
     }
     return JsonResponse(data, safe=False)
 # "__main__"

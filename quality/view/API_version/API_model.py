@@ -117,3 +117,10 @@ class Testemail(models.Model):
     email_account = models.CharField(max_length=100, verbose_name="账号")
     email_password = models.CharField(max_length=50, verbose_name="密码")
 
+class Dingmessage(models.Model):
+    ding_id=models.AutoField(verbose_name="dingID", primary_key=True)
+    ding_address=models.CharField(max_length=50, verbose_name="邮件服务器地址")
+    ding_xunjian=models.CharField(max_length=10, verbose_name="开启巡检")
+    ding_message=models.CharField(max_length=10, verbose_name="开启消息通知")
+    ding_version=models.CharField(max_length=100, verbose_name="巡检版本")
+

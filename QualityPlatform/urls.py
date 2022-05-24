@@ -60,6 +60,11 @@ urlpatterns = [
    url('quality/selectReportList/',API_data.selectReportList, name='selectReportList'),
    url('quality/selectCaseTime/',API_data.selectCaseTime, name='selectCaseTime'),
    url('quality/copyApiTestCases/',API_data.copyApiTestCases, name='copyApiTestCases'),
+   url('quality/executTools/',API_data.executTools, name='copyApiTestCases'),
+   url('quality/saveDingMessage/',API_data.saveDingMessage, name='saveDingMessage'),
+   url('quality/selectDingMessage/',API_data.selectDingMessage, name='selectDingMessage'),
+   url('quality/delDingMessage/',API_data.delDingMessage, name='delDingMessage'),
+   url('quality/checkEnergySaving/',API_data.checkEnergySaving, name='checkEnergySaving'),
 
    url('quality/readLog/',UI_data.readLog, name='readLog'),
    url('quality/selectUiTestCase/',UI_data.selectUiTestCase, name='selectUiTestCase'),
