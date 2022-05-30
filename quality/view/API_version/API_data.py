@@ -278,10 +278,10 @@ def selectReportList(request):
     print('sql_num', sql_num)
     testResult=[]
     for testCase in range (len(TestcaseList)):
-        print((TestcaseList[testCase]['testapiBody']))
+        print('testCase',TestcaseList[testCase])
+        testapiBody=(TestcaseList[testCase]['testapiBody']).replace("null","\'\'")
         TestcaseList[testCase]['testheader']=eval((TestcaseList[testCase]['testheader']))
-        TestcaseList[testCase]['testapiBody'] =eval((TestcaseList[testCase]['testapiBody']))
-        # TestcaseList[testCase]['testapiResponse']=eval(TestcaseList[testCase]['testapiResponse'])
+        TestcaseList[testCase]['testapiBody'] =eval(testapiBody)
     TestcaseNum = commonList().getModelData(sql_num)
     data = {
         "code": 200,
@@ -647,7 +647,7 @@ def todoBatchExection(request):
                 _executing.executing_versionName=versionName
                 _executing.save()
     #查询当前运行版本是否有消息通知
-    dingMessageSql='select ding_version version ,ding_address robotAddress from quality_dingmessage  a where a.ding_message=\'True\'and ding_version is not NULL'
+    dingMessageSql='select ding_version version ,ding_address robotAddress,ding_people people from quality_dingmessage  a where a.ding_message=\'True\'and ding_version is not NULL'
     data = commonList().getModelData(dingMessageSql)
     print('data',data)
     if len(data)==0:
@@ -838,6 +838,7 @@ def saveDingMessage(request):
     openXunJian=requestData['openXunJian']
     robotAddress = requestData['robotAddress']
     versionList = requestData['versionList']
+    dingPeople=requestData['dingPeople']
     dingID=requestData['dingID']
 
     _dingMessage=Dingmessage()
@@ -847,6 +848,7 @@ def saveDingMessage(request):
         _dingMessage.ding_xunjian=openXunJian
         _dingMessage.ding_message=openMessage
         _dingMessage.ding_version=versionList
+        _dingMessage.ding_people = dingPeople
         _dingMessage.save()
 
         data={
@@ -858,6 +860,7 @@ def saveDingMessage(request):
         _dingMessage.ding_xunjian = openXunJian
         _dingMessage.ding_message = openMessage
         _dingMessage.ding_version = versionList
+        _dingMessage.ding_people = dingPeople
         _dingMessage.save()
         data = {
             "code": 200,

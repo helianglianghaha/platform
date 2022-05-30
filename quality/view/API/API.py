@@ -339,24 +339,32 @@ def addModelVersion(request):
     Modelversion_id=request.POST.get('Modelversion_id')
     modeldata_id_id=request.POST.get("modeldata_id_id")
     modeldata_name=request.POST.get("modeldata_name")
-    _modelversion=Modelversion()
-    if Modelversion_id:
-        _modelversion.Modelversion_id=Modelversion_id
-        _modelversion.modeldata_name=modeldata_name
-        _modelversion.modeldata_id_id=modeldata_id_id
-        _modelversion.save()
-        data={
-            "code":200,
-            "msg":"修改版本信息成功"
+
+    exitModelversion=Modelversion.objects.filter(modeldata_name=modeldata_name)
+    if exitModelversion:
+        data = {
+            "code": 201,
+            "msg": "版本已存在请重新添加"
         }
     else:
-        _modelversion.modeldata_name=modeldata_name
-        _modelversion.modeldata_id_id=modeldata_id_id
-        _modelversion.save()
-        data={
-            "code":200,
-            "msg":"保存版本信息成功"
-        }
+        _modelversion=Modelversion()
+        if Modelversion_id:
+            _modelversion.Modelversion_id=Modelversion_id
+            _modelversion.modeldata_name=modeldata_name
+            _modelversion.modeldata_id_id=modeldata_id_id
+            _modelversion.save()
+            data={
+                "code":200,
+                "msg":"修改版本信息成功"
+            }
+        else:
+            _modelversion.modeldata_name=modeldata_name
+            _modelversion.modeldata_id_id=modeldata_id_id
+            _modelversion.save()
+            data={
+                "code":200,
+                "msg":"保存版本信息成功"
+            }
     return JsonResponse(data,safe=False)
 
 

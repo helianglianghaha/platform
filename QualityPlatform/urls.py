@@ -103,13 +103,15 @@ urlpatterns = [
    url('quality/selectVersionData/',API.selectVersionData, name='selectVersionData'),
    url('quality/Login/',login.Login, name='Login'),
     ]
-# from apscheduler.scheduler import Scheduler
+from apscheduler.scheduler import Scheduler
+from quality.xunJian.batchApiXunJian import batchApiCases
 # from quality.view.UI.UIFunction import batchXunJianTestCase
-# # sched = Scheduler()
+sched = Scheduler()
 #
 #
-# # @sched.interval_schedule(seconds=600)
-# def my_task():
+@sched.interval_schedule(seconds=300)
+def my_task():
+   batchApiCases().selectAllApiTestCase()
 #    print('test0001')
 #    # batchXunJianTestCase().xunJianBatchTestCase()
 #    batchXunJianTestCase().xunJianBatchTestCase()

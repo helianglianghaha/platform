@@ -165,8 +165,11 @@ def saveProAddress(request):
 
 # 读取日志文件
 def readLog(request):
-    # path='C:\TestPlat\platForm\logs\webtestcase.txt'
-    path = 'D:\\testPlatForm\\TestPlat\\platForm\\logs\\webtestcase.txt'
+    #线上环境
+    path='/data/wwwroot/platform/logs/webtestcase.txt'
+
+    #测试环境
+    # path = 'D:\\testPlatForm\\TestPlat\\platForm\\logs\\webtestcase.txt'
     with open(path, 'r', encoding='gbk') as f:
         result = []
         seq = re.compile("\s-")

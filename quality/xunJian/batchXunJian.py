@@ -128,4 +128,4 @@ class batchXunJianTestCase:
             return  singleTestCase
         except Exception as e :
             log.info('getAllVersionData报错了%s' % e)
-sched.start()
+# sched.start()

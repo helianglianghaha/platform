@@ -123,4 +123,5 @@ class Dingmessage(models.Model):
     ding_xunjian=models.CharField(max_length=10, verbose_name="开启巡检")
     ding_message=models.CharField(max_length=10, verbose_name="开启消息通知")
     ding_version=models.CharField(max_length=100, verbose_name="巡检版本")
+    ding_people = models.CharField(max_length=100, verbose_name="通知人")
 

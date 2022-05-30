@@ -12,7 +12,7 @@ def loginRequired(func):
         else:
             data={
                 "code":1000,
-                "msg":"登录超时，请重新登录"
+                "msg":"登录超时"
             }
             return JsonResponse(data,safe=False)
     return decorated_view

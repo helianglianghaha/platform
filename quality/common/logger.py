@@ -1,9 +1,11 @@
 # coding:utf-8
 import logging,os,time,functools
 from logging.handlers import RotatingFileHandler,TimedRotatingFileHandler
-# log_path=os.getcwd()+'/' + 'logs' + '/'
+#线上环境
+log_path=os.getcwd()+'/' + 'logs' + '/'
 # log_path='E:\\TestPlatClone\\TestPlat\\platForm\\' + 'logs' + '\\'
-log_path='D:\\testPlatForm\\TestPlat\\platForm\\logs'
+#测试环境
+#log_path='D:\\testPlatForm\\TestPlat\\platForm\\logs'
 class Log:
     def __init__(self):
         # 文件的命名
