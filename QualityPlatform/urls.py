@@ -65,6 +65,7 @@ urlpatterns = [
    url('quality/selectDingMessage/',API_data.selectDingMessage, name='selectDingMessage'),
    url('quality/delDingMessage/',API_data.delDingMessage, name='delDingMessage'),
    url('quality/checkEnergySaving/',API_data.checkEnergySaving, name='checkEnergySaving'),
+   url('quality/createData/',API_data.createData, name='createData'),
 
    url('quality/readLog/',UI_data.readLog, name='readLog'),
    url('quality/selectUiTestCase/',UI_data.selectUiTestCase, name='selectUiTestCase'),
@@ -109,10 +110,7 @@ from quality.xunJian.batchApiXunJian import batchApiCases
 sched = Scheduler()
 #
 #
-@sched.interval_schedule(seconds=300)
+@sched.interval_schedule(seconds=120)
 def my_task():
    batchApiCases().selectAllApiTestCase()
-#    print('test0001')
-#    # batchXunJianTestCase().xunJianBatchTestCase()
-#    batchXunJianTestCase().xunJianBatchTestCase()
 # sched.start()

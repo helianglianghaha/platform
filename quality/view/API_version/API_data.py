@@ -280,8 +280,13 @@ def selectReportList(request):
     for testCase in range (len(TestcaseList)):
         print('testCase',TestcaseList[testCase])
         testapiBody=(TestcaseList[testCase]['testapiBody']).replace("null","\'\'")
+        print(TestcaseList[testCase]['testheader'])
+        print(TestcaseList[testCase]['testheader'])
         TestcaseList[testCase]['testheader']=eval((TestcaseList[testCase]['testheader']))
-        TestcaseList[testCase]['testapiBody'] =eval(testapiBody)
+        if TestcaseList[testCase]['testapiBody']=='':
+            pass
+        else:
+            TestcaseList[testCase]['testapiBody'] =eval(testapiBody)
     TestcaseNum = commonList().getModelData(sql_num)
     data = {
         "code": 200,
@@ -684,7 +689,12 @@ def todoBatchExection(request):
 def createData(request):
     '''造数据接口'''
     requestData = json.loads(request.body)
-
+    print("requestData",requestData)
+    data={
+        "code":200,
+        "data":requestData
+    }
+    return JsonResponse(data, safe=False)
 
 #冷站智控小工具
 def executTools(request):
@@ -967,7 +977,7 @@ def apiRequest(request):
         #     _getToken(apiExtractName,apiExtractExpression,responseData,passWordFree,addPassWordFree)
         # else:
         #     pass
-        # print((responseData.url))
+        log.info(responseData.url)
         log.info('response:%s' % responseData.content)
         # try:
         data = {

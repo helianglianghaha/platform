@@ -205,8 +205,6 @@ class responseExecuting():
         print("获取到的sql语句是",assertData)
         print("断言sql自查询获取到的数据是：",(sqlData))
 
-
-
         #关闭游标和数据库
         cursor.close()
         conn.close()
@@ -290,12 +288,16 @@ class responseExecuting():
         cursor = connection.cursor()
         cursor.execute(varr)
         print(cursor)
-class createData():
+class createDataFinally():
     '''冷站智控造数据'''
-    def createSqlData(self,requestData):
+    def createSqlData(self,requestType):
         '''执行sql造数据'''
-
-        sql=''
+        from .API_dataList import DataList
+        if requestType=='1':#tb_coldstation_features_environment_in_202205
+            DataList().tb_coldstation_features_environment_in()
+        #     tb_coldstation_features_environment_in_202205_string=tb_coldstation_features_environment_in_202205_sql
+        #
+        # sql=''
     def executeTime(self,sqlTime):
         '''时间处理'''
         pass
@@ -329,9 +331,9 @@ class createData():
         versionName：版本名称
         executName：执行人
         '''
-        print("开始执行消息通知")
+        Log().info("开始执行消息通知")
 
-        print("钉钉通知人",ding_people)
+        Log().info("钉钉通知人%s"%ding_people)
 
         HEADERS={
             "Content-Type":"application/json;charset=utf-8"
@@ -340,7 +342,7 @@ class createData():
         sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
                   + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
         TestcaseNum = commonList().getModelData(sql_num)
-        print("TestcaseNum",TestcaseNum)
+        Log().info("TestcaseNum%s"%TestcaseNum)
         if int(TestcaseNum[0]['count_fail'])!=0:
             exectResult='执行失败'
         else:
@@ -364,9 +366,13 @@ class createData():
         }
         String_textMsg=json.dumps(String_message)
         print("获取到的String_textMsg",String_textMsg)
-        if passRate<1:
+        print(type(passRate))
+        print("endString",int(int(passRate)/100))
+
+        if int(excutePassRate)<100:
             # response=requests.post(url,data=String_textMsg,headers=HEADERS)
-            pass
+            print("执行用例失败注意查看通知")
+            # pass
         else:
             print("没有失败执行的用例可以不用发通知")
 
@@ -442,6 +448,7 @@ class requestObject(responseExecuting):
         response=requests.get(url=self.url,headers=self.header,cookies=self.cookies,allow_redirects=False)
         print('cookies=%s'%response.cookies)
         return response
+
 if __name__=='__main__':
     url='http://a.iyunxiao.com/mkp?go=http://2Fmkp.yunxiao.com'
     header={'Content-Type':'application/json;charset=UTF-8'}

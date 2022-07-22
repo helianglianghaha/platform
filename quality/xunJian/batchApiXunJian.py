@@ -1,11 +1,14 @@
 import  threading
 from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
-from quality.view.API_version.API_function import createData
+# from quality.view.API_version.API_function import createData
 from quality.view.API_version.API_function import responseExecuting
 from quality.view.API_version.API_model import Executinglog
 from quality.view.API_version.API_model import Testapi
 from apscheduler.scheduler import Scheduler
+from quality.common.logger import Log
+
+log = Log()
 
 #添加定时任务
 sched = Scheduler()
@@ -16,11 +19,11 @@ class batchApiCases:
         '''查询所有开启巡检项目用例'''
 
         dingMessageSql='select ding_xunjian,ding_version,ding_message,ding_address,ding_people from quality_dingmessage WHERE ding_xunjian =\'True\''
-        print("查询dingMessageSql",dingMessageSql)
+        Log.info("查询dingMessageSql%s"%dingMessageSql)
         dingMessage=commonList().getModelData(dingMessageSql)
         if len(dingMessage)>0:
             for dingSingle in dingMessage:
-                print("dingSingle",dingSingle)
+                Log.info("dingSingle%s"%dingSingle)
                 dingVersion=tuple(eval(dingSingle['ding_version']))
                 dingMessage=dingSingle['ding_message']
                 dingAddress=dingSingle['ding_address']
@@ -30,7 +33,7 @@ class batchApiCases:
 
                 #版本名称
                 versionNameSql='select modelData from quality_modelData where modeldata_id in'+str(dingVersion)
-                print('versionNameSql',versionNameSql)
+                Log.info('versionNameSql%s'%versionNameSql)
                 versionNameList=commonList().getModelData(versionNameSql)
                 finallyVersion = []
                 for version in versionNameList:
@@ -47,13 +50,13 @@ class batchApiCases:
 
                 #用例不为空调用新线程
                 if len(apiTestCases)>0:
-                    print('开始执行接口用例')
+                    Log.info('开始执行接口用例')
                     MyThreading(apiTestCases,versionName,dingMessage,dingAddress,dingPeople).start()
 
                     #为线程开启同步
                     # MyThreading(apiTestCases, versionName, dingMessage, dingAddress,dingPeople).join()
                 else:
-                    print('接口测试用例为空')
+                    Log.info('接口测试用例为空')
 threadLock=threading.Lock()
 class MyThreading(threading.Thread):
     def __init__(self,apiTestCases,versionName,dingMessage,dingAddress,dingPeople):
@@ -69,7 +72,7 @@ class MyThreading(threading.Thread):
         threadLock.release()
     def runApiTestCases(self):
         '''执行接口测试用例'''
-        print('开始执行接口自动化')
+        Log.info('开始执行接口自动化')
         import  datetime
         username="自动化巡检"
         nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -85,6 +88,8 @@ class MyThreading(threading.Thread):
             testapiRequest = caseDataSort['testapiRequest']
             testapiHost = caseDataSort['testapiHost']
 
+            print('testapiHeader',caseDataSort['testapiHeader'])
+            print(type(caseDataSort['testapiHeader']))
             testapiHeader = eval(caseDataSort['testapiHeader'])
             testapiAssert = eval(caseDataSort["testapiAssert"])
 
@@ -169,8 +174,8 @@ class MyThreading(threading.Thread):
             ding_url = self.dingAddress
             # 测试报告地址
             testReportAddress = 'http://192.168.100.118:8050/#/reportManage?label=' + executing_testmd
-            print("开始发送消息")
+            Log.info("开始发送消息")
             createData().sendDingMessageTotal(ding_url, testReportAddress, executing_testmd, self.versionName,
                                       username,self.dingPeople)
 
-        print("接口自动化执行结束")
+        Log.info("接口自动化执行结束")
