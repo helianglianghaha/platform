@@ -13,6 +13,48 @@ class DataList:
 		self.month=month
 		self.location_code=location_code
 
+	def conectMysql(self,sql):
+		import  pymysql
+		connection=pymysql.connect(db='lzzk', user='lzzk', password='v0eKCUDZ7RpX8Ff', host='192.168.100.102', port=31720,charset='utf8')
+		cursor = connection.cursor()
+		cursor.execute(sql)
+		#查询多条数据
+		result=cursor.fetchall()
+		return result
+
+	def returnTables(self):
+		'''返回所有的表'''
+		return_table='show tables'
+		result = self.conectMysql(return_table)
+		total_tables_columns={
+			"tableList":[],
+			# "tableListConlumns":[]
+		}
+
+		for i in range(len(result)):
+			tableList={"value":"","label":""}
+			columnsList={}
+			tableList["value"]=result[i][0]
+			tableList["label"]=str(i)
+			total_tables_columns["tableList"].append(tableList)
+			# columns=self.returnColumns(result[0])
+			# columnsList[result[0]]=columns
+			# total_tables_columns["tableListConlumns"].append(columnsList)
+
+		return total_tables_columns
+
+
+
+	def returnColumns(self,table):
+		'''返回所有的列'''
+		print('table',table)
+		return_column='show FIELDS from '+table
+		result=self.conectMysql(return_column)
+		columnList = []
+		for column in result:
+			columnList.append(column[0])
+		return columnList
+
 	def tb_coldstation_features_environment_in(self,project_id,year,month,location_code):
 		'''
 		:param project_id: 项目名称

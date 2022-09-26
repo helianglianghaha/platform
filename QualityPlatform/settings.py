@@ -105,10 +105,10 @@ DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
         'NAME':'testplatform',
-        'USER':'root1',
-        'PASSWORD':'Goodlearning2021@@',
-        'HOST':'rm-uf60nso6wlf92lhtjzo.mysql.rds.aliyuncs.com',
-        'PORT':'3306',
+        'USER':'lzzk',
+        'PASSWORD':'v0eKCUDZ7RpX8Ff',
+        'HOST':'192.168.100.102',
+        'PORT':'31720',
         #     'ENGINE': 'django.db.backends.sqlite3',
         #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }

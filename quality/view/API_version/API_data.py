@@ -20,6 +20,7 @@ from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
 from quality.view.API_version.API_function import requestObject
+from quality.view.API_version.API_dataList import DataList
 
 
 @loginRequired
@@ -251,6 +252,30 @@ def selectTestKey(request):
         "testCase_data": testCase_data
     }
     return JsonResponse(data, safe=False)
+#获取所有的表及列
+def selectTablesColumns(request):
+    '''获取所有的表和列'''
+    totalList=DataList().returnTables()
+    data={
+        "code":200,
+        "msg":"获取所有表和字段成功",
+        "total":totalList
+    }
+    return JsonResponse(data, safe=False)
+
+#获取所有的列
+def selectColumns(request):
+    '''获取所有的列'''
+
+    tablesName=request.POST.get("table")
+    print(tablesName)
+    columns=DataList().returnColumns(tablesName)
+    data = {
+        "code": 200,
+        "msg": "获取所有表和字段成功",
+        "totalColumns": columns
+    }
+    return JsonResponse(data, safe=False)
 
 
 # 查询报告
@@ -275,19 +300,20 @@ def selectReportList(request):
 
     sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
               + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
-    print('sql_num', sql_num)
+    # print('sql_num', sql_num)
     testResult=[]
     for testCase in range (len(TestcaseList)):
-        print('testCase',TestcaseList[testCase])
-        testapiBody=(TestcaseList[testCase]['testapiBody']).replace("null","\'\'")
-        print(TestcaseList[testCase]['testheader'])
-        print(TestcaseList[testCase]['testheader'])
+        print((TestcaseList[testCase]['testapiBody']))
+        testapiBody=(TestcaseList[testCase]['testapiBody']).replace("null","\"\"")
+        # print(TestcaseList[testCase]['testheader'])
+        print(testapiBody)
         TestcaseList[testCase]['testheader']=eval((TestcaseList[testCase]['testheader']))
         if TestcaseList[testCase]['testapiBody']=='':
             pass
         else:
             TestcaseList[testCase]['testapiBody'] =eval(testapiBody)
     TestcaseNum = commonList().getModelData(sql_num)
+    print(TestcaseList)
     data = {
         "code": 200,
         "msg": "获取报告成功",
@@ -332,7 +358,7 @@ def selectSingleVersion(request):
 def copyApiTestCases(request):
     '''复制接口测试用例'''
     requestData = json.loads(request.body)
-    
+
     # cookiesValue = requestData("testaddCookiesValue")
     addPassWordFree = requestData["testaddPassWordFree"]
     passWordFree = requestData["testpassWordFree"]
@@ -426,7 +452,7 @@ def saveApiTestCase(request):
     '''保存接口用例'''
     print(json.loads(request.body))
     requestData = json.loads(request.body)
-    
+
     pId = requestData["pId"]
     cookiesValue = requestData["cookiesValue"]
     addPassWordFree = requestData["addPassWordFree"]
@@ -689,6 +715,68 @@ def todoBatchExection(request):
 def createData(request):
     '''造数据接口'''
     requestData = json.loads(request.body)
+    print('requestData',requestData)
+
+    #获取数据库表
+    table=requestData['table']
+
+    #获取运行次数
+    runCycle=requestData['runCycle']
+
+    # if len(requestData['runCycle']) ==0: #运行次数为空执行一次
+
+
+    import  random
+    if runCycle=='24': #按小时循环24次
+        for i in range(24):
+            sql = "insert into " + table + "("
+            columnsList = ""
+            columnsValue = ""
+            for column in requestData['columns']:
+                print('获取index',type(column))
+                print('column',column)
+                if column['key']=='id':
+                    continue
+                elif column['valueStyel'] in ['1','9','11']:
+                    columnsList=columnsList+column['key']+','
+                    columnsValue=columnsValue+column['value']+','
+                elif column['valueStyel']=='2':
+                    columnsList = columnsList + column['key'] + ','
+                    columnsValue=columnsValue+str(random.randint(0,3))+','
+                elif column['valueStyel']=='3':
+                    columnsList = columnsList + column['key'] + ' '
+                    columnsValue=columnsValue+str(random.randint(0,56))+','
+                elif column['valueStyel']=='4':
+                    columnsList = columnsList + column['key'] + ' '
+                    columnsValue=columnsValue+str(random.randint(1000,5000))+','
+                elif column['valueStyel']=='9':
+                    columnsList = columnsList + column['key'] +','
+                    columnsValue = columnsValue + column['value'] +','
+                elif column['valueStyel']=='10':
+                    columnsList = columnsList + column['key'] +','
+                    if i <10:
+                        columnsValue = columnsValue + column['value'][0:7] + '0'+str(i)+','
+                    else:
+                        columnsValue = columnsValue + column['value'][0:7]+str(i)+','
+                elif column['valueStyel'] == '12':
+                    columnsList = columnsList + column['key'] + ','
+                    if i <10:
+                        columnsValue = columnsValue + column['value'][0:11] + '0'+str(i)+column['value'][-6:]+','
+                    else:
+                        columnsValue = columnsValue + column['value'][0:11]+str(i)+column['value'][-6:]+','
+                else:
+                    columnsList = columnsList + column['key'] +','
+                    columnsValue = columnsValue=columnsValue+column['value']+','
+            # columnsList=columnsList.replace(' ',',')
+            # columnsValue=columnsValue.replace(' ',',')
+            sql=sql+columnsList[0:-1]+') values('+columnsValue[0:-1]+')'
+            print("columnsList",columnsList)
+            print("获取到columnsValue", columnsValue)
+            print("sql",sql)
+
+
+    #获取所有列
+
     print("requestData",requestData)
     data={
         "code":200,
