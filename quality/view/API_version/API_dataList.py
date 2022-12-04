@@ -12,20 +12,54 @@ class DataList:
 		self.year=year
 		self.month=month
 		self.location_code=location_code
+	def selectMysql(self,sql):
+		'''mysql查询'''
+		import pymysql
+		from pymysql.constants import CLIENT
+		# sql='show tables'
+		connection = pymysql.connect(db='lzzk', user='lzzk', password='v0eKCUDZ7RpX8Ff', host='192.168.100.102',
+									 port=31009, charset='utf8', client_flag=CLIENT.MULTI_STATEMENTS)
+		cursor = connection.cursor()
+		cursor.execute(sql)
+		result=cursor.fetchall()
+		return result
 
 	def conectMysql(self,sql):
 		import  pymysql
-		connection=pymysql.connect(db='lzzk', user='lzzk', password='v0eKCUDZ7RpX8Ff', host='192.168.100.102', port=31720,charset='utf8')
+		from pymysql.constants import CLIENT
+		# sql='show tables'
+		connection = pymysql.connect(db='lzzk', user='lzzk', password='v0eKCUDZ7RpX8Ff', host='192.168.100.102',
+									 port=31009, charset='utf8',client_flag=CLIENT.MULTI_STATEMENTS)
 		cursor = connection.cursor()
-		cursor.execute(sql)
+
+		#转译字符串
+		if isinstance(sql,list):
+			for sql_list in sql:
+				# sql_list=escape_string(sql_list)
+
+				print('sql_list',sql_list)
+				result = cursor.execute(sql_list)
+			connection.commit()
+			connection.close()
+		else:
+			# sql=escape_string(sql)
+			result=cursor.execute(sql)
+			connection.commit()
+			connection.close()
+
+			return  result
+		print('sql',sql)
+		# print('result',result)
+		print(9999999)
 		#查询多条数据
-		result=cursor.fetchall()
-		return result
+
+
 
 	def returnTables(self):
 		'''返回所有的表'''
 		return_table='show tables'
-		result = self.conectMysql(return_table)
+		result = self.selectMysql(return_table)
+		print(result)
 		total_tables_columns={
 			"tableList":[],
 			# "tableListConlumns":[]
@@ -49,7 +83,7 @@ class DataList:
 		'''返回所有的列'''
 		print('table',table)
 		return_column='show FIELDS from '+table
-		result=self.conectMysql(return_column)
+		result=self.selectMysql(return_column)
 		columnList = []
 		for column in result:
 			columnList.append(column[0])

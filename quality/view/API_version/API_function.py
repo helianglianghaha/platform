@@ -210,17 +210,6 @@ class responseExecuting():
         conn.close()
         return  sqlData
 
-
-
-
-
-
-
-
-
-
-
-
     @msglogger
     def executing(self,response,passWordFree,addPassWordFree,apiExtractName):
         print('executing')
@@ -301,8 +290,30 @@ class createDataFinally():
     def executeTime(self,sqlTime):
         '''时间处理'''
         pass
+    def sorExecuteDingMessage(self,totalData,modelDataList,executing_testmd,versionName,executName):
+        '''批量执行接口用例'''
+        log.info("开始执行接口用例")
+        print('totalData',totalData)
+        print('modelDataList',modelDataList)
+        for versionList in range(len(totalData)):
+            for version in eval(totalData[versionList]['version']):
+                if version in modelDataList:
+                    # 机器人地址
+                    ding_url = totalData[versionList]["robotAddress"]
+                    ding_people = totalData[versionList]["people"]
+                    if ',' in ding_people:
+                        ding_people = ding_people.split(',')
+
+                    print('钉钉通知人', ding_people)
+                    # 测试报告地址
+                    testReportAddress = 'http://192.168.100.118:8050/#/reportManage?label=' + executing_testmd
+                    print("开始发送消息")
+                    self.sendDingMessageTotal(ding_url, testReportAddress, executing_testmd, versionName,
+                                              executName, ding_people)
+
+
     def sortDingMessage(self,totalData,Modelversion_id_id,executing_testmd,versionName,executName):
-        '''分类处理信息'''
+        '''单模块调试接口用例分类处理信息'''
         print("开始执行分类处理信息")
         for versionList in range(len(totalData)):
             for version in eval(totalData[versionList]['version']):
@@ -312,16 +323,72 @@ class createDataFinally():
                     # 机器人地址
                     ding_url = totalData[versionList]["robotAddress"]
                     ding_people=totalData[versionList]["people"]
+                    print('ding_people',ding_people)
                     if ',' in ding_people:
                         ding_people=ding_people.split(',')
-                    else:
-                        ding_people=list(ding_people)
+
                     print('钉钉通知人',ding_people)
                     # 测试报告地址
                     testReportAddress = 'http://192.168.100.118:8050/#/reportManage?label=' + executing_testmd
                     print("开始发送消息")
-                    self.sendDingMessageTotal(ding_url, testReportAddress, executing_testmd, versionName,
+                    self.sendDingMessageTotalExecute(ding_url, testReportAddress, executing_testmd, versionName,
                                                       executName,ding_people)
+    def sendDingMessageTotalExecute(self,url,testReportUrl,executing_testmd,versionName,executName,ding_people):
+        '''
+        发送钉钉消息
+        url:机器人地址
+        testReportUrl:测试报告地址
+        executing_testmd：测试报告md5值
+        versionName：版本名称
+        executName：执行人
+        '''
+        Log().info("开始执行消息通知")
+
+        Log().info("钉钉通知人%s"%ding_people)
+
+        HEADERS={
+            "Content-Type":"application/json;charset=utf-8"
+        }
+        # 获取用例执行后的通过率，返回成功或失败
+        sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
+                  + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
+        print('sql_num',sql_num)
+        TestcaseNum = commonList().getModelData(sql_num)
+        Log().info("TestcaseNum%s"%TestcaseNum)
+        if int(TestcaseNum[0]['count_fail'])!=0:
+            exectResult='执行失败'
+        else:
+            exectResult='执行成功'
+        excutePassRate=(int(TestcaseNum[0]['count_success'])/int(TestcaseNum[0]['total']))
+        excutePassRate=(round(excutePassRate,2))*100
+        print('通过率',excutePassRate)
+        print('testReportUrl',testReportUrl)
+        message='【'+versionName+'】'+"接口自动化测试\n"\
+                '【执行人】'+executName+'\n'\
+                '【运行结果】'+exectResult+'\n'\
+                '【执行通过率】'+str(excutePassRate)+'%\n'\
+                '【运行URL地址】'+testReportUrl+'\n'
+        passRate=(TestcaseNum[0]['count_success'])/int(TestcaseNum[0]['total'])
+        String_message={
+            "msgtype":"text",
+            "text":{"content":message},
+            "at":{
+                "atMobiles": [ding_people],
+                "isAtAll":0
+            }
+        }
+        String_textMsg=json.dumps(String_message)
+        print("获取到的String_textMsg",String_textMsg)
+        print(type(passRate))
+        print("endString",int(int(passRate)/100))
+
+        # if int(excutePassRate)<100:
+        response=requests.post(url,data=String_textMsg,headers=HEADERS)
+        # print("执行用例失败注意查看通知")
+        #     pass
+        # else:
+        #     print("没有失败执行的用例可以不用发通知")
+
     def sendDingMessageTotal(self,url,testReportUrl,executing_testmd,versionName,executName,ding_people):
         '''
         发送钉钉消息
@@ -341,6 +408,7 @@ class createDataFinally():
         # 获取用例执行后的通过率，返回成功或失败
         sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
                   + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
+        print('sql_num',sql_num)
         TestcaseNum = commonList().getModelData(sql_num)
         Log().info("TestcaseNum%s"%TestcaseNum)
         if int(TestcaseNum[0]['count_fail'])!=0:
@@ -349,12 +417,16 @@ class createDataFinally():
             exectResult='执行成功'
         excutePassRate=(int(TestcaseNum[0]['count_success'])/int(TestcaseNum[0]['total']))
         excutePassRate=(round(excutePassRate,2))*100
-        print('通过率',excutePassRate)
-        message='【'+versionName+'】'+"接口自动化巡检\n"\
-                '【执行人】'+executName+'\n'\
-                '【运行结果】'+exectResult+'\n'\
-                '【执行通过率】'+str(excutePassRate)+'%\n'\
-                '【运行URL地址】'+testReportUrl+'\n'
+        # print('通过率',excutePassRate)
+        # print('testReportUrl',testReportUrl)
+        # input(testReportUrl)
+        message='【模块名称】'+versionName+"：接口自动化测试\n" \
+                '【用例总数】'+str(TestcaseNum[0]['total'])+'\n' \
+                '【执行成功】' + str(int(TestcaseNum[0]['count_success'])) + '\n' \
+                '【执行失败】' + str(int(TestcaseNum[0]['count_fail'])) + '\n'\
+                '【执行通过率】'+str(excutePassRate)+'%\n' \
+                '【运行结果】' + str(exectResult) + '\n' \
+                '【运行URL地址】'+str(testReportUrl)+'\n'
         passRate=(TestcaseNum[0]['count_success'])/int(TestcaseNum[0]['total'])
         String_message={
             "msgtype":"text",
@@ -369,12 +441,12 @@ class createDataFinally():
         print(type(passRate))
         print("endString",int(int(passRate)/100))
 
-        if int(excutePassRate)<100:
-            # response=requests.post(url,data=String_textMsg,headers=HEADERS)
-            print("执行用例失败注意查看通知")
-            # pass
-        else:
-            print("没有失败执行的用例可以不用发通知")
+        # if int(excutePassRate)<100:
+        response=requests.post(url,data=String_textMsg,headers=HEADERS)
+        # print("执行用例失败注意查看通知")
+        #     pass
+        # else:
+        #     print("没有失败执行的用例可以不用发通知")
 
 class requestObject(responseExecuting):
     '''

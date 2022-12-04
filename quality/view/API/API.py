@@ -198,6 +198,10 @@ def executeScript(request):
     if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
         os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
 
+    #复制build文件
+
+
+
     #复制脚本到对应的文件夹
     print('scriptName',(scriptName))
     fileUrlList=[i["url"] for i in scriptName]

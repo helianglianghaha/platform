@@ -279,7 +279,7 @@ def selectColumns(request):
 
 
 # 查询报告
-@loginRequired
+# @loginRequired
 @msgMessage
 def selectReportList(request):
     '''查看报告'''
@@ -293,10 +293,10 @@ def selectReportList(request):
     username = request.session.get('username', False)
 
     # 获取执行脚本项目
-    Modelversion_id_id = TestcaseList[0]['Modelversion_id_id']
-    selectVersion = 'select modeldata_name from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
-    versionNameList = commonList().getModelData(selectVersion)
-    versionName = versionNameList[0]["modeldata_name"]
+    # Modelversion_id_id = TestcaseList[0]['Modelversion_id_id']
+    # selectVersion = 'select modeldata_name from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
+    # versionNameList = commonList().getModelData(selectVersion)
+    versionName = TestcaseList[0]['executing_versionName']
 
     sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
               + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
@@ -529,154 +529,329 @@ def saveApiTestCase(request):
         }
     return JsonResponse(data, safe=False)
 
+#多模块调试接口用例
+def executeBatchExection(request):
+    '''多模块调试接口用例'''
+    # try:
+    totalData=json.loads(request.body)
+    print(totalData)
+    #获取版本
+    totalVersionName=totalData['version']['versionName']
 
-# 批量执行接口用例
+    #版本为空给出提示
+    if len(totalVersionName)==0:
+        data={
+            "code":10001,
+            "msg":"获取版本名称为空,请输入版本名称"
+        }
+        return  JsonResponse(data, safe=False)
+
+    #获取所有用例模块
+    modelDataList=[totalData['modelData'][i]['label'] for i in range(len(totalData['modelData']))]
+
+    #获取执行人名称
+    username = request.session.get('username', False)
+
+
+
+    print(modelDataList)
+
+    # 判断列表是否为一个元素、获取测试用例
+    if len(list(modelDataList)) == 1:
+        modelList = str(modelDataList[0])
+        sql = 'SELECT * from quality_testapi a,quality_modelversion b WHERE a.Modelversion_id_id =b.Modelversion_id and b.modeldata_name = ' +'\''+ modelList+'\''
+    else:
+        modelList = str(tuple(modelDataList))
+        sql = 'SELECT * from quality_testapi a,quality_modelversion b WHERE a.Modelversion_id_id =b.Modelversion_id and b.modeldata_name in ' + modelList
+    print("sql", sql)
+    caseList = commonList().getModelData(sql)
+
+    if len(list(caseList)) == 0:
+
+        data = {
+            "code": 10002,
+            "msg": "接口用例为空,请选择接口用例",
+        }
+        return JsonResponse(data, safe=False)
+
+    print(caseList)
+
+    nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    executing_testmd = APITest().Hashlib()
+
+    #获取模块
+    modelDataList=list(set([ i['testmodelData'] for i in caseList]))
+
+    #批量执行接口用例
+    for caseData in caseList:
+
+        # 过滤参数存在变量重新赋值
+        from .API_function import responseExecuting
+        caseDataSort = responseExecuting().sortVariable(caseData)
+
+        # print('caseData', caseDataSort)
+        testapi_id = caseDataSort['testapi_id']
+        testmodelData = caseDataSort['testmodelData']
+        Modelversion_id_id = caseDataSort['Modelversion_id_id']
+        testapiRequest = caseDataSort['testapiRequest']
+        testapiHost = caseDataSort['testapiHost']
+
+        testapiHeader = eval(caseDataSort['testapiHeader'])
+        testapiAssert = eval(caseDataSort["testapiAssert"])
+        # print('testapiHeader',testapiHeader)
+
+        # testapiname=caseData['testapiname']
+        testapiMethod = str(caseData['testapiMethod'])
+        testapiUrl = caseData['testapiUrl']
+
+        testapiBody = caseData['testapiBody']
+        testapiExtract = eval(caseData['testapiExtract'])
+        testapiAssert = caseData['testapiAssert']
+        url = testapiRequest + "://" + testapiHost + testapiUrl
+        # print('testapiExtract', testapiExtract)
+
+        from quality.view.API_version.API_function import responseExecuting
+        if caseData['testcookiesValue'] == 'true':
+
+            # 查询登录接口
+            sql = "select * from quality_testapi where testapiname='登录' and Modelversion_id_id=" + str(
+                Modelversion_id_id)
+            loginData = commonList().getModelData(sql)
+
+            login_url = "https://" + loginData[0]['testapiHost'] + loginData[0]['testapiUrl']
+            login_data = loginData[0]['testapiBody']
+            response = APITest().updataCookies(login_url, login_data)
+            testapiResponse = APITest().apiRequest(url, testapiBody, testapiMethod, response)
+
+            _testCases = Testapi.objects.get(testapi_id=testapi_id)
+            _testCases.teststatuscode = testapiResponse.status_code
+            _testCases.testencoding = testapiResponse.encoding
+            _testCases.testurl = testapiResponse.url
+            _testCases.testheader = testapiResponse.headers
+            _testCases.testapiResponse = str(bytes.decode(testapiResponse.content))[0:980]
+
+            returnDataList = responseExecuting().assertApiData(testapiResponse, testapiAssert,
+                                                               testapiResponse.status_code)
+            _testCases.testapiAssert = returnDataList["assertData"]
+
+            if len(testapiAssert) != 0 and "fail" not in returnDataList["resultList"]:
+                _testCases.testresult = 1
+            else:
+                _testCases.testresult = 2
+            _testCases.save()
+
+            _executing = Executinglog()
+            _executing.executing_name = nowtime
+            _executing.executing_testmd = executing_testmd
+            _executing.executing_testapi_id = testapi_id
+            _executing.executing_starttime = datetime.datetime.now()
+            _executing.save()
+
+        else:
+            testapiResponse = APITest().requestNoCookie(url, testapiBody, testapiMethod, testapiHeader)
+            testapiExtract = responseExecuting().extractApiData(testapiResponse, testapiExtract)
+            _testCases = Testapi.objects.get(testapi_id=testapi_id)
+            _testCases.testapiResponse = bytes.decode(testapiResponse.content)[0:980]
+            _testCases.teststatuscode = testapiResponse.status_code
+            _testCases.testencoding = testapiResponse.encoding
+            _testCases.testheader = testapiResponse.headers
+            _testCases.testurl = testapiResponse.url
+            _testCases.testapiExtract = testapiExtract
+
+            returnDataList = responseExecuting().assertApiData(testapiResponse, testapiAssert,
+                                                               testapiResponse.status_code)
+            _testCases.testapiAssert = returnDataList["assertData"]
+
+            if len(testapiAssert) != 0 and "fail" not in returnDataList["resultList"]:
+                _testCases.testresult = 1
+            else:
+                _testCases.testresult = 2
+
+            # if len(testapiAssert) != 0 and testapiAssert in str(bytes.decode(testapiResponse.content)):
+            #     _testCases.testresult = 1
+            # else:
+            #     _testCases.testresult = 2
+            _testCases.save()
+
+            _executing = Executinglog()
+            _executing.executing_name = nowtime
+            _executing.executing_testmd = executing_testmd
+            _executing.executing_testapi_id = testapi_id
+            _executing.executing_starttime = datetime.datetime.now()
+            _executing.executing_userName = username
+            _executing.executing_versionName = totalVersionName
+            _executing.save()
+
+        # 查询当前运行版本是否有消息通知
+    dingMessageSql = 'select ding_version version ,ding_address robotAddress,ding_people people from quality_dingmessage  a where a.ding_message=\'True\'and ding_version is not NULL'
+    data = commonList().getModelData(dingMessageSql)
+    print('data', data)
+    if len(data) == 0:
+        pass
+    else:
+        from .API_function import createDataFinally
+        createDataFinally().sorExecuteDingMessage(data, modelDataList, executing_testmd, totalVersionName, username)
+    data = {
+        "code": 200,
+        "msg": "接口用例执行成功",
+    }
+    # except Exception as e:
+    #     log.info(e)
+    #     data = {
+    #         "code": 10001,
+    #         "msg": "接口用例执行出错,出错原因：" + str(e),
+    #     }
+
+    return JsonResponse(data, safe=False)
+# 单模块调试接口用例
 @loginRequired
 @msgMessage
 def todoBatchExection(request):
-    '''批量执行接口用例'''
+    '''单模块调试接口用例'''
     # try:
-    dataList = request.POST.items()
-    print("dataList", dataList)
+    # dataList = request.POST
+    # print("dataList", dataList)
 
-    for test_list in dataList:
-        print(test_list)
-        caseList = json.loads(test_list[0])
-
-        # 判断列表是否为空
-        if len(list(caseList)) == 0:
-            data = {
-                "code": 10002,
-                "msg": "接口用例为空,请选择接口用例",
-            }
-            return JsonResponse(data, safe=False)
-        # 获取执行人姓名
-        username = request.session.get('username', False)
+    totalData = json.loads(request.body)
+    print(totalData)
 
 
+    caseList = totalData['val']
+
+    # 判断列表是否为空
+    if len(list(caseList)) == 0:
+        data = {
+            "code": 10002,
+            "msg": "接口用例为空,请选择接口用例",
+        }
+        return JsonResponse(data, safe=False)
+    # 获取执行人姓名
+    username = request.session.get('username', False)
 
 
-        # 判断是否是单个项目
-
-        # 判断是否是多个项目
-
-        # 判断列表是否为一个元素
-        if len(list(caseList)) == 1:
-            caseList = str(caseList[0])
-            sql = 'select * from quality_testapi where testapi_id = ' + caseList
-        else:
-            caseList = str(tuple(caseList))
-            sql = 'select * from quality_testapi where testapi_id in ' + caseList
-        print("sql", sql)
-        caseList = commonList().getModelData(sql)
-        print(caseList)
-
-        # 获取执行脚本项目
-        Modelversion_id_id = caseList[0]['Modelversion_id_id']
-        selectVersion = 'select modeldata_name,modeldata_id_id from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
-        versionNameList = commonList().getModelData(selectVersion)
-        versionName = versionNameList[0]["modeldata_name"]
-        modelDataID=versionNameList[0]["modeldata_id_id"]
 
 
-        nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        executing_testmd = APITest().Hashlib()
-        for caseData in caseList:
+    # 判断是否是单个项目
 
-            # 过滤参数存在变量重新赋值
-            from .API_function import responseExecuting
-            caseDataSort = responseExecuting().sortVariable(caseData)
+    # 判断是否是多个项目
 
-            # print('caseData', caseDataSort)
-            testapi_id = caseDataSort['testapi_id']
-            testmodelData = caseDataSort['testmodelData']
-            Modelversion_id_id = caseDataSort['Modelversion_id_id']
-            testapiRequest = caseDataSort['testapiRequest']
-            testapiHost = caseDataSort['testapiHost']
+    # 判断列表是否为一个元素
+    if len(list(caseList)) == 1:
+        caseList = str(caseList[0])
+        sql = 'select * from quality_testapi where testapi_id = ' + caseList
+    else:
+        caseList = str(tuple(caseList))
+        sql = 'select * from quality_testapi where testapi_id in ' + caseList
+    print("sql", sql)
+    caseList = commonList().getModelData(sql)
+    print(caseList)
 
-            testapiHeader=eval(caseDataSort['testapiHeader'])
-            testapiAssert=eval(caseDataSort["testapiAssert"])
-            # print('testapiHeader',testapiHeader)
+    # 获取执行脚本项目
+    Modelversion_id_id = caseList[0]['Modelversion_id_id']
+    selectVersion = 'select modeldata_name,modeldata_id_id from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
+    versionNameList = commonList().getModelData(selectVersion)
+    versionName = versionNameList[0]["modeldata_name"]
+    modelDataID=versionNameList[0]["modeldata_id_id"]
 
-            # testapiname=caseData['testapiname']
-            testapiMethod = str(caseData['testapiMethod'])
-            testapiUrl = caseData['testapiUrl']
 
-            testapiBody = caseData['testapiBody']
-            testapiExtract=eval(caseData['testapiExtract'])
-            testapiAssert = caseData['testapiAssert']
-            url = testapiRequest + "://" + testapiHost + testapiUrl
-            # print('testapiExtract', testapiExtract)
+    nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    executing_testmd = APITest().Hashlib()
+    for caseData in caseList:
 
-            from quality.view.API_version.API_function import responseExecuting
-            if caseData['testcookiesValue'] == 'true':
+        # 过滤参数存在变量重新赋值
+        from .API_function import responseExecuting
+        caseDataSort = responseExecuting().sortVariable(caseData)
 
-                # 查询登录接口
-                sql = "select * from quality_testapi where testapiname='登录' and Modelversion_id_id=" + str(
-                    Modelversion_id_id)
-                loginData = commonList().getModelData(sql)
+        # print('caseData', caseDataSort)
+        testapi_id = caseDataSort['testapi_id']
+        testmodelData = caseDataSort['testmodelData']
+        Modelversion_id_id = caseDataSort['Modelversion_id_id']
+        testapiRequest = caseDataSort['testapiRequest']
+        testapiHost = caseDataSort['testapiHost']
 
-                login_url = "https://" + loginData[0]['testapiHost'] + loginData[0]['testapiUrl']
-                login_data = loginData[0]['testapiBody']
-                response = APITest().updataCookies(login_url, login_data)
-                testapiResponse = APITest().apiRequest(url, testapiBody, testapiMethod, response)
+        testapiHeader=eval(caseDataSort['testapiHeader'])
+        testapiAssert=eval(caseDataSort["testapiAssert"])
+        # print('testapiHeader',testapiHeader)
 
-                _testCases = Testapi.objects.get(testapi_id=testapi_id)
-                _testCases.teststatuscode = testapiResponse.status_code
-                _testCases.testencoding = testapiResponse.encoding
-                _testCases.testurl = testapiResponse.url
-                _testCases.testheader = testapiResponse.headers
-                _testCases.testapiResponse = str(bytes.decode(testapiResponse.content))[0:980]
+        # testapiname=caseData['testapiname']
+        testapiMethod = str(caseData['testapiMethod'])
+        testapiUrl = caseData['testapiUrl']
 
-                returnDataList = responseExecuting().assertApiData(testapiResponse, testapiAssert, testapiResponse.status_code)
-                _testCases.testapiAssert = returnDataList["assertData"]
+        testapiBody = caseData['testapiBody']
+        testapiExtract=eval(caseData['testapiExtract'])
+        testapiAssert = caseData['testapiAssert']
+        url = testapiRequest + "://" + testapiHost + testapiUrl
+        # print('testapiExtract', testapiExtract)
 
-                if len(testapiAssert) != 0 and "fail" not in returnDataList["resultList"]:
-                    _testCases.testresult = 1
-                else:
-                    _testCases.testresult = 2
-                _testCases.save()
+        from quality.view.API_version.API_function import responseExecuting
+        if caseData['testcookiesValue'] == 'true':
 
-                _executing = Executinglog()
-                _executing.executing_name = nowtime
-                _executing.executing_testmd = executing_testmd
-                _executing.executing_testapi_id = testapi_id
-                _executing.executing_starttime = datetime.datetime.now()
-                _executing.save()
+            # 查询登录接口
+            sql = "select * from quality_testapi where testapiname='登录' and Modelversion_id_id=" + str(
+                Modelversion_id_id)
+            loginData = commonList().getModelData(sql)
 
+            login_url = "https://" + loginData[0]['testapiHost'] + loginData[0]['testapiUrl']
+            login_data = loginData[0]['testapiBody']
+            response = APITest().updataCookies(login_url, login_data)
+            testapiResponse = APITest().apiRequest(url, testapiBody, testapiMethod, response)
+
+            _testCases = Testapi.objects.get(testapi_id=testapi_id)
+            _testCases.teststatuscode = testapiResponse.status_code
+            _testCases.testencoding = testapiResponse.encoding
+            _testCases.testurl = testapiResponse.url
+            _testCases.testheader = testapiResponse.headers
+            _testCases.testapiResponse = str(bytes.decode(testapiResponse.content))[0:980]
+
+            returnDataList = responseExecuting().assertApiData(testapiResponse, testapiAssert, testapiResponse.status_code)
+            _testCases.testapiAssert = returnDataList["assertData"]
+
+            if len(testapiAssert) != 0 and "fail" not in returnDataList["resultList"]:
+                _testCases.testresult = 1
             else:
-                testapiResponse = APITest().requestNoCookie(url, testapiBody, testapiMethod,testapiHeader)
-                testapiExtract=responseExecuting().extractApiData(testapiResponse,testapiExtract)
-                _testCases = Testapi.objects.get(testapi_id=testapi_id)
-                _testCases.testapiResponse = bytes.decode(testapiResponse.content)[0:980]
-                _testCases.teststatuscode = testapiResponse.status_code
-                _testCases.testencoding = testapiResponse.encoding
-                _testCases.testheader = testapiResponse.headers
-                _testCases.testurl = testapiResponse.url
-                _testCases.testapiExtract=testapiExtract
+                _testCases.testresult = 2
+            _testCases.save()
 
-                returnDataList=responseExecuting().assertApiData(testapiResponse,testapiAssert,testapiResponse.status_code)
-                _testCases.testapiAssert=returnDataList["assertData"]
+            _executing = Executinglog()
+            _executing.executing_name = nowtime
+            _executing.executing_testmd = executing_testmd
+            _executing.executing_testapi_id = testapi_id
+            _executing.executing_starttime = datetime.datetime.now()
+            _executing.save()
 
-                if len(testapiAssert) != 0 and  "fail" not in returnDataList["resultList"]:
-                    _testCases.testresult = 1
-                else:
-                    _testCases.testresult = 2
+        else:
+            testapiResponse = APITest().requestNoCookie(url, testapiBody, testapiMethod,testapiHeader)
+            testapiExtract=responseExecuting().extractApiData(testapiResponse,testapiExtract)
+            _testCases = Testapi.objects.get(testapi_id=testapi_id)
+            _testCases.testapiResponse = bytes.decode(testapiResponse.content)[0:980]
+            _testCases.teststatuscode = testapiResponse.status_code
+            _testCases.testencoding = testapiResponse.encoding
+            _testCases.testheader = testapiResponse.headers
+            _testCases.testurl = testapiResponse.url
+            _testCases.testapiExtract=testapiExtract
 
-                # if len(testapiAssert) != 0 and testapiAssert in str(bytes.decode(testapiResponse.content)):
-                #     _testCases.testresult = 1
-                # else:
-                #     _testCases.testresult = 2
-                _testCases.save()
+            returnDataList=responseExecuting().assertApiData(testapiResponse,testapiAssert,testapiResponse.status_code)
+            _testCases.testapiAssert=returnDataList["assertData"]
 
-                _executing = Executinglog()
-                _executing.executing_name = nowtime
-                _executing.executing_testmd = executing_testmd
-                _executing.executing_testapi_id = testapi_id
-                _executing.executing_starttime = datetime.datetime.now()
-                _executing.executing_userName=username
-                _executing.executing_versionName=versionName
-                _executing.save()
+            if len(testapiAssert) != 0 and  "fail" not in returnDataList["resultList"]:
+                _testCases.testresult = 1
+            else:
+                _testCases.testresult = 2
+
+            # if len(testapiAssert) != 0 and testapiAssert in str(bytes.decode(testapiResponse.content)):
+            #     _testCases.testresult = 1
+            # else:
+            #     _testCases.testresult = 2
+            _testCases.save()
+
+            _executing = Executinglog()
+            _executing.executing_name = nowtime
+            _executing.executing_testmd = executing_testmd
+            _executing.executing_testapi_id = testapi_id
+            _executing.executing_starttime = datetime.datetime.now()
+            _executing.executing_userName=username
+            _executing.executing_versionName=versionName
+            _executing.save()
     #查询当前运行版本是否有消息通知
     dingMessageSql='select ding_version version ,ding_address robotAddress,ding_people people from quality_dingmessage  a where a.ding_message=\'True\'and ding_version is not NULL'
     data = commonList().getModelData(dingMessageSql)
@@ -714,75 +889,96 @@ def todoBatchExection(request):
 #造数据接口
 def createData(request):
     '''造数据接口'''
-    requestData = json.loads(request.body)
-    print('requestData',requestData)
+    try:
+        requestData = json.loads(request.body)
+        print('requestData',requestData)
 
-    #获取数据库表
-    table=requestData['table']
+        #获取数据库表
+        table=requestData['table']
 
-    #获取运行次数
-    runCycle=requestData['runCycle']
+        #获取运行次数
+        runCycle=requestData['runCycle']
 
-    # if len(requestData['runCycle']) ==0: #运行次数为空执行一次
+        # if len(requestData['runCycle']) ==0: #运行次数为空执行一次
 
 
-    import  random
-    if runCycle=='24': #按小时循环24次
-        for i in range(24):
-            sql = "insert into " + table + "("
-            columnsList = ""
-            columnsValue = ""
-            for column in requestData['columns']:
-                print('获取index',type(column))
-                print('column',column)
-                if column['key']=='id':
-                    continue
-                elif column['valueStyel'] in ['1','9','11']:
-                    columnsList=columnsList+column['key']+','
-                    columnsValue=columnsValue+column['value']+','
-                elif column['valueStyel']=='2':
-                    columnsList = columnsList + column['key'] + ','
-                    columnsValue=columnsValue+str(random.randint(0,3))+','
-                elif column['valueStyel']=='3':
-                    columnsList = columnsList + column['key'] + ' '
-                    columnsValue=columnsValue+str(random.randint(0,56))+','
-                elif column['valueStyel']=='4':
-                    columnsList = columnsList + column['key'] + ' '
-                    columnsValue=columnsValue+str(random.randint(1000,5000))+','
-                elif column['valueStyel']=='9':
-                    columnsList = columnsList + column['key'] +','
-                    columnsValue = columnsValue + column['value'] +','
-                elif column['valueStyel']=='10':
-                    columnsList = columnsList + column['key'] +','
-                    if i <10:
-                        columnsValue = columnsValue + column['value'][0:7] + '0'+str(i)+','
+        import  random
+        if runCycle=='22': #按小时循环22次
+            sqlList = []
+            for i in range(22):
+                sql = "INSERT INTO " + table + "("
+                columnsList = ""
+                columnsValue = ""
+
+                for column in requestData['columns']:
+                    print('获取index',type(column))
+                    print('column',column)
+
+                    if column['key']=='id':
+                        continue
+                    elif column['valueStyel'] in ['1','9']:
+                        columnsList=columnsList+column['key']+','
+                        columnsValue=columnsValue+"'"+column['value']+"'"+','
+                    elif column['valueStyel']=='2':
+                        columnsList = columnsList + column['key'] + ','
+                        columnsValue=columnsValue+str(random.randint(0,3))+','
+                    elif column['valueStyel']=='3':
+                        columnsList = columnsList + column['key'] + ','
+                        columnsValue=columnsValue+str(random.randint(0,56))+','
+                    elif column['valueStyel']=='4':
+                        columnsList = columnsList + column['key'] + ','
+                        columnsValue=columnsValue+str(random.randint(1000,5000))+','
+                    elif column['valueStyel']=='9':
+                        columnsList = columnsList + column['key'] +','
+                        columnsValue = columnsValue +"'"+ column['value'] +"'"+','
+                    elif column['valueStyel']=='10':
+                        columnsList = columnsList + column['key'] +','
+                        if i <10:
+                            columnsValue = columnsValue + column['value'][0:7] + '0'+str(i+1)+','
+                        else:
+                            columnsValue = columnsValue +"'"+ column['value'][0:7]+str(i+1)+"'"+','
+                    elif column['valueStyel'] == '11':
+                        columnsList = columnsList + column['key'] + ','
+                        if i <10:
+                            columnsValue = columnsValue + "'"+column['value'][0:8] + '0'+str(i+1)+"'"+','
+                        else:
+                            columnsValue = columnsValue +"'"+ column['value'][0:8]+str(i+1)+"'"+','
+
+                    elif column['valueStyel'] == '12':
+                        columnsList = columnsList + column['key'] + ','
+                        if i <10:
+                            columnsValue = columnsValue + "'"+column['value'][0:11] + '0'+str(i+1)+column['value'][-6:]+"'"+','
+                        else:
+                            columnsValue = columnsValue +"'"+ column['value'][0:11]+str(i+1)+column['value'][-6:]+"'"+','
                     else:
-                        columnsValue = columnsValue + column['value'][0:7]+str(i)+','
-                elif column['valueStyel'] == '12':
-                    columnsList = columnsList + column['key'] + ','
-                    if i <10:
-                        columnsValue = columnsValue + column['value'][0:11] + '0'+str(i)+column['value'][-6:]+','
-                    else:
-                        columnsValue = columnsValue + column['value'][0:11]+str(i)+column['value'][-6:]+','
-                else:
-                    columnsList = columnsList + column['key'] +','
-                    columnsValue = columnsValue=columnsValue+column['value']+','
-            # columnsList=columnsList.replace(' ',',')
-            # columnsValue=columnsValue.replace(' ',',')
-            sql=sql+columnsList[0:-1]+') values('+columnsValue[0:-1]+')'
-            print("columnsList",columnsList)
-            print("获取到columnsValue", columnsValue)
-            print("sql",sql)
+                        columnsList = columnsList + column['key'] +','
+                        columnsValue = columnsValue+"'"+column['value']+"'"+','
+                # columnsList=columnsList.replace(' ',',')
+                # columnsValue=columnsValue.replace(' ',',')
+                sql=sql+columnsList[0:-1]+') VALUE('+columnsValue[0:-1]+')'
+                print("columnsList",columnsList)
+                print("获取到columnsValue", columnsValue)
+                print("sql",sql)
+                sqlList.append(sql)
+                DataList().conectMysql(sql)
+            # DataList().conectMysql(sqlList)
+        print("requestData", requestData)
+        data = {
+            "code": 200,
+            "data": requestData,
+            "msg":"执行成功"
+        }
 
-
-    #获取所有列
-
-    print("requestData",requestData)
-    data={
-        "code":200,
-        "data":requestData
-    }
-    return JsonResponse(data, safe=False)
+        return JsonResponse(data, safe=False)
+        #获取所有列
+    except Exception as e:
+        print("requestData", requestData)
+        data = {
+            "code": 500,
+            "data": requestData,
+            "msg":"执行出错错误信息："+str(e)
+        }
+        return JsonResponse(data, safe=False)
 
 #冷站智控小工具
 def executTools(request):
@@ -984,6 +1180,91 @@ def delDingMessage(request):
         "msg":"删除配置成功"
     }
     return  JsonResponse(data,safe=False)
+
+#搜索点位信息
+
+def selectDianWei(request):
+    '''搜索点位信息'''
+    requestData = json.loads(request.body)
+    print(requestData)
+    #获取搜索类型
+    dianWeiType=requestData['dianWei']['dianWeiType']
+
+    #系统id/设备id/空间点位id
+    selectID=requestData['dianWei']['selectID']
+    if len(selectID)==0:
+        data = {
+            'code': 10000,
+            "msg": "搜索id不能为空"
+        }
+        return JsonResponse(data, safe=False)
+    else:
+        from .API_testcools import TestTools
+        if dianWeiType:
+            IDList=selectID.split(' ')
+            print('IDList',IDList)
+            totalList=[]
+            for ID in IDList:
+                result = TestTools().selectSourceID(ID)
+                if 'tdb' in result.keys():
+                    tdbString=ID+"===="+result['tdb'] +"\n"
+                    totalList.append(tdbString)
+                else:
+                    tdbString = ID + ":tdb为空"
+                    totalList.append(tdbString)
+            data = {
+                'code': 200,
+                "msg": "success",
+                "data": totalList
+            }
+        else:
+            result=TestTools().selectSourceID(selectID)
+            dianWeiList={}
+            if 'tdb' in result.keys():
+                dianWeiList['tdb']=result['tdb']
+            if 'chillWaterMainReturnTemp' in result.keys():
+                dianWeiList['chillWaterMainReturnTemp']=result['chillWaterMainReturnTemp']
+            if 'coolWaterMainSupplyTemp' in result.keys():
+                dianWeiList['coolWaterMainSupplyTemp']=result['coolWaterMainSupplyTemp']
+            if 'accCool' in result.keys():
+                dianWeiList['coolWaterMainSupplyTemp']=result['accCool']
+            if 'chillWaterFlow' in result.keys():
+                dianWeiList['chillWaterFlow']=result['chillWaterFlow']
+            if 'coolWaterFlow' in result.keys():
+                dianWeiList['coolWaterFlow']=result['coolWaterFlow']
+            if 'iPLR' in result.keys():
+                dianWeiList['iPLR']=result['iPLR']
+            if 'elecConsumP' in result.keys():
+                dianWeiList['elecConsumP'] = result['elecConsumP']
+            if 'accElecConsum' in result.keys():
+                dianWeiList['accElecConsum']=result['accElecConsum']
+            if 'evapWaterInTemp' in result.keys():
+                dianWeiList['evapWaterInTemp']=result['evapWaterInTemp']
+            if 'condWaterInTemp' in result.keys():
+                dianWeiList['condWaterInTemp'] = result['condWaterInTemp']
+            if 'evapWaterOutTemp' in result.keys():
+                dianWeiList['evapWaterOutTemp']=result['evapWaterOutTemp']
+            if 'condWaterOutTemp' in result.keys():
+                dianWeiList['condWaterOutTemp']=result['condWaterOutTemp']
+            if 'chillWaterOutTempSet' in result.keys():
+                dianWeiList['chillWaterOutTempSet']=result['chillWaterOutTempSet']
+            if 'runStatus' in result.keys():
+                dianWeiList['runStatus'] = result['runStatus']
+            if 'accElecConsum ' in result.keys():
+                dianWeiList['accElecConsum']=result['accElecConsum']
+            if 'workFreq' in result.keys():
+                dianWeiList['workFreq']=result['workFreq']
+            if 'fanWorkFreq' in result.keys():
+                dianWeiList['fanWorkFreq']=result['fanWorkFreq']
+
+
+            data = {
+                'code': 200,
+                "msg": "success",
+                "data": dianWeiList
+            }
+    return JsonResponse(data, safe=False)
+
 # 单接口接口请求
 @loginRequired
 @msgMessage
@@ -1153,7 +1434,7 @@ def selectExecuting(request):
     return JsonResponse(data, safe=False)
 
 
-@loginRequired
+# @loginRequired
 @msgMessage
 def selectCaseTime(request):
     # print("获取到的日志报告", request.POST)
@@ -1176,6 +1457,8 @@ def deleteExecutingLog(request):
         "msg": "删除日志成功",
     }
     return JsonResponse(data, safe=False)
+
+
 # "__main__"
 # # if __name__=="__main__":
 # #

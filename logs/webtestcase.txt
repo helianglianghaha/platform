@@ -1,97 +1,686 @@
-[2022-09-26 20:48:51,906] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 20:48:51,906] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-t: {}>
-[2022-09-26 20:48:51,911] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 20:48:52,008] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 21:17:53,571] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 21:17:53,571] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 21:17:53,571] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 21:17:53,665] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 21:17:57,116] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
-[2022-09-26 21:17:57,123] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
-[2022-09-26 21:17:57,845] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 21:17:57,862] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
-[2022-09-26 21:17:57,948] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 21:17:57,965] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
-[2022-09-26 21:17:58,634] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
-[2022-09-26 21:17:58,725] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
-[2022-09-26 21:48:02,609] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 21:48:53,933] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 21:53:35,057] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 21:54:25,710] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 21:55:20,645] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 21:56:57,103] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:00:22,241] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:02:31,566] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:05:57,854] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:12:49,564] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
-[2022-09-26 22:12:49,574] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
-[2022-09-26 22:12:50,276] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 22:12:50,307] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
-[2022-09-26 22:12:50,367] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 22:12:50,397] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
-[2022-09-26 22:12:51,012] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
-[2022-09-26 22:12:51,099] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
-[2022-09-26 22:15:22,013] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
-[2022-09-26 22:15:22,051] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 22:15:22,145] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 22:25:17,604] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:32:21,753] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:33:04,938] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:36:49,495] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:38:03,717] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:38:39,013] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:40:08,651] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:40:41,296] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:42:39,444] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:44:32,959] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:51:02,100] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:51:36,319] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:53:25,625] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:56:12,050] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:57:37,546] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:58:16,779] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 22:58:24,928] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
-[2022-09-26 22:58:24,957] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
-[2022-09-26 22:58:25,684] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 22:58:25,755] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
-[2022-09-26 22:58:25,776] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 22:58:25,861] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
-[2022-09-26 22:58:26,440] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
-[2022-09-26 22:58:26,545] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
-[2022-09-26 22:58:31,047] - logger.py[line:34] - fuc:__console- INFO: call selectVersionList()；document：获取到项目信息；args:<QueryDict: {'modelData': ['5']}>
-[2022-09-26 23:01:24,915] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:03:34,515] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:05:10,519] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:09:05,457] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:10:42,635] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:12:18,710] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 23:12:18,802] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 23:12:44,341] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
-[2022-09-26 23:12:44,342] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
-[2022-09-26 23:12:44,341] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
-[2022-09-26 23:12:44,342] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
-[2022-09-26 23:12:45,044] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 23:12:45,061] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
-[2022-09-26 23:12:45,132] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 23:12:45,150] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
-[2022-09-26 23:12:45,833] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
-[2022-09-26 23:12:45,920] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
-[2022-09-26 23:12:48,336] - logger.py[line:34] - fuc:__console- INFO: call selectVersionList()；document：获取到项目信息；args:<QueryDict: {'modelData': ['8']}>
-[2022-09-26 23:16:05,951] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:16:05,976] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
-[2022-09-26 23:16:06,779] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2022-09-26 23:16:06,780] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
-[2022-09-26 23:16:06,826] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
-[2022-09-26 23:16:06,879] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
-[2022-09-26 23:16:06,918] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
-[2022-09-26 23:16:07,644] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
-[2022-09-26 23:16:07,644] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
-[2022-09-26 23:16:07,644] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
-[2022-09-26 23:28:35,047] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:29:00,146] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:30:03,314] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:42:23,365] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-26 23:57:19,829] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-27 00:30:48,326] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2022-09-27 01:36:07,054] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 13:02:39,088] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 13:02:39,151] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 13:02:39,400] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 13:02:41,809] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2022-12-04 13:02:41,810] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 13:02:41,998] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 13:02:42,027] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 13:02:42,063] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2022-12-04 13:02:42,088] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
+[2022-12-04 13:02:42,292] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
+[2022-12-04 13:02:42,295] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 13:03:33,329] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['系统配置管理']}>
+[2022-12-04 13:03:33,330] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['系统配置管理']}>
+[2022-12-04 13:06:47,451] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['API']}>
+[2022-12-04 13:12:11,389] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['API']}>
+[2022-12-04 13:12:13,610] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['API']}>
+[2022-12-04 13:13:26,701] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['API']}>
+[2022-12-04 13:17:00,061] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['链路信息管理']}>
+[2022-12-04 13:17:00,061] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['链路信息管理']}>
+[2022-12-04 13:18:23,495] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000245A63C4A58>
+[2022-12-04 13:18:23,496] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:18:24,175] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:18:24,203] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000245A63DE3C8>
+[2022-12-04 13:18:24,204] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:18:24,301] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000245A62468D0>
+[2022-12-04 13:18:24,303] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:18:25,232] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:18:25,261] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000245A62468D0>
+[2022-12-04 13:18:25,262] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:18:25,521] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000245A63DE3C8>
+[2022-12-04 13:18:25,521] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:18:26,360] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:18:26,389] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000245A63E4EF0>
+[2022-12-04 13:18:26,390] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:18:26,535] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000245A6246908>
+[2022-12-04 13:18:26,535] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:18:26,672] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:18:26,706] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000245A63DE048>
+[2022-12-04 13:18:26,706] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:18:26,899] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:18:26,901] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:18:26,901] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:18:26,929] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:19:28,519] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000018496294CC0>
+[2022-12-04 13:19:28,520] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:19:28,791] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:19:28,820] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000018496294CC0>
+[2022-12-04 13:19:28,820] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:19:28,893] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000018496294EB8>
+[2022-12-04 13:19:28,894] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:19:29,678] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:19:29,704] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000018496294EB8>
+[2022-12-04 13:19:29,705] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:19:29,782] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000184962B14A8>
+[2022-12-04 13:19:29,783] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:19:29,918] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:19:29,954] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000018496294CC0>
+[2022-12-04 13:19:29,955] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:19:30,018] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000184962C69B0>
+[2022-12-04 13:19:30,019] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:19:30,196] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:19:30,270] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000018496294EB8>
+[2022-12-04 13:19:30,272] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:19:30,470] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:19:30,472] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:19:30,473] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:19:30,501] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:20:42,332] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000023F4FFB3898>
+[2022-12-04 13:20:42,333] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:20:42,615] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:20:42,646] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000023F4FFD2320>
+[2022-12-04 13:20:42,646] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:20:43,091] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000023F4FFD20B8>
+[2022-12-04 13:20:43,091] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:20:43,796] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:20:43,829] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000023F4FFD20B8>
+[2022-12-04 13:20:43,830] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:20:44,073] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000023F4FF7B5F8>
+[2022-12-04 13:20:44,074] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:20:44,222] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:20:44,250] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000023F4FD4BD30>
+[2022-12-04 13:20:44,251] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:20:44,319] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000023F4FE77C88>
+[2022-12-04 13:20:44,320] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:20:44,459] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:20:44,490] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000023F4FC0CF98>
+[2022-12-04 13:20:44,491] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:20:44,582] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:20:44,582] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:20:44,583] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:20:44,616] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:21:19,107] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000271D1019898>
+[2022-12-04 13:21:19,108] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:21:19,271] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:21:19,304] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000271D103B320>
+[2022-12-04 13:21:19,304] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:21:19,483] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000271D103B0B8>
+[2022-12-04 13:21:19,483] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:21:20,157] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:21:20,187] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000271D103B0B8>
+[2022-12-04 13:21:20,187] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:21:20,258] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000271D1019160>
+[2022-12-04 13:21:20,259] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:21:20,432] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:21:20,459] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000271D119ED30>
+[2022-12-04 13:21:20,460] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:21:20,617] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000271D1019160>
+[2022-12-04 13:21:20,618] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:21:20,808] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:21:20,840] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x00000271D1019160>
+[2022-12-04 13:21:20,841] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:21:20,926] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:21:20,927] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:21:20,927] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:21:20,954] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:21:38,087] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001BCF0F09D68>
+[2022-12-04 13:21:38,089] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:21:38,244] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:21:38,281] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001BCF0F09D68>
+[2022-12-04 13:21:38,282] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:21:38,378] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001BCF0F09F60>
+[2022-12-04 13:21:38,379] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:21:39,269] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:21:39,306] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001BCF0F09F60>
+[2022-12-04 13:21:39,307] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:21:39,595] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001BCF0F54550>
+[2022-12-04 13:21:39,596] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:21:39,732] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:21:39,768] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001BCF0F09D68>
+[2022-12-04 13:21:39,770] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:21:40,196] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001BCF0F54550>
+[2022-12-04 13:21:40,197] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:21:40,400] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:21:40,437] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001BCF0F09F60>
+[2022-12-04 13:21:40,439] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:21:40,871] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:21:40,872] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:21:40,873] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:21:40,899] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:23:15,179] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000002B209C0AEB8>
+[2022-12-04 13:23:15,181] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:23:15,518] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:23:15,570] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000002B209C0AEB8>
+[2022-12-04 13:23:15,574] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:23:15,675] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000002B209CCDC18>
+[2022-12-04 13:23:15,678] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:23:16,596] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:23:16,647] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000002B209CCDC18>
+[2022-12-04 13:23:16,649] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:23:16,729] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000002B209CCDC18>
+[2022-12-04 13:23:16,730] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:23:16,885] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:23:16,938] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000002B209C1EC88>
+[2022-12-04 13:23:16,940] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:23:17,028] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000002B209CCD278>
+[2022-12-04 13:23:17,032] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:23:17,296] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:23:17,397] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000002B209CFB0B8>
+[2022-12-04 13:23:17,401] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:23:17,571] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:23:17,575] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:23:17,579] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:23:17,611] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:24:36,726] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001A2AB1D5B00>
+[2022-12-04 13:24:36,729] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:24:37,062] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:24:37,105] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001A2AB213DD8>
+[2022-12-04 13:24:37,106] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:24:37,180] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001A2AACA0C88>
+[2022-12-04 13:24:37,180] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:24:38,196] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:24:38,235] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001A2AACA0C88>
+[2022-12-04 13:24:38,237] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:24:38,304] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001A2AADC7978>
+[2022-12-04 13:24:38,306] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:24:38,459] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:24:38,501] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001A2AACD12E8>
+[2022-12-04 13:24:38,502] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:24:38,580] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001A2AAE73D30>
+[2022-12-04 13:24:38,581] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:24:38,758] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:24:38,793] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001A2AACA0C88>
+[2022-12-04 13:24:38,793] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:24:38,887] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:24:38,889] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:24:38,889] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:24:38,929] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:27:06,536] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000025E4BF68198>
+[2022-12-04 13:27:06,537] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:27:06,893] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:27:06,934] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000025E4BF51358>
+[2022-12-04 13:27:06,936] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:27:07,033] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000025E4BFCB748>
+[2022-12-04 13:27:07,033] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:27:07,772] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:27:07,805] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000025E4BFCB748>
+[2022-12-04 13:27:07,807] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:27:08,310] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000025E4BD3C630>
+[2022-12-04 13:27:08,310] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:27:08,441] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:27:08,476] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000025E4BD3C630>
+[2022-12-04 13:27:08,476] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:27:08,539] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000025E4BEDFA58>
+[2022-12-04 13:27:08,540] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:27:08,693] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:27:08,727] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000025E4BEDFA58>
+[2022-12-04 13:27:08,728] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:27:08,826] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:27:08,827] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:27:08,828] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:27:08,859] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:28:32,693] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000019737D90C18>
+[2022-12-04 13:28:32,695] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:28:33,020] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:28:33,065] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000019737D90C18>
+[2022-12-04 13:28:33,066] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:28:33,341] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000019737D90EF0>
+[2022-12-04 13:28:33,343] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:28:34,149] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:28:34,189] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000019737D90EF0>
+[2022-12-04 13:28:34,190] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:28:34,482] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000019737EAFD30>
+[2022-12-04 13:28:34,483] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:28:34,619] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:28:34,657] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000019737D90C18>
+[2022-12-04 13:28:34,657] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:28:34,810] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000019737EE2828>
+[2022-12-04 13:28:34,812] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:28:34,980] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:28:35,025] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x0000019737D90EF0>
+[2022-12-04 13:28:35,027] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:28:35,147] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:28:35,149] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:28:35,149] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:28:35,183] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:29:46,852] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001D08231BA90>
+[2022-12-04 13:29:46,854] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:29:47,182] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:29:47,216] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001D082420470>
+[2022-12-04 13:29:47,217] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:29:47,294] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001D0824205F8>
+[2022-12-04 13:29:47,298] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:29:48,002] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:29:48,038] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001D0824205F8>
+[2022-12-04 13:29:48,040] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:29:48,127] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001D0825A0438>
+[2022-12-04 13:29:48,129] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:29:48,329] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:29:48,364] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001D082534DA0>
+[2022-12-04 13:29:48,365] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:29:48,520] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001D082592F60>
+[2022-12-04 13:29:48,521] - logger.py[line:34] - fuc:__console- INFO: call sortVariable()；document：重新赋值参数；
+[2022-12-04 13:29:48,709] - logger.py[line:34] - fuc:__console- INFO: 提取列表为空
+[2022-12-04 13:29:48,749] - logger.py[line:34] - fuc:__console- INFO: args=<quality.view.API_version.API_function.responseExecuting object at 0x000001D0825A0940>
+[2022-12-04 13:29:48,750] - logger.py[line:34] - fuc:__console- INFO: call assertApiData()；document：
+        接口断言
+        1：code状态码
+        2：字段是否存在
+        3：字段值是否一致
+        4：字段总个数是否正确
+        5：Sql自查询
+        ；
+[2022-12-04 13:29:49,176] - logger.py[line:34] - fuc:__console- INFO: 开始执行接口用例
+[2022-12-04 13:29:49,177] - logger.py[line:34] - fuc:__console- INFO: 开始执行消息通知
+[2022-12-04 13:29:49,179] - logger.py[line:34] - fuc:__console- INFO: 钉钉通知人15342209907
+[2022-12-04 13:29:49,205] - logger.py[line:34] - fuc:__console- INFO: TestcaseNum[{'count_success': Decimal('4'), 'count_fail': Decimal('0'), 'count_null': Decimal('0'), 'total': 4}]
+[2022-12-04 13:36:06,904] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['API']}>
+[2022-12-04 13:36:09,080] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['API']}>
+[2022-12-04 13:36:11,877] - logger.py[line:34] - fuc:__console- INFO: call selectCaseTime()；document：None；args:<QueryDict: {'executing_name': ['67b6ef163dc721f2ed410f1c58182ee9']}>
+[2022-12-04 13:36:11,881] - logger.py[line:34] - fuc:__console- INFO: call selectReportList()；document：查看报告；args:<QueryDict: {'executing_name': ['67b6ef163dc721f2ed410f1c58182ee9']}>
+[2022-12-04 13:36:11,877] - logger.py[line:34] - fuc:__console- INFO: call selectCaseTime()；document：None；args:<QueryDict: {'executing_name': ['67b6ef163dc721f2ed410f1c58182ee9']}>
+[2022-12-04 13:36:11,881] - logger.py[line:34] - fuc:__console- INFO: call selectReportList()；document：查看报告；args:<QueryDict: {'executing_name': ['67b6ef163dc721f2ed410f1c58182ee9']}>
+[2022-12-04 13:36:11,898] - logger.py[line:34] - fuc:__console- INFO: call selectCaseTime()；document：None；args:<QueryDict: {'executing_name': ['67b6ef163dc721f2ed410f1c58182ee9']}>
+[2022-12-04 13:36:11,900] - logger.py[line:34] - fuc:__console- INFO: call selectReportList()；document：查看报告；args:<QueryDict: {'executing_name': ['67b6ef163dc721f2ed410f1c58182ee9']}>
+[2022-12-04 13:36:11,898] - logger.py[line:34] - fuc:__console- INFO: call selectCaseTime()；document：None；args:<QueryDict: {'executing_name': ['67b6ef163dc721f2ed410f1c58182ee9']}>
+[2022-12-04 13:36:37,974] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['API']}>
+[2022-12-04 13:50:16,890] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 14:02:42,063] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 14:03:16,478] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 14:10:47,251] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 14:10:47,314] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 14:10:47,353] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 14:18:48,397] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 14:21:43,150] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 14:22:31,255] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 14:29:01,226] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 14:29:01,279] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 14:29:01,313] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 14:30:39,501] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:07:00,211] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:08:50,707] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:09:44,985] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:10:43,410] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:34:40,889] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:35:54,281] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:40:28,290] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:40:43,821] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 15:40:43,873] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2022-12-04 15:40:46,052] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 15:40:46,104] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2022-12-04 15:40:46,105] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 15:40:46,147] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
+[2022-12-04 15:40:46,386] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
+[2022-12-04 15:40:46,405] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 15:53:12,538] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:53:12,623] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 15:53:12,808] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2022-12-04 15:53:12,883] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 15:53:12,884] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2022-12-04 15:53:12,883] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 15:53:12,884] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2022-12-04 15:53:12,919] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 15:53:12,920] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
+[2022-12-04 15:53:13,209] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
+[2022-12-04 15:53:13,385] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 15:55:58,468] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 15:59:38,907] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 16:02:29,082] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 16:03:32,516] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 17:35:18,569] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 17:42:15,883] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 17:49:14,868] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 17:53:20,027] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 17:55:09,689] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 18:13:17,157] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 19:52:25,455] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 19:52:25,471] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 19:52:25,525] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 19:52:37,012] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 19:54:32,260] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 20:00:44,864] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 20:12:36,655] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 20:13:10,074] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 20:17:10,523] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 20:40:51,116] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:01:06,097] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:01:06,097] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2022-12-04 21:01:06,097] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:01:06,097] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2022-12-04 21:01:06,349] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:01:06,363] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2022-12-04 21:01:06,387] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:01:06,407] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
+[2022-12-04 21:01:06,701] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
+[2022-12-04 21:01:06,722] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 21:02:30,072] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:02:30,073] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:02:30,072] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:02:30,073] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:02:30,144] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:07:56,252] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:08:15,946] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:08:15,982] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:08:17,396] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2022-12-04 21:08:17,444] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:08:17,693] - logger.py[line:34] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2022-12-04 21:08:17,808] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 21:08:17,835] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:08:17,970] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2022-12-04 21:08:18,231] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:08:18,512] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:09:20,037] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:09:43,467] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:09:43,506] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:09:44,520] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2022-12-04 21:09:44,586] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:09:44,834] - logger.py[line:34] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2022-12-04 21:09:44,977] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 21:09:45,026] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:09:45,033] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2022-12-04 21:09:45,288] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['UI']}>
+[2022-12-04 21:09:45,360] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:09:45,878] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:09:54,880] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:09:58,174] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:09:58,208] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:20:05,966] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:20:15,354] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2022-12-04 21:20:15,385] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:20:15,616] - logger.py[line:34] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2022-12-04 21:20:15,669] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 21:20:15,704] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:20:15,763] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2022-12-04 21:20:16,040] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:20:16,305] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:20:16,508] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['UI']}>
+[2022-12-04 21:20:20,867] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:20:20,907] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:20:24,229] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:20:32,330] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:20:32,362] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:20:33,696] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2022-12-04 21:20:33,738] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:20:33,943] - logger.py[line:34] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2022-12-04 21:20:34,071] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 21:20:34,082] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:20:34,113] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2022-12-04 21:20:34,314] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['UI']}>
+[2022-12-04 21:20:34,424] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:20:34,700] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:22:57,255] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2022-12-04 21:26:47,208] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2022-12-04 21:26:47,224] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2022-12-04 21:26:47,466] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:26:47,498] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2022-12-04 21:26:47,504] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:26:47,538] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'XXL_JOB_LOGIN_IDENTITY', 'cookie_value': '7b226964223a312c22757365726e616d65223a2261646d696e222c2270617373776f7264223a226531306164633339343962613539616262653536653035376632306638383365222c22726f6c65223a312c227065726d697373696f6e223a6e756c6c7d', 'cookie_domain': '', 'cookie_path': ''}]
+[2022-12-04 21:26:47,792] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['公告管理']}>
+[2022-12-04 21:26:47,826] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['公告管理']}>
+[2022-12-04 21:29:07,338] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['API']}>
+[2022-12-04 21:29:07,825] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2022-12-04 21:29:07,858] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'host', 'variableValue': 'test.custom.persagy.com'}, {'variable_id': 2, 'variableKey': 'projectId', 'variableValue': 'Pj3304830001'}, {'variable_id': 3, 'variableKey': 'starttime', 'variableValue': '1645113600000'}, {'variable_id': 4, 'variableKey': 'endtime', 'variableValue': '1645804800000'}, {'variable_id': 7, 'variableKey': 'adjustAccountsEnergy', 'variableValue': '0.0'}, {'variable_id': 8, 'variableKey': 'ibmpHost', 'variableValue': 'testibmp.scpgroup.com.cn'}, {'variable_id': 9, 'variableKey': 'lzzkHost', 'variableValue': 'lzzktest.persagy.com'}]
+[2022-12-04 21:30:21,867] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>

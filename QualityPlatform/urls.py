@@ -38,6 +38,7 @@ urlpatterns = [
    url('quality/deleteProAddress/',UI_data.deleteProAddress, name='deleteProAddress'),
    url('quality/selectTestCaseList/',UI_data.selectTestCaseList, name='selectTestCaseList'),
 
+
    url('quality/selectCookiesSelection/',API_data.selectCookiesSelection, name='selectCookiesSelection'),
    url('quality/delCookies/',API_data.delCookies, name='delCookies'),
    url('quality/selectCookies/',API_data.selectCookies, name='selectCookies'),
@@ -55,6 +56,7 @@ urlpatterns = [
    url('quality/selectSingleVersion/',API_data.selectSingleVersion, name='selectSingleVersion'),
    url('quality/deletaSingleVersion/',API_data.deletaSingleVersion, name='deletaSingleVersion'),
    url('quality/todoBatchExection/',API_data.todoBatchExection, name='todoBatchExection'),
+   url('quality/executeBatchExection/',API_data.executeBatchExection, name='executeBatchExection'),
    url('quality/selectExecuting/',API_data.selectExecuting, name='selectExecuting'),
    url('quality/deleteExecutingLog/',API_data.deleteExecutingLog, name='deleteExecutingLog'),
    url('quality/selectReportList/',API_data.selectReportList, name='selectReportList'),
@@ -68,7 +70,7 @@ urlpatterns = [
    url('quality/createData/',API_data.createData, name='createData'),
    url('quality/selectTablesColumns/',API_data.selectTablesColumns, name='selectTablesColumns'),
    url('quality/selectColumns/',API_data.selectColumns, name='selectColumns'),
-
+   url('quality/selectDianWei/',API_data.selectDianWei, name='selectDianWei'),
 
    url('quality/readLog/',UI_data.readLog, name='readLog'),
    url('quality/selectUiTestCase/',UI_data.selectUiTestCase, name='selectUiTestCase'),
