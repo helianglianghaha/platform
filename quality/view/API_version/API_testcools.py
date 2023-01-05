@@ -2,8 +2,8 @@ from quality.common.logger import Log
 class TestTools:
     def conectMysql(self, sql):
         import pymysql
-        connection = pymysql.connect(db='dcdicbrsg', user='lzzk', password='v0eKCUDZ7RpX8Ff', host='192.168.100.102',
-                                     port=31720, charset='utf8')
+        connection = pymysql.connect(db='dc_dic_yl', user='persagy', password='17pkBLum44Px', host='bj-cdb-hv5uh8zm.sql.tencentcdb.com',
+                                         port=59750, charset='utf8')
         cursor = connection.cursor()
         cursor.execute(sql)
         # 查询多条数据

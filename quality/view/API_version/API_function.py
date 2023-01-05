@@ -43,6 +43,7 @@ class responseExecuting():
         print(variableList)
         #判断数据类型
         for variable in variableList:
+            # print('variable',variable)
             if isinstance(variableList[variable],str) and  variableList[variable].find('${')>=0:
 
                 #获取截取字符串
@@ -78,13 +79,14 @@ class responseExecuting():
                     sourceData = json.loads(bytes.decode(response.content))
                     jsonData = jsonpath.jsonpath(sourceData, extractData['apiExtractExpression'])
                     print('jsonData',jsonData)
-                    if len(jsonData)==0:
-                        extractData['apiExtractResponse']="提取的值为空"
+                    if jsonData:
+                        extractData['apiExtractResponse'] = jsonData[0]
                     else:
-                        extractData['apiExtractResponse']=jsonData[0]
+                        extractData['apiExtractResponse'] = " "
+
 
                         #提取的值非空可以保存
-                        self.saveExtractData(extractData)
+                    self.saveExtractData(extractData)
                 if extractData['apiExtractType']=='2':
                     pass
                 if extractData['apiExtractType'] == '3':
@@ -92,12 +94,12 @@ class responseExecuting():
                     extractCookie=requests.utils.dict_from_cookiejar(extractCookie)
                     print('extractCookie',extractCookie)
                     if len(extractCookie)==0:
-                        extractData['apiExtractResponse'] = "提取的cookies为空"
+                        extractData['apiExtractResponse'] = ""
                     else:
                         extractData['apiExtractResponse']=str(extractCookie)
 
                         # 提取的值非空可以保存
-                        self.saveExtractData(extractData)
+                    self.saveExtractData(extractData)
             #保存提取全局变量
             # self.saveExtractData(testapiExtract)
         else:

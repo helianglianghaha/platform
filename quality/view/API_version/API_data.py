@@ -289,6 +289,13 @@ def selectReportList(request):
     # print('sql',sql)
     TestcaseList = commonList().getModelData(sql)
 
+    # 过滤参数存在变量重新赋值
+    reportList=[]
+    for reportCase in TestcaseList:
+        from .API_function import responseExecuting
+        caseDataSort = responseExecuting().sortVariable(reportCase)
+        reportList.append(caseDataSort)
+    print("替换后的报告",reportList)
     # 获取执行人姓名
     username = request.session.get('username', False)
 
@@ -296,31 +303,33 @@ def selectReportList(request):
     # Modelversion_id_id = TestcaseList[0]['Modelversion_id_id']
     # selectVersion = 'select modeldata_name from quality_modelversion where Modelversion_id=' + str(Modelversion_id_id)
     # versionNameList = commonList().getModelData(selectVersion)
-    versionName = TestcaseList[0]['executing_versionName']
+    versionName = reportList[0]['executing_versionName']
 
     sql_num = "SELECT SUM(CASE WHEN a.testresult = 1 THEN 1 ELSE 0 END) count_success,SUM(CASE WHEN a.testresult = 2 THEN 1 ELSE 0 END) count_fail,SUM(CASE WHEN a.testresult is  null THEN 1 ELSE 0 END) count_null,count(*) total from quality_testapi a," \
               + "quality_executinglog b WHERE a.testapi_id=b.executing_testapi_id AND b.executing_testmd=" + "\'" + executing_testmd + "\'"
     # print('sql_num', sql_num)
     testResult=[]
-    for testCase in range (len(TestcaseList)):
-        print((TestcaseList[testCase]['testapiBody']))
-        testapiBody=(TestcaseList[testCase]['testapiBody']).replace("null","\"\"")
-        # print(TestcaseList[testCase]['testheader'])
-        print(testapiBody)
-        TestcaseList[testCase]['testheader']=eval((TestcaseList[testCase]['testheader']))
-        if TestcaseList[testCase]['testapiBody']=='':
+    for testCase in range (len(reportList)):
+        testapiBody=(reportList[testCase]['testapiBody']).replace("null", "\"null\"").replace("false", "\"false\"").replace("true", "\"true\"")
+        # print(testapiBody)
+        # testapiBody = (TestcaseList[testCase]['testapiBody']).replace("false", "\"false\"")
+        print()
+        print(type(reportList[testCase]['testheader']))
+        print((reportList[testCase]))
+        reportList[testCase]['testheader']=eval((reportList[testCase]['testheader']))
+        if reportList[testCase]['testapiBody']=='':
             pass
         else:
-            TestcaseList[testCase]['testapiBody'] =eval(testapiBody)
+            reportList[testCase]['testapiBody'] =eval(testapiBody)
     TestcaseNum = commonList().getModelData(sql_num)
-    print(TestcaseList)
+    print(reportList)
     data = {
         "code": 200,
         "msg": "获取报告成功",
-        "testCaseList": TestcaseList,
+        "testCaseList": reportList,
         "testCaseNums": TestcaseNum,
         "testResult":testResult,
-        "username":username,
+        # "username":username,
         "version":versionName
     }
     return JsonResponse(data, safe=False)
@@ -1429,7 +1438,7 @@ def selectExecuting(request):
     if testType == 'API':
         sql = 'select * from quality_executinglog  where executing_testapi_id is not null group by executing_testmd ORDER BY executing_starttime desc'
     else:
-        sql = 'SELECT * FROM quality_executinglog  where executing_testui_id is not null  GROUP BY executing_testmd ORDER BY executing_starttime DESC '
+        sql = 'SELECT * FROM quality_executinglog  where executing_testapi_id is  null  GROUP BY executing_testmd ORDER BY executing_starttime DESC '
     data = commonList().getModelData(sql)
     return JsonResponse(data, safe=False)
 
