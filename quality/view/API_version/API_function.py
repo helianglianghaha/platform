@@ -82,8 +82,7 @@ class responseExecuting():
                     if jsonData:
                         extractData['apiExtractResponse'] = jsonData[0]
                     else:
-                        extractData['apiExtractResponse'] = " "
-
+                        extractData['apiExtractResponse'] = "\"提取返回值为空\""
 
                         #提取的值非空可以保存
                     self.saveExtractData(extractData)
@@ -92,7 +91,7 @@ class responseExecuting():
                 if extractData['apiExtractType'] == '3':
                     extractCookie=response.cookies
                     extractCookie=requests.utils.dict_from_cookiejar(extractCookie)
-                    print('extractCookie',extractCookie)
+                    # print('extractCookie',extractCookie)
                     if len(extractCookie)==0:
                         extractData['apiExtractResponse'] = ""
                     else:
@@ -108,7 +107,7 @@ class responseExecuting():
     def saveExtractData(self,extractdata):
         '''提取保存的值放到全局变量'''
         # for extract in extractdata:
-        print('extractdata',extractdata)
+        # print('extractdata',extractdata)
         extractList=Testvariable.objects.filter(variableKey=extractdata['apiExtractName'])
         if len(extractList)==0:
             _saveVariable = Testvariable()
@@ -116,7 +115,7 @@ class responseExecuting():
             _saveVariable.variableValue=str(extractdata['apiExtractResponse'])
             _saveVariable.save()
         else:
-            print('extractdata', extractdata)
+            # print('extractdata', extractdata)
             _saveVariable=Testvariable.objects.get(variableKey=extractdata['apiExtractName'])
             _saveVariable.variableKey = extractdata['apiExtractName']
             _saveVariable.variableValue = (extractdata['apiExtractResponse'])
@@ -159,9 +158,9 @@ class responseExecuting():
                 if oneAssertData["assertType"]=='3':
                     import re,jsonpath,json
                     sourceData=json.loads(bytes.decode(response.content))
-                    print(oneAssertData)
+                    # print(oneAssertData)
                     jsonData=jsonpath.jsonpath(sourceData,oneAssertData['assertVariable'])
-                    print('jsonData',jsonData)
+                    # print('jsonData',jsonData)
                     if not isinstance(jsonData,bool):
                         if len(jsonData)>0:
                             if str(jsonData[0])==oneAssertData["assertVariAbleValue"]:
@@ -214,7 +213,7 @@ class responseExecuting():
 
     @msglogger
     def executing(self,response,passWordFree,addPassWordFree,apiExtractName):
-        print('executing')
+        # print('executing')
         log.info('passWordFree=%s&&&addPassWordFree=%s&&&apiExtractName=%s&&&apiExtractExpression=%s'%(passWordFree,addPassWordFree,apiExtractName,apiExtractExpression))
         if passWordFree and not addPassWordFree:
             self._execuPassWord(response,apiExtractName)

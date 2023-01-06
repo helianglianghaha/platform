@@ -313,7 +313,6 @@ def selectReportList(request):
         testapiBody=(reportList[testCase]['testapiBody']).replace("null", "\"null\"").replace("false", "\"false\"").replace("true", "\"true\"")
         # print(testapiBody)
         # testapiBody = (TestcaseList[testCase]['testapiBody']).replace("false", "\"false\"")
-        print()
         print(type(reportList[testCase]['testheader']))
         print((reportList[testCase]))
         reportList[testCase]['testheader']=eval((reportList[testCase]['testheader']))
@@ -561,8 +560,6 @@ def executeBatchExection(request):
     #获取执行人名称
     username = request.session.get('username', False)
 
-
-
     print(modelDataList)
 
     # 判断列表是否为一个元素、获取测试用例
@@ -593,12 +590,10 @@ def executeBatchExection(request):
 
     #批量执行接口用例
     for caseData in caseList:
-
         # 过滤参数存在变量重新赋值
         from .API_function import responseExecuting
         caseDataSort = responseExecuting().sortVariable(caseData)
 
-        # print('caseData', caseDataSort)
         testapi_id = caseDataSort['testapi_id']
         testmodelData = caseDataSort['testmodelData']
         Modelversion_id_id = caseDataSort['Modelversion_id_id']
@@ -607,7 +602,6 @@ def executeBatchExection(request):
 
         testapiHeader = eval(caseDataSort['testapiHeader'])
         testapiAssert = eval(caseDataSort["testapiAssert"])
-        # print('testapiHeader',testapiHeader)
 
         # testapiname=caseData['testapiname']
         testapiMethod = str(caseData['testapiMethod'])
@@ -617,11 +611,9 @@ def executeBatchExection(request):
         testapiExtract = eval(caseData['testapiExtract'])
         testapiAssert = caseData['testapiAssert']
         url = testapiRequest + "://" + testapiHost + testapiUrl
-        # print('testapiExtract', testapiExtract)
-
+        print("=======cookies=======",caseData['testcookiesValue'])
         from quality.view.API_version.API_function import responseExecuting
         if caseData['testcookiesValue'] == 'true':
-
             # 查询登录接口
             sql = "select * from quality_testapi where testapiname='登录' and Modelversion_id_id=" + str(
                 Modelversion_id_id)
@@ -640,15 +632,14 @@ def executeBatchExection(request):
             _testCases.testapiResponse = str(bytes.decode(testapiResponse.content))[0:980]
 
             returnDataList = responseExecuting().assertApiData(testapiResponse, testapiAssert,
-                                                               testapiResponse.status_code)
+                                                             testapiResponse.status_code)
             _testCases.testapiAssert = returnDataList["assertData"]
-
             if len(testapiAssert) != 0 and "fail" not in returnDataList["resultList"]:
                 _testCases.testresult = 1
             else:
                 _testCases.testresult = 2
-            _testCases.save()
 
+            _testCases.save()
             _executing = Executinglog()
             _executing.executing_name = nowtime
             _executing.executing_testmd = executing_testmd
@@ -676,12 +667,7 @@ def executeBatchExection(request):
             else:
                 _testCases.testresult = 2
 
-            # if len(testapiAssert) != 0 and testapiAssert in str(bytes.decode(testapiResponse.content)):
-            #     _testCases.testresult = 1
-            # else:
-            #     _testCases.testresult = 2
             _testCases.save()
-
             _executing = Executinglog()
             _executing.executing_name = nowtime
             _executing.executing_testmd = executing_testmd
