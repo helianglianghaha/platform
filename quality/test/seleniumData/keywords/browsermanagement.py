@@ -22,8 +22,8 @@ class BrowserManagement(WebDriverCache):
         # command_executor = {'command_executor': 'http://172.17.82.102:6006/wd/hub'}
         # driver = self._make_driver(browser, desired_capabilities,
         #                            ff_profile_dir, remote_url)
-        driver=webdriver.Remote(command_executor=command_executor,
-                          desired_capabilities=DesiredCapabilities.CHROME)
+        # driver=webdriver.Remote(command_executor=command_executor,desired_capabilities=DesiredCapabilities.CHROME)
+        driver=webdriver.Chrome()
         try:
             driver.get(url)
             driver.maximize_window()

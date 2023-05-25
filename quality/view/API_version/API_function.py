@@ -1,4 +1,4 @@
-import requests,re,json,jsonpath
+import requests,re,json,jsonpath,string,random
 # import cookieslib,urll
 # from quality.common.commonbase
 from quality.common.commonbase import commonList
@@ -279,7 +279,7 @@ class responseExecuting():
         cursor.execute(varr)
         print(cursor)
 class createDataFinally():
-    '''冷站智控造数据'''
+    '''造数据'''
     def createSqlData(self,requestType):
         '''执行sql造数据'''
         from .API_dataList import DataList
@@ -288,6 +288,127 @@ class createDataFinally():
         #     tb_coldstation_features_environment_in_202205_string=tb_coldstation_features_environment_in_202205_sql
         #
         # sql=''
+
+    def generate_random_string(length):
+        digits = string.digits
+        return ''.join(random.choice(digits) for _ in range(length))
+
+    def generate_random_phone_number(self):
+        # 生成随机区号（3位数）
+        area_code = random.randint(100, 999)
+
+        # 生成随机中间三位数
+        middle_digits = random.randint(100, 999)
+
+        # 生成随机最后四位数
+        last_digits = random.randint(1000, 9999)
+
+        # 拼接成完整的电话号码格式
+        phone_number = f"({area_code})-{middle_digits}-{last_digits}"
+
+        return phone_number
+
+    def generate_random_address(self):
+        # 随机选择街道、城市和州
+        # 随机街道名称列表
+        streets = ['Main Street', 'Park Avenue', 'Oak Street', 'Cedar Lane', 'Elmwood Drive']
+
+        # 随机城市列表
+        cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'San Francisco']
+
+        # 随机州列表
+        states = ['CA', 'NY', 'TX', 'FL', 'IL']
+
+        # 随机邮编范围
+        min_zip = 10000
+        max_zip = 99999
+        street = random.choice(streets)
+        city = random.choice(cities)
+        state = random.choice(states)
+
+        # 随机生成邮编
+        zip_code = random.randint(min_zip, max_zip)
+
+        # 组合成完整的地址字符串
+        address = f"{street}, {city}, {state} {zip_code}"
+
+        return address
+
+
+
+    def generate_random_courier_company(self):
+        # 随机选择一个快递公司名称
+        courier_companies = ['顺丰快递', '申通快递', '京东快递', '中国邮政', '韵达快递', '德邦快递']
+
+        company = random.choice(courier_companies)
+        return company
+
+    def generate_random_tracking_number(self):
+        # 获取当前日期时间信息
+        from datetime import datetime
+        current_datetime = datetime.now()
+
+        # 将日期时间信息转换为特定格式的字符串
+        datetime_string = current_datetime.strftime("%Y%m%d%H%M%S")
+
+        # 生成随机字母和数字的字符集
+        characters = string.ascii_letters + string.digits
+
+        # 生成随机序列
+        random_part = ''.join(random.choice(characters) for _ in range(6))
+
+        # 拼接日期时间信息和随机序列
+        tracking_number = datetime_string + random_part
+
+        return tracking_number
+
+    def generate_random_recipient(self):
+
+        # 随机姓氏列表
+        last_names = ['Smith', 'Johnson', 'Williams', 'Jones', 'Brown', 'Davis']
+
+        # 随机名字列表
+        first_names = ['John', 'David', 'Michael', 'James', 'Robert', 'Daniel']
+        # 随机选择姓氏和名字
+        last_name = random.choice(last_names)
+        first_name = random.choice(first_names)
+
+        # 组合成完整的收货人姓名
+        recipient = f"{first_name} {last_name}"
+
+        return recipient
+
+
+
+    def sortDataType(self,dataType):
+        '''分类不同数据'''
+        #随机字符串
+        if dataType=='2':
+            return  self.generate_random_string(10)
+
+        # 随机电话号码
+        if dataType == '3':
+            return  self.generate_random_phone_number()
+
+        # 随机地址
+        if dataType == '4':
+            return  self.generate_random_address()
+        # 随机快递公司
+        if dataType == '5':
+            return self.generate_random_courier_company()
+        # 随机快递单号
+        if dataType == '6':
+            return  self.generate_random_tracking_number()
+        # 随机订单
+        if dataType == '7':
+            from datetime import datetime
+            order_number = datetime.now().strftime("%Y%m%d")+''.join(str(random.randint(0, 9)) for _ in range(10))
+            return  order_number
+
+        # 随机收货人
+        if dataType == '8':
+            return self.generate_random_recipient()
+
     def executeTime(self,sqlTime):
         '''时间处理'''
         pass

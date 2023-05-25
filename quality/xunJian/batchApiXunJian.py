@@ -5,13 +5,13 @@ from quality.view.API.APIClass import APITest
 from quality.view.API_version.API_function import responseExecuting
 from quality.view.API_version.API_model import Executinglog
 from quality.view.API_version.API_model import Testapi
-from apscheduler.scheduler import Scheduler
+# from apscheduler.scheduler import Scheduler
 from quality.common.logger import Log
 
 log = Log()
 
 #添加定时任务
-sched = Scheduler()
+# sched = Scheduler()
 class batchApiCases:
     '''接口巡检'''
 

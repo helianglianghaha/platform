@@ -19,7 +19,7 @@ import json, re, requests, ast, datetime
 from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
-from quality.view.API_version.API_function import requestObject
+from quality.view.API_version.API_function import requestObject,createDataFinally
 from quality.view.API_version.API_dataList import DataList
 
 
@@ -884,96 +884,95 @@ def todoBatchExection(request):
 #造数据接口
 def createData(request):
     '''造数据接口'''
-    try:
-        requestData = json.loads(request.body)
-        print('requestData',requestData)
+    # try:
+    requestData = json.loads(request.body)
+    print('requestData',requestData)
 
-        #获取数据库表
-        table=requestData['table']
+    #获取数据库表
+    orderData=requestData['table']
+    import  random
+    #获取运行次数
+    orderTotalNums=orderData['orderTotalNums']
 
-        #获取运行次数
-        runCycle=requestData['runCycle']
+    data = {'序号': [], '订单号': [], '订单状态': [], '收货人': [], '联系方式': [], '收货地址': [], '快递公司（必填）': [], '快递单号（必填）': []}
 
-        # if len(requestData['runCycle']) ==0: #运行次数为空执行一次
+    i = 1
+    for _ in range(int(orderTotalNums)):
+        orderNumType = orderData['orderNumType']
+        if orderNumType == '1':
+            orderNum = orderData['orderNum']
+        else:
+            orderNum = createDataFinally().sortDataType(orderNumType)
 
+        orderStatusType = orderData['orderStatusType']
+        if orderStatusType == "1":
+            orderStatus = orderData['orderStatus']
+        else:
+            orderStatus = createDataFinally().sortDataType(orderStatusType)
 
-        import  random
-        if runCycle=='22': #按小时循环22次
-            sqlList = []
-            for i in range(22):
-                sql = "INSERT INTO " + table + "("
-                columnsList = ""
-                columnsValue = ""
+        orderSalePelType = orderData['orderSalePelType']
+        if orderSalePelType == "1":
+            orderSalePel = orderData['orderSalePel']
+        else:
+            orderSalePel = createDataFinally().sortDataType(orderSalePelType)
 
-                for column in requestData['columns']:
-                    print('获取index',type(column))
-                    print('column',column)
+        orderPhoneType = orderData['orderPhoneType']
+        if orderPhoneType == "1":
+            orderPhone = orderData['orderPhone']
+        else:
+            orderPhone = createDataFinally().sortDataType(orderPhoneType)
 
-                    if column['key']=='id':
-                        continue
-                    elif column['valueStyel'] in ['1','9']:
-                        columnsList=columnsList+column['key']+','
-                        columnsValue=columnsValue+"'"+column['value']+"'"+','
-                    elif column['valueStyel']=='2':
-                        columnsList = columnsList + column['key'] + ','
-                        columnsValue=columnsValue+str(random.randint(0,3))+','
-                    elif column['valueStyel']=='3':
-                        columnsList = columnsList + column['key'] + ','
-                        columnsValue=columnsValue+str(random.randint(0,56))+','
-                    elif column['valueStyel']=='4':
-                        columnsList = columnsList + column['key'] + ','
-                        columnsValue=columnsValue+str(random.randint(1000,5000))+','
-                    elif column['valueStyel']=='9':
-                        columnsList = columnsList + column['key'] +','
-                        columnsValue = columnsValue +"'"+ column['value'] +"'"+','
-                    elif column['valueStyel']=='10':
-                        columnsList = columnsList + column['key'] +','
-                        if i <10:
-                            columnsValue = columnsValue + column['value'][0:7] + '0'+str(i+1)+','
-                        else:
-                            columnsValue = columnsValue +"'"+ column['value'][0:7]+str(i+1)+"'"+','
-                    elif column['valueStyel'] == '11':
-                        columnsList = columnsList + column['key'] + ','
-                        if i <10:
-                            columnsValue = columnsValue + "'"+column['value'][0:8] + '0'+str(i+1)+"'"+','
-                        else:
-                            columnsValue = columnsValue +"'"+ column['value'][0:8]+str(i+1)+"'"+','
+        orderAddressType = orderData['orderAddressType']
+        if orderAddressType == "1":
+            orderAddress = orderData['orderAddress']
+        else:
+            orderAddress = createDataFinally().sortDataType(orderAddressType)
 
-                    elif column['valueStyel'] == '12':
-                        columnsList = columnsList + column['key'] + ','
-                        if i <10:
-                            columnsValue = columnsValue + "'"+column['value'][0:11] + '0'+str(i+1)+column['value'][-6:]+"'"+','
-                        else:
-                            columnsValue = columnsValue +"'"+ column['value'][0:11]+str(i+1)+column['value'][-6:]+"'"+','
-                    else:
-                        columnsList = columnsList + column['key'] +','
-                        columnsValue = columnsValue+"'"+column['value']+"'"+','
-                # columnsList=columnsList.replace(' ',',')
-                # columnsValue=columnsValue.replace(' ',',')
-                sql=sql+columnsList[0:-1]+') VALUE('+columnsValue[0:-1]+')'
-                print("columnsList",columnsList)
-                print("获取到columnsValue", columnsValue)
-                print("sql",sql)
-                sqlList.append(sql)
-                DataList().conectMysql(sql)
-            # DataList().conectMysql(sqlList)
-        print("requestData", requestData)
-        data = {
-            "code": 200,
-            "data": requestData,
-            "msg":"执行成功"
-        }
+        orderConmanType = orderData['orderConmanType']
+        if orderConmanType == "1":
+            orderConman = orderData['orderConman']
+        else:
+            orderConman = createDataFinally().sortDataType(orderConmanType)
 
-        return JsonResponse(data, safe=False)
+        orderKuaiType = orderData['orderKuaiType']
+        if orderKuaiType == "1":
+            orderKuai = orderData['orderKuai']
+        else:
+            orderKuai = createDataFinally().sortDataType(orderKuaiType)
+
+        data['序号'].append(i)
+        data['订单号'].append(orderNum)
+        data['订单状态'].append(orderStatus)
+        data['收货人'].append(orderSalePel)
+        data['联系方式'].append(orderPhone)
+        data['收货地址'].append(orderAddress)
+        data['快递公司（必填）'].append(orderConman)
+        data['快递单号（必填）'].append(orderKuai)
+        i = i + 1
+
+    import pandas as pd
+    # 创建DataFrame
+    df = pd.DataFrame(data)
+
+    # 保存为Excel文件
+    file_name = '表格数据.xlsx'
+    df.to_excel(file_name, index=False)
+
+    data = {
+        "code": 200,
+        "msg":"执行成功"
+    }
+
+    return JsonResponse(data, safe=False)
         #获取所有列
-    except Exception as e:
-        print("requestData", requestData)
-        data = {
-            "code": 500,
-            "data": requestData,
-            "msg":"执行出错错误信息："+str(e)
-        }
-        return JsonResponse(data, safe=False)
+    # except Exception as e:
+    #     print("requestData", requestData)
+    #     data = {
+    #         "code": 500,
+    #         "data": requestData,
+    #         "msg":"执行出错错误信息："+str(e)
+    #     }
+    return JsonResponse(data, safe=False)
 
 #冷站智控小工具
 def executTools(request):
