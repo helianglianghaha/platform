@@ -105,9 +105,9 @@ DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
         'NAME':'testplatform',
-        'USER':'root',
-        'PASSWORD':'12345678',
-        'HOST':'127.0.0.1',
+        'USER':'tk_db_test',
+        'PASSWORD':'UUueBYYs9U4uptj',
+        'HOST':'rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com',
         'PORT':'3306',
 
         # 'ENGINE':'django.db.backends.mysql',

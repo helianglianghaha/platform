@@ -125,3 +125,10 @@ class Dingmessage(models.Model):
     ding_version=models.CharField(max_length=100, verbose_name="巡检版本")
     ding_people = models.CharField(max_length=100, verbose_name="通知人")
 
+class Recordertree(models.Model):
+    id=models.AutoField(verbose_name="类目ID", primary_key=True)
+    name=models.CharField(max_length=32, verbose_name="类目名称")
+    parent_id=models.IntegerField(max_length=20, verbose_name="父类ID，顶级类目填0")
+    is_parent=models.IntegerField(max_length=1, verbose_name="是否为父节点，0为否，1为父节点")
+
+

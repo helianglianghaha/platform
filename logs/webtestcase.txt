@@ -1,3 +1,114 @@
-[2023-05-25 09:01:10,489] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2023-05-25 09:01:10,494] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2023-05-25 09:01:10,506] - logger.py[line:34] - fuc:__console- INFO: response:[]
+[2023-11-11 13:41:20,952] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 13:41:20,952] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 13:41:20,988] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 14:23:32,134] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 14:23:32,169] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 14:23:32,191] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 14:24:08,653] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 14:24:08,660] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 14:24:08,692] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 14:50:32,546] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 14:50:32,550] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 14:50:32,578] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 14:50:40,440] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2023-11-11 14:50:40,484] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 14:50:40,484] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 14:50:40,484] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 14:50:40,484] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 14:50:40,518] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 14:50:40,556] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2023-11-11 14:50:40,584] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'authorization', 'cookie_value': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8', 'cookie_domain': 'platformtest.admin.qidianbox.com', 'cookie_path': '/'}]
+[2023-11-11 14:50:40,705] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 14:50:40,717] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['小程序']}>
+[2023-11-11 14:54:23,317] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 14:54:23,318] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 14:54:23,317] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 14:54:23,318] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 14:54:23,351] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 15:05:25,363] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 15:05:25,363] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 15:05:25,379] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 15:05:25,412] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 15:15:05,509] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 15:15:05,512] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 15:15:05,535] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 15:18:48,134] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 15:18:48,138] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2023-11-11 15:18:48,140] - logger.py[line:34] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2023-11-11 15:18:48,144] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 15:18:48,145] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2023-11-11 15:18:48,453] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 15:18:48,454] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 15:18:48,546] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 15:18:48,543] - log.py[line:241] - fuc:log_response- ERROR: Internal Server Error: /quality/readLog/
+Traceback (most recent call last):
+  File "/Users/hll/Library/Python/3.9/lib/python/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/Users/hll/Library/Python/3.9/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/hll/Desktop/git/platform/quality/view/UI/UI_data.py", line 173, in readLog
+    with open(path, 'r', encoding='gbk') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/data/wwwroot/platform/logs/webtestcase.txt'
+[2023-11-11 15:18:49,763] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['UI']}>
+[2023-11-11 15:19:00,171] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 15:19:00,469] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2023-11-11 15:19:00,488] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 15:19:00,496] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'authorization', 'cookie_value': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8', 'cookie_domain': 'platformtest.admin.qidianbox.com', 'cookie_path': '/'}]
+[2023-11-11 15:19:00,541] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 15:19:00,579] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2023-11-11 15:19:00,848] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 15:19:00,849] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['小程序']}>
+[2023-11-11 15:19:00,900] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 15:25:58,201] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 15:25:58,201] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 15:25:58,201] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 15:25:58,201] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 15:25:58,225] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 15:27:35,135] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2023-11-11 15:27:35,140] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 15:27:35,140] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 15:27:35,140] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 15:27:35,140] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 15:27:35,140] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2023-11-11 15:27:35,140] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 15:27:35,140] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2023-11-11 15:27:35,159] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'authorization', 'cookie_value': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8', 'cookie_domain': 'platformtest.admin.qidianbox.com', 'cookie_path': '/'}]
+[2023-11-11 15:27:35,166] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 15:27:35,377] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 15:27:35,377] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 15:27:35,377] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['小程序']}>
+[2023-11-11 15:27:35,380] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['小程序']}>
+[2023-11-11 15:27:35,406] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 15:27:35,407] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 17:05:45,803] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 17:05:45,826] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 17:05:45,845] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 17:05:51,075] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 17:05:51,084] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2023-11-11 17:05:51,095] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 17:05:55,094] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 17:05:55,104] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2023-11-11 17:05:55,325] - logger.py[line:34] - fuc:__console- INFO: call selectEmailConfig()；document：None；args:<QueryDict: {}>
+[2023-11-11 17:05:55,382] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 17:05:55,406] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['小程序']}>
+[2023-11-11 17:05:55,426] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 17:05:55,590] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 17:05:55,610] - logger.py[line:34] - fuc:__console- INFO: call selectTestKey()；document：查询关键字和用例信息；args:<QueryDict: {}>
+[2023-11-11 17:05:55,854] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 17:05:55,854] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['UI']}>
+[2023-11-11 17:05:55,854] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 17:05:55,854] - logger.py[line:34] - fuc:__console- INFO: call selectExecuting()；document：查询测试报告；args:<QueryDict: {'testtype': ['UI']}>
+[2023-11-11 17:05:56,106] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 17:05:58,292] - logger.py[line:34] - fuc:__console- INFO: call selectVersionData()；document：查询版本信息；args:<QueryDict: {}>
+[2023-11-11 17:05:58,295] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 17:05:58,295] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2023-11-11 17:05:58,295] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2023-11-11 17:05:58,295] - logger.py[line:34] - fuc:__console- INFO: call selectCookiesSelection()；document：查询cookies；args:<QueryDict: {}>
+[2023-11-11 17:05:58,321] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2023-11-11 17:05:58,352] - logger.py[line:34] - fuc:__console- INFO: call selectCookies()；document：查找cookies；args:<QueryDict: {}>
+[2023-11-11 17:05:58,374] - logger.py[line:34] - fuc:__console- INFO: cookies:[{'cookie_id': 1, 'cookie_name': 'authorization', 'cookie_value': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8', 'cookie_domain': 'platformtest.admin.qidianbox.com', 'cookie_path': '/'}]
+[2023-11-11 17:05:58,517] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['小程序']}>
+[2023-11-11 17:05:58,534] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 17:05:58,564] - logger.py[line:34] - fuc:__console- INFO: call selectApiCases()；document：查询接口用例；args:<QueryDict: {'tableData': ['小程序']}>
+[2023-11-11 17:05:58,569] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>
+[2023-11-11 17:05:58,618] - logger.py[line:34] - fuc:__console- INFO: call selectSingleVersion()；document：查询单个版本；args:<QueryDict: {'modelVersion': ['小程序']}>

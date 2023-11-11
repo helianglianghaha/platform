@@ -953,9 +953,9 @@ def createData(request):
     import pandas as pd
     # 创建DataFrame
     df = pd.DataFrame(data)
-
+    import os
     # 保存为Excel文件
-    file_name = '表格数据.xlsx'
+    file_name = '/root/tmp/platfrom/platform/static/表格数据.xlsx'
     df.to_excel(file_name, index=False)
 
     data = {
