@@ -1,3 +1,5 @@
+import datetime
+
 from django.http.response import JsonResponse
 # from quality.models import Version
 # from quality.view.API.model import Api
@@ -36,7 +38,7 @@ def upload(request):
     #path="D:\\testPlatForm\\TestPlat\\platForm\\media"
 
     #线上
-    path="/data/wwwroot/platform/media"
+    path="/root/platform/media"
     fileName=os.path.join(path, req.name)
     # 打开特定的文件进行二进制的写操作
     destination = open(fileName, 'wb+')
@@ -58,7 +60,9 @@ def deleteApiScript(request):
     projectName = request.POST.get('projectName')
     versionName = request.POST.get('versionName')
 
-    path='/mnt/install/jmeter/apache-jmeter-5.4.1/demo/'
+    Apipath="/root/jmeter/apache-jmeter-5.4.1/script/"
+    perfenPath='/root/jmeter/apache-jmeter-5.4.1/ProScript/'
+
     #获取项目名称
     projectSql = 'select modelData from quality_modeldata where modeldata_id= ' + projectName
     projectName = (commonList().getModelData(projectSql))
@@ -67,9 +71,13 @@ def deleteApiScript(request):
     versionSql = 'select modelData from quality_modeldata where modeldata_id= ' + versionName
     versionName = (commonList().getModelData(versionSql))
 
-    totalPathName=path+projectName[0]["modelData"]+"/"+versionName[0]["modelData"]+"/"+fileName
+    totalPathName=Apipath+projectName[0]["modelData"]+"/"+versionName[0]["modelData"]+"/"+fileName
+    perfenPathName=perfenPath+projectName[0]["modelData"]+"/"+versionName[0]["modelData"]+"/"+fileName
     if os.path.exists(totalPathName):
         os.remove(totalPathName)
+
+    if os.path.exists(perfenPathName):
+        os.remove(perfenPathName)
 
     if os.path.exists(urlName):
         os.remove(urlName)
@@ -77,11 +85,7 @@ def deleteApiScript(request):
             "code": 200,
             "msg": "执行成功"
         }
-    else:
-        data = {
-            "code": 300,
-            "msg": "文件不存在"
-        }
+
     return JsonResponse(data, safe=False)
 
 #保存脚本地址
@@ -91,6 +95,105 @@ def saveScriptFile(request):
     dataList=request.POST
     for i in  dataList.keys():
         dataDictList=json.loads(i)
+        # 获取执行人姓名
+        username = request.session.get('username', False)
+
+        # 获取项目地址
+        projectName_id =dataDictList['projectName']
+        sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
+        projectName = (commonList().getModelData(sql))
+
+        # 获取版本地址
+        modelDataId = dataDictList['versionName']
+        modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
+        modelDataLIst=(commonList().getModelData(modelDataSql))
+        modelData=modelDataLIst[0]["modelData"]
+
+
+        # 创建build文件目录
+        ant_build = "/root/ant/apache-ant-1.9.16/build/"
+        if not os.path.exists(ant_build + projectName[0]["modelData"] + "/" + modelData):
+            os.makedirs(ant_build + projectName[0]["modelData"] + "/" + modelData)
+
+        #ant build文件地址
+        antBuildAddress=ant_build + projectName[0]["modelData"] + "/" + modelData+"/build.xml"
+
+        # 创建测试报告文件夹
+        testReportAddress = '/root/platform/static/'
+
+        if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/"):
+
+            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/")
+        if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/"):
+            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/")
+
+        if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/"):
+            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/")
+
+        folder_path = os.path.join(testReportAddress, projectName[0]["modelData"], modelData, "PerformanceReport","jtl")
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        performanceJtlAddress=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/jtl/"
+
+        #接口报告文件夹
+        apiReportAdd = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"
+
+        #性能测试报告文件夹
+        perFormanceReportAdd=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"
+
+        #接口报告
+        apiReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"+"html/TestReport.html"
+
+        #性能测试报告
+        perFormanceReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"+"html/TestReport.html"
+
+        # 创建日志文件
+        log_path = "/root/platform/logs/"
+
+
+        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")):
+            os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")
+        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")):
+            os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
+        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")):
+            os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")
+        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")):
+            os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
+
+        #创建脚本目录
+        #接口测试脚本
+        apiScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/script/'
+
+        #性能测试脚本
+        performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
+
+        if not os.path.exists(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+            os.makedirs(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+
+        if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+            os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+
+        apiScriptfile=apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData
+        perFormanceScriptfile=performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData+"/*.jmx"
+
+        performanceData = "jmeter -n -t "+perFormanceScriptfile+" -l "+performanceJtlAddress+" -e -o "+perFormanceReportAdd+"html"
+
+
+
+        if "projectstatus" not in dataDictList.keys():
+            status="Flase"
+        else:
+            status=dataDictList['projectstatus']
+
+        if dataDictList['buildAddress']=='':
+            dataDictList['buildAddress']=antBuildAddress
+
+        if dataDictList['reportAddress']=="":
+            dataDictList['reportAddress']=apiReport
+
+        if dataDictList['performanceReport']=='':
+            dataDictList['performanceReport']=perFormanceReport
 
         sceiptProject_id = dataDictList['sceiptProject_id']
         projectName = dataDictList['projectName']
@@ -99,10 +202,10 @@ def saveScriptFile(request):
         reportAddress = dataDictList['reportAddress']
         scriptName = dataDictList['urlList']
         executeType = dataDictList['executeType']
-        performanceData = dataDictList['performanceData']
+        performanceData = performanceData
         performanceReport = dataDictList['performanceReport']
+        creater = username
         _scriptProject=Scriptproject()
-
 
         if sceiptProject_id:
             _scriptProject.sceiptProject_id=sceiptProject_id
@@ -114,6 +217,10 @@ def saveScriptFile(request):
             _scriptProject.executeType = executeType
             _scriptProject.performanceData = performanceData
             _scriptProject.performanceReport = performanceReport
+            _scriptProject.creater=creater
+            time = datetime.datetime.now()
+            _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
+            _scriptProject.status=status
             _scriptProject.save()
             data={
                 "code":200,
@@ -129,6 +236,10 @@ def saveScriptFile(request):
             _scriptProject.executeType = executeType
             _scriptProject.performanceData = performanceData
             _scriptProject.performanceReport = performanceReport
+            _scriptProject.creater = creater
+            _scriptProject.status = status
+            time = datetime.datetime.now()
+            _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
             _scriptProject.save()
             data = {
                 "code": 200,
@@ -149,30 +260,61 @@ def deleteScriptFile(request):
 #查询接口脚本信息
 def selectScriptFile(request):
     '''查询脚本信息'''
+    import ast
     sql="select * from quality_scriptproject a,quality_modeldata b where a.versionName=b.modeldata_id"
     data = commonList().getModelData(sql)
+    print(data)
+    for projectData in data:
+        print(projectData["scriptName"])
+        projectData["scriptName"]=ast.literal_eval(projectData["scriptName"])
     return JsonResponse(data, safe=False)
 # 执行脚本
 def executeScript(request):
     '''执行脚本'''
     # try:
-        # print('执行脚本',request.POST)
-    executeType=request.POST.get("executeType")
-    buildAddress=request.POST.get("buildAddress")
-    performanceData=request.POST.get("performanceData")
-    scriptName=eval(request.POST.get("scriptName"))
+    requestData = json.loads(request.body)
+    executeType=requestData["executeType"]
+    buildAddress=requestData["buildAddress"]
+    performanceData=requestData["performanceData"]
+    scriptName=requestData["scriptName"]
+    sceiptProject_id=requestData['sceiptProject_id']
 
-    #获取项目地址
-    projectName_id=request.POST.get('projectName')
-    sql='select modelData from quality_modeldata where modeldata_id= '+projectName_id
-    projectName=(commonList().getModelData(sql))
+    # 获取项目地址
+    projectName_id = requestData['projectName']
+    sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
+    projectName = (commonList().getModelData(sql))
 
-    #获取版本地址
-    modelData=request.POST.get('modelData')
-    # print("modelData",modelData)
+    # 获取版本地址
+    modelDataId = requestData['versionName']
+    modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
+    modelDataLIst = (commonList().getModelData(modelDataSql))
+    modelData = modelDataLIst[0]["modelData"]
+    log.info("获取到的项目名称{},版本名称{}".format(projectName,modelData))
+
+    #判断是否有删除文件
+    def check_and_delete_files(folder_path, files_to_check):
+        all_files = os.listdir(folder_path)
+
+        for file_name in all_files:
+            # 构建文件的完整路径
+            file_path = os.path.join(folder_path, file_name)
+            # 检查文件是否存在于文件名列表中
+            matching_files = [file for file in files_to_check if file["name"] == file_name and os.path.isfile(file_path)]
+            # 如果没有找到匹配的文件，删除文件
+            if not matching_files:
+                os.remove(file_path)
+                log.info("没有匹配上文件,开始删除文件{}".format(file_path))
+    substrings_to_check=scriptName
+    if executeType == '0' or executeType == False:#接口
+        directory_path='/root/jmeter/apache-jmeter-5.4.1/script/'+projectName[0]["modelData"] + "/" + modelData + "/"
+    else:
+        directory_path='/root/jmeter/apache-jmeter-5.4.1/ProScript/'+projectName[0]["modelData"] + "/" + modelData + "/"
+
+    #删除已经删除的脚本
+    check_and_delete_files(directory_path,substrings_to_check)
 
     #创建build文件目录
-    ant_build="/mnt/install/ant/apache-ant-1.9.16/build/"
+    ant_build="/root/ant/apache-ant-1.9.16/build/"
     if not os.path.exists(ant_build+projectName[0]["modelData"]+"/"+modelData):
         os.makedirs(ant_build+projectName[0]["modelData"]+"/"+modelData)
 
@@ -181,9 +323,9 @@ def executeScript(request):
     if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData):
         os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/")
         os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/")
-
-    #创建日志文件
-    log_path="/data/wwwroot/platform/logs/"
+    #
+    # #创建日志文件
+    log_path="/root/platform/logs/"
     if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData):
         os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/")
         os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
@@ -191,21 +333,20 @@ def executeScript(request):
         os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
 
     #创建脚本目录
-    apiScriptFilePath = '/mnt/install/jmeter/apache-jmeter-5.4.1/demo/'
-    performanceScriptFilePath = '/mnt/install/jmeter/apache-jmeter-5.4.1/Pro_jmx/'
+    #接口脚本
+    apiScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/script/'
+
+    #性能接口脚本
+    performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
+
     if not os.path.exists(apiScriptFilePath+projectName[0]["modelData"] + "/" + modelData):
         os.makedirs(apiScriptFilePath+projectName[0]["modelData"] + "/" + modelData)
     if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
         os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
 
-    #复制build文件
-
-
-
     #复制脚本到对应的文件夹
-    print('scriptName',(scriptName))
     fileUrlList=[i["url"] for i in scriptName]
-    print("================================fileUrlList===============",fileUrlList)
+
     if executeType == '0' or executeType == False:#接口
         for fileUrl in fileUrlList:
             fileName = os.path.split(fileUrl)[1]  # 读取文件名
@@ -213,9 +354,11 @@ def executeScript(request):
             if os.path.exists(fullFilePath):
                 pass
             else:
-                print("=========================复制接口脚本=======================")
-                sourceFilePath='/data/wwwroot/platform/media/'+fileName
+                log.info("=========================复制接口脚本=======================")
+                sourceFilePath='/root/platform/media/'+fileName
                 shutil.copyfile(sourceFilePath,fullFilePath)
+                log.info("复制接口脚本成功{}".format(fullFilePath))
+
     else:#性能
         for fileUrl in fileUrlList:
             fileName = os.path.split(fileUrl)[1]  # 读取文件名
@@ -223,39 +366,90 @@ def executeScript(request):
             if os.path.exists(fullFilePath):
                 pass
             else:
-                print("========================复制性能脚本=================")
-                sourceFilePath = '/data/wwwroot/platform/media/' + fileName
+                log.info("========================复制性能脚本=================")
+                sourceFilePath = '/root/platform/media/' + fileName
                 shutil.copyfile(sourceFilePath, fullFilePath)
+                log.info("复制接口脚本成功{}".format(fullFilePath))
 
-    # 执行脚本前清除数据
-    performanceReportPath = '/data/wwwroot/platform/static/' + projectName[0]["modelData"] + '/' + modelData + '/PerformanceReport/*'
-    apiReportPatb = '/data/wwwroot/platform/static/' + projectName[0]["modelData"] + '/' + modelData + '/ApiReport/*'
+    testReportAddress = '/root/platform/static/'
+    buildSourceFilePath = '/root/ant/apache-ant-1.9.16/build/build.xml'
+
+    # 执行脚本前清除报告数据
+    performanceReportPath = testReportAddress + projectName[0]["modelData"] + '/' + modelData + '/PerformanceReport/*'
+    apiReportPatb = testReportAddress + projectName[0]["modelData"] + '/' + modelData + '/ApiReport/*'
+
+    #执行脚本前清理日志文件-jmeter执行日志文件-ant执行日志文件
+    #Jmeter执行文件地址
+    jmeterAPiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
+    jmeterPerforLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
+
+    #Ant执行日志文件
+    antApiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
+    antPerForLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
+
+
+    os.system("rm -rf " + jmeterAPiLogPath)
+    os.system("rm -rf " + jmeterPerforLogPath)
+    os.system("rm -rf " + antApiLogPath)
+    os.system("rm -rf " + antPerForLogPath)
+
+    os.system("rm -rf " + '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml")
+    log.info("=====删除日志和报告文件=====")
+    # 复制build文件
+
+    destFilePath = '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml"
+    shutil.copyfile(buildSourceFilePath, destFilePath)
+    log.info("=======复制build文件{}======".format(destFilePath))
+
+    # 修改build文件内容
+    buildJtlData = "sed -i 's|<property name=\"jmeter.result.jtl.dir\" value=\"/root/ant/report/jtl\" />|<property name=\"jmeter.result.jtl.dir\" value="+"\"" + testReportAddress + \
+    projectName[0]["modelData"] + '/' + modelData + "/ApiReport/jtl\" />|' " + destFilePath
+
+    buildHtmlData = "sed -i 's|<property name=\"jmeter.result.html.dir\" value=\"/root/ant/report/html\" />|<property name=\"jmeter.result.html.dir\" value=" + "\"" + testReportAddress + \
+                projectName[0]["modelData"] + '/' + modelData + "/ApiReport/html\" />|' " + destFilePath
+
+    buildScriptData = "xmlstarlet ed --inplace -u '//testplans/@dir' -v '/root/jmeter/apache-jmeter-5.4.1/script/"+projectName[0]["modelData"] + '/' + modelData +"' " + destFilePath
+
+    log.info("====buildJtlData====={}".format(buildJtlData))
+    log.info("====buildHtmlData====={}".format(buildHtmlData))
+    log.info("====buildScriptData====={}".format(buildScriptData))
+
+    os.system(buildJtlData)
+    os.system(buildHtmlData)
+    os.system(buildScriptData)
+
+
+    log.info("=====修改build文件内容=========")
 
 
 
-    #测试环境日志文件
-    # logPath="D:\\testPlatForm\\TestPlat\\platForm\\logs\\webtestcase.txt"
-
-    #生成环境日志文件
-    logPath='/mnt/install/ant/apache-ant-1.9.16/logs/log.text'
+    #执行前更新项目状态
+    sql = 'update quality_scriptproject set runstatus=1 where sceiptProject_id='+str(sceiptProject_id)
+    commonList().getModelData(sql)
 
     if executeType=='0' or executeType==False :
         os.system("rm -rf " + apiReportPatb)
         shellData='ant -file '+buildAddress+" run  >>"+log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
-        print('shellData',shellData)
+        log.info('shellData:{}'.format(shellData))
+
     if executeType=='1' or executeType==True:
         os.system("rm -rf " + performanceReportPath)
         shellData=performanceData+" >> "+log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
-        print('shellData', shellData)
+        log.info('shellData:{}'.format(shellData))
+
     os.system(shellData)
+
+    # 项目执行后更新状态
+    sql = 'update quality_scriptproject set runstatus=2 where sceiptProject_id=' + str(sceiptProject_id)
+    commonList().getModelData(sql)
+
     data = {
         "code": 200,
         "msg": "脚本开始执行，请查看日志及测试报告"
         }
 
     return JsonResponse(data, safe=False)
-# def viewTestHtml(request):
-#     '''查看测试报告'''
+
 def readHtmlReport(request):
     '''读取html报告'''
     try:
@@ -282,18 +476,19 @@ def readHtmlReport(request):
     return JsonResponse(data,safe=False)
 def readScriptLog(request):
     '''读取ant执行日志'''
-
+    requestData = json.loads(request.body)
+    print(requestData)
     # 获取项目地址
-    projectName_id = request.POST.get('projectName')
-    executeType=request.POST.get("executeType")
-    sql = 'select modelData from quality_modeldata where modeldata_id= ' + projectName_id
+    projectName_id = requestData['projectName']
+    executeType=requestData["executeType"]
+    sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
     projectName = commonList().getModelData(sql)
 
     # 获取版本地址
-    modelData = request.POST.get('modelData')
+    modelData = requestData['modelData']
 
     #创建目录
-    log_path="/data/wwwroot/platform/logs"
+    log_path="/root/platform/logs"
     if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData):
         os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData)
         os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/")
@@ -303,14 +498,13 @@ def readScriptLog(request):
     # path="D:\\testPlatForm\\TestPlat\\platForm\\logs\\webtestcase.txt"
 
     #线上环境
-    print("executeType",executeType)
-    print("Type",type(executeType))
+
     if executeType=='0' or executeType==False :
-        path = "/data/wwwroot/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text"
-        print("API",path)
+        path = "/root/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text"
+        log.info("====apilog====")
     if executeType=='1' or executeType==True :
-        path = "/data/wwwroot/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text"
-        print("性能",path)
+        path = "/root/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text"
+        log.info("=====performanceLog====")
     logger=open(path,"r",encoding='UTF-8',errors='ignore')
     loglist=logger.readlines()
     logger.close()
@@ -324,7 +518,7 @@ def readScriptLog(request):
 #读取日志记录
 def readlog(request):
     try:
-        logger=open("/data/wwwroot/platform/logs","r",encoding='UTF-8',errors='ignore')
+        logger=open("/root/platform/logs","r",encoding='UTF-8',errors='ignore')
         loglist=logger.readlines()
         logger.close()
         data={

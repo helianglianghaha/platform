@@ -30,7 +30,7 @@ SECRET_KEY = 'f3*8&q7l8dy^vc$5#4t8wo3#$ygm*6wkw+4oteb^q4rfjsc8p^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =True
-#DEBUG =False
+# DEBUG =False
 
 SESSION_COOKIE_NAME = "sessionid"   #Session的cookie保存在浏览器上时的key
 SESSION_COOKIE_PATH = "/"            #Session的cookie保存的路径（默认）
@@ -162,6 +162,9 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS=[

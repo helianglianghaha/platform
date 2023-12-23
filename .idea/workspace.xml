@@ -22,13 +22,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="">
+    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="后台更新最新">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QualityPlatform/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/webtestcase.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quality/view/API_version/API_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API_version/API_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quality/view/API_version/API_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API_version/API_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/static/2021_10_12_11_48_07-断言-下一步-23-5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/quality/view/API/API.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API/API.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quality/view/API/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API/model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -413,13 +412,13 @@
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="DJANGO_SETTINGS_MODULE" value="QualityPlatform.settings" />
       </envs>
-      <option name="SDK_HOME" value="C:\Program Files\Python37\python.exe" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
-      <option name="port" value="8030" />
+      <option name="port" value="8090" />
       <option name="host" value="" />
       <option name="additionalOptions" value="" />
       <option name="browserUrl" value="" />
@@ -550,7 +549,23 @@
       <workItem from="1699507902686" duration="158000" />
       <workItem from="1699517756813" duration="1261000" />
       <workItem from="1699577178066" duration="269000" />
-      <workItem from="1699663333907" duration="4428000" />
+      <workItem from="1699663333907" duration="5057000" />
+      <workItem from="1699836159419" duration="4000" />
+      <workItem from="1699836490837" duration="4148000" />
+      <workItem from="1699921548017" duration="4000" />
+      <workItem from="1699921560155" duration="5000" />
+      <workItem from="1699921582101" duration="2574000" />
+      <workItem from="1700008806059" duration="13000" />
+      <workItem from="1700126226560" duration="638000" />
+      <workItem from="1700207732883" duration="2815000" />
+      <workItem from="1700700503653" duration="598000" />
+      <workItem from="1700787101008" duration="458000" />
+      <workItem from="1700787618847" duration="1804000" />
+      <workItem from="1700873336288" duration="1211000" />
+      <workItem from="1701046438732" duration="617000" />
+      <workItem from="1702341830076" duration="3932000" />
+      <workItem from="1702989725571" duration="10600000" />
+      <workItem from="1703119621355" duration="69062000" />
     </task>
     <task id="LOCAL-00001" summary="后端整体推送">
       <created>1649724864730</created>
@@ -671,7 +686,15 @@
       <option name="project" value="LOCAL" />
       <updated>1685013789408</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="后台更新最新">
+      <option name="closed" value="true" />
+      <created>1699694847295</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1699694847295</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -759,13 +782,8 @@
     <MESSAGE value="小工具" />
     <MESSAGE value="接口测试平台优化" />
     <MESSAGE value="新增生成批量发货订单" />
-    <option name="LAST_COMMIT_MESSAGE" value="新增生成批量发货订单" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="588" y="207" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1677632570525">
-      <screen x="0" y="25" width="1920" height="993" />
-    </state>
-    <state x="588" y="207" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.25.1920.993@0.25.1920.993" timestamp="1677632570525" />
+    <MESSAGE value="后台更新最新" />
+    <option name="LAST_COMMIT_MESSAGE" value="后台更新最新" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -839,6 +857,41 @@
           <url>file://$PROJECT_DIR$/quality/view/API_version/API_function.py</url>
           <line>151</line>
           <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
+          <line>307</line>
+          <option name="timeStamp" value="41" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
+          <line>481</line>
+          <option name="timeStamp" value="53" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
+          <line>482</line>
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
+          <line>483</line>
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
+          <line>484</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
+          <line>478</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
+          <line>479</line>
+          <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

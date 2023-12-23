@@ -83,3 +83,8 @@ class Scriptproject(models.Model):
     executeType=models.BooleanField(verbose_name="切换性能和接口数据类型", default=False, blank=True)
     performanceData=models.CharField(max_length=1000, verbose_name="性能测试命令")
     performanceReport=models.CharField(max_length=100, verbose_name="性能测试报告")
+    creater=models.CharField(max_length=100, verbose_name="创建人")
+    status=models.CharField(max_length=100, verbose_name="项目状态")
+    runstatus = models.CharField(max_length=100, verbose_name="运行状态")
+    createtime=models.DateTimeField()
+    modifytime=models.DateTimeField()
