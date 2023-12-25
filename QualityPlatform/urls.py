@@ -24,6 +24,7 @@ urlpatterns = [
    url('quality/readScriptLog/',API.readScriptLog, name='readScriptLog'),
    url('quality/readHtmlReport/',API.readHtmlReport, name='readHtmlReport'),
    url('quality/deleteApiScript/',API.deleteApiScript, name='deleteApiScript'),
+   url('quality/getReportFileData/',API.getReportFileData, name='getReportFile'),
 
    url('quality/readlog/',API.readlog, name='readlog'),
    url('quality/selectAllModelTree/',API.selectAllModelTree, name='selectAllModelTree'),

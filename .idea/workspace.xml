@@ -22,12 +22,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="后台更新最新">
+    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QualityPlatform/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/webtestcase.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QualityPlatform/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/quality/view/API/API.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API/API.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quality/view/API/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API/model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -565,7 +563,9 @@
       <workItem from="1701046438732" duration="617000" />
       <workItem from="1702341830076" duration="3932000" />
       <workItem from="1702989725571" duration="10600000" />
-      <workItem from="1703119621355" duration="69062000" />
+      <workItem from="1703119621355" duration="69370000" />
+      <workItem from="1703465153050" duration="49000" />
+      <workItem from="1703465325758" duration="14614000" />
     </task>
     <task id="LOCAL-00001" summary="后端整体推送">
       <created>1649724864730</created>
@@ -694,7 +694,15 @@
       <option name="project" value="LOCAL" />
       <updated>1699694847295</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="修改脚本上传">
+      <option name="closed" value="true" />
+      <created>1703339865532</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1703339865532</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -783,7 +791,8 @@
     <MESSAGE value="接口测试平台优化" />
     <MESSAGE value="新增生成批量发货订单" />
     <MESSAGE value="后台更新最新" />
-    <option name="LAST_COMMIT_MESSAGE" value="后台更新最新" />
+    <MESSAGE value="修改脚本上传" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改脚本上传" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -860,37 +869,37 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>307</line>
+          <line>354</line>
           <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>481</line>
+          <line>566</line>
           <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>482</line>
+          <line>567</line>
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>483</line>
+          <line>568</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>484</line>
+          <line>569</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>478</line>
+          <line>563</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>479</line>
+          <line>564</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>

@@ -146,7 +146,7 @@ def saveScriptFile(request):
         apiReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"+"html/TestReport.html"
 
         #性能测试报告
-        perFormanceReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"+"html/TestReport.html"
+        perFormanceReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"+"html/index.html"
 
         # 创建日志文件
         log_path = "/root/platform/logs/"
@@ -268,6 +268,53 @@ def selectScriptFile(request):
         print(projectData["scriptName"])
         projectData["scriptName"]=ast.literal_eval(projectData["scriptName"])
     return JsonResponse(data, safe=False)
+
+# 获取测试报告地址是否存在
+def getReportFileData(request):
+    '''获取报告状态'''
+    requestData = json.loads(request.body)
+    reportAddress=requestData['reportAddress']
+    performanceReport = requestData['performanceReport']
+    executeType = requestData['executeType']
+
+    if executeType==0 and os.path.exists('/root/platform'+reportAddress):
+        data = {
+            "code": 200,
+            "msg": "接口测试报告地址存在"
+        }
+        return  JsonResponse(data, safe=False)
+
+    elif executeType==1 and os.path.exists('/root/platform'+performanceReport):
+        data = {
+            "code": 200,
+            "msg": "性能测试报告地址存在"
+        }
+        return JsonResponse(data, safe=False)
+    elif executeType==0 and not os.path.exists('/root/platform'+reportAddress):
+
+        data = {
+            "code": 401,
+            "msg": "接口测试报告还未生成,请稍等"
+        }
+
+        return JsonResponse(data, safe=False)
+    elif executeType==0 and not os.path.exists('/root/platform'+performanceReport):
+        data = {
+            "code": 402,
+            "msg": "性能测试报告还未生成,请稍等"
+        }
+
+        return JsonResponse(data, safe=False)
+    else:
+        data = {
+            "code": 403,
+            "msg": "测试报告还未生成,请稍等"
+        }
+
+        return JsonResponse(data, safe=False)
+
+
+
 # 执行脚本
 def executeScript(request):
     '''执行脚本'''
@@ -319,7 +366,7 @@ def executeScript(request):
         os.makedirs(ant_build+projectName[0]["modelData"]+"/"+modelData)
 
     #创建测试报告文件夹
-    testReportAddress='/data/wwwroot/platform/static/'
+    testReportAddress='/root/platform/static/'
     if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData):
         os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/")
         os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/")
@@ -439,9 +486,47 @@ def executeScript(request):
 
     os.system(shellData)
 
-    # 项目执行后更新状态
-    sql = 'update quality_scriptproject set runstatus=2 where sceiptProject_id=' + str(sceiptProject_id)
-    commonList().getModelData(sql)
+    #获取企信消息通知-开启状态-企信地址
+    dingMessageSql = 'select ding_address,ding_version,ding_message,ding_people  from quality_dingmessage'
+    dingMessageLIst = (commonList().getModelData(dingMessageSql))
+    username = request.session.get('username', False)
+    if len(dingMessageLIst)==0:
+        log.info("====企信通知地址配置为空======")
+    else:
+        for dingmessage in dingMessageLIst:
+            log.info("dingMessageLIst==={}".format(dingMessageLIst))
+            modelDataList=json.loads(dingmessage['ding_version'])
+            openDingMessAge=dingmessage["ding_message"]
+            dingAddress=dingmessage['ding_address']
+            dingPeople=dingmessage['ding_people']
+            if len(modelDataList)==0:
+                log.info("====版本配置为空=====")
+            else:
+                if int(modelDataId) in  modelDataList:
+                    reportAddress = requestData['reportAddress']
+                    performanceReport = requestData['performanceReport']
+                    # 根据测试报告是否生成,巡检状态,开启群通知
+                    if executeType==0 and os.path.exists('/root/platform'+reportAddress) and bool(openDingMessAge) :
+                        curlData='''curl '{}' \
+                        -H 'Content-Type: application/json' \
+                        --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n各位同事，大家好，以下为【{}】-【{}】项目构建信息\n负责人: {}\n构建结果 ：Success \n详情请查看接口测试报告：http://192.168.8.22:8050{}","mentioned_mobile_list":["{}"]}}'
+                        --compressed
+                        '''.format(dingAddress,projectName[0]["modelData"],modelData,username,reportAddress,dingPeople)
+                        os.system(curlData)
+                    elif executeType==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
+                        curlData = '''curl '{}' \
+                        -H 'Content-Type: application/json' \
+                        --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n各位同事，大家好，以下为【{}】-【{}】项目构建信息\n负责人: {}\n构建结果 ：Success \n详情请查看性能测试报告：http://192.168.8.22:8050{}","mentioned_mobile_list":["{}"]}}'
+                        --compressed
+                        '''.format(dingAddress, projectName[0]["modelData"], modelData, username, performanceReport,
+                                   dingPeople)
+                        os.system(curlData)
+                    else:
+                        log.info("=====不满足企信推送条件=====")
+                else:
+                    log.info("=====没有配置该项目企信通知=======")
+
+
 
     data = {
         "code": 200,
