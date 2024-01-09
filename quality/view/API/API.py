@@ -1,6 +1,6 @@
 import datetime
 
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse,FileResponse
 # from quality.models import Version
 # from quality.view.API.model import Api
 # from quality.view.API.model import Testcase
@@ -11,17 +11,33 @@ from quality.view.API.model import Modelversion
 from quality.view.API.model import  Scriptproject
 from django.core import serializers
 from quality.common.logger import Log
+from pathlib import Path
 import  os,shutil
 log=Log()
 
-import json,re
+import json,re,os,zipfile
 from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
-#上传文件
 
-# def sortProjectData(request):
-#     '''查找'''
+#上传文件
+def download_files(request):
+    file_paths = json.loads(request.body)
+    log.info("file_paths==={}".format(file_paths))
+    files_exist = all(Path(file_path["url"]).exists() for file_path in file_paths)
+    if files_exist:
+        zip_file_path = '/root/zip/file.zip'
+        with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
+            for file_path in file_paths:
+                zip_file.write(file_path["url"], os.path.basename(file_path["name"]))
+
+        response = FileResponse(open(zip_file_path, 'rb'), content_type='application/zip')
+        response['Content-Disposition'] = f'attachment; filename="{os.path.basename(zip_file_path)}"'
+        return response
+    else:
+        return JsonResponse({'error': 'One or more files do not exist.'}, status=400)
+
+
 
 def upload(request):
     data=[]
@@ -55,13 +71,9 @@ def upload(request):
 #删除脚本
 def deleteApiScript(request):
     '''删除脚本'''
-    fileName=request.POST.get('fileName')
     urlName=request.POST.get('urlName')
     projectName = request.POST.get('projectName')
     versionName = request.POST.get('versionName')
-
-    Apipath="/root/jmeter/apache-jmeter-5.4.1/script/"
-    perfenPath='/root/jmeter/apache-jmeter-5.4.1/ProScript/'
 
     #获取项目名称
     projectSql = 'select modelData from quality_modeldata where modeldata_id= ' + projectName
@@ -71,16 +83,20 @@ def deleteApiScript(request):
     versionSql = 'select modelData from quality_modeldata where modeldata_id= ' + versionName
     versionName = (commonList().getModelData(versionSql))
 
-    totalPathName=Apipath+projectName[0]["modelData"]+"/"+versionName[0]["modelData"]+"/"+fileName
-    perfenPathName=perfenPath+projectName[0]["modelData"]+"/"+versionName[0]["modelData"]+"/"+fileName
-    if os.path.exists(totalPathName):
-        os.remove(totalPathName)
 
-    if os.path.exists(perfenPathName):
-        os.remove(perfenPathName)
+    API_path=os.path.join('/root/jmeter/apache-jmeter-5.4.1/script/',projectName[0]["modelData"],versionName[0]["modelData"],urlName)
+    Perfer_path=os.path.join('/root/jmeter/apache-jmeter-5.4.1/ProScript/',projectName[0]["modelData"],versionName[0]["modelData"],urlName)
+    firstFileName='/root/platform/media/'+urlName
 
-    if os.path.exists(urlName):
-        os.remove(urlName)
+
+    if os.path.exists(API_path):
+        os.remove(API_path)
+
+    if os.path.exists(Perfer_path):
+        os.remove(Perfer_path)
+
+    if os.path.exists(firstFileName):
+        os.remove(firstFileName)
         data = {
             "code": 200,
             "msg": "执行成功"
@@ -91,7 +107,7 @@ def deleteApiScript(request):
 #保存脚本地址
 def saveScriptFile(request):
     '''保存脚本文件地址'''
-    print(request.POST)
+    # print(request.POST)
     dataList=request.POST
     for i in  dataList.keys():
         dataDictList=json.loads(i)
@@ -120,6 +136,7 @@ def saveScriptFile(request):
 
         # 创建测试报告文件夹
         testReportAddress = '/root/platform/static/'
+        # performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/jtl/"
 
         if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/"):
 
@@ -204,7 +221,10 @@ def saveScriptFile(request):
         executeType = dataDictList['executeType']
         performanceData = performanceData
         performanceReport = dataDictList['performanceReport']
-        creater = username
+        if dataDictList['creater']=='':
+            creater = username
+        else:
+            creater=dataDictList['creater']
         _scriptProject=Scriptproject()
 
         if sceiptProject_id:
@@ -261,7 +281,7 @@ def deleteScriptFile(request):
 def selectScriptFile(request):
     '''查询脚本信息'''
     import ast
-    sql="select * from quality_scriptproject a,quality_modeldata b where a.versionName=b.modeldata_id"
+    sql="select * from quality_scriptproject a,quality_modeldata b,auth_user C where a.versionName=b.modeldata_id AND a.creater=c.username order by a.createtime DESC "
     data = commonList().getModelData(sql)
     print(data)
     for projectData in data:
@@ -427,18 +447,19 @@ def executeScript(request):
 
     #执行脚本前清理日志文件-jmeter执行日志文件-ant执行日志文件
     #Jmeter执行文件地址
-    jmeterAPiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
+    jmeterAPiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
     jmeterPerforLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
 
     #Ant执行日志文件
     antApiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
     antPerForLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
 
-
-    os.system("rm -rf " + jmeterAPiLogPath)
-    os.system("rm -rf " + jmeterPerforLogPath)
-    os.system("rm -rf " + antApiLogPath)
-    os.system("rm -rf " + antPerForLogPath)
+    if executeType=='0' or executeType==False :
+        os.system("rm -rf " + jmeterAPiLogPath)
+        os.system("rm -rf " + antApiLogPath)
+    if executeType == '1' or executeType == True:
+        os.system("rm -rf " + jmeterPerforLogPath)
+        os.system("rm -rf " + antPerForLogPath)
 
     os.system("rm -rf " + '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml")
     log.info("=====删除日志和报告文件=====")
@@ -506,17 +527,39 @@ def executeScript(request):
                     reportAddress = requestData['reportAddress']
                     performanceReport = requestData['performanceReport']
                     # 根据测试报告是否生成,巡检状态,开启群通知
-                    if executeType==0 and os.path.exists('/root/platform'+reportAddress) and bool(openDingMessAge) :
-                        curlData='''curl '{}' \
-                        -H 'Content-Type: application/json' \
-                        --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n各位同事，大家好，以下为【{}】-【{}】项目构建信息\n负责人: {}\n构建结果 ：Success \n详情请查看接口测试报告：http://192.168.8.22:8050{}","mentioned_mobile_list":["{}"]}}'
-                        --compressed
-                        '''.format(dingAddress,projectName[0]["modelData"],modelData,username,reportAddress,dingPeople)
+                    if executeType==0 and os.path.exists('/root/platform'+reportAddress) and openDingMessAge=="True" :
+                        testReportAddress = '/root/platform/static/'
+                        performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
+
+                        with open(performanceJtlAddress, 'r') as file:
+                            content = file.read()
+                        # 统计总数
+                        total_count = content.count('<failure>true</failure>') + content.count(
+                            '<failure>false</failure>')
+                        # 统计 <failure>true</failure> 的数量
+                        success_cont=content.count(
+                            '<failure>false</failure>')
+                        true_count = content.count('<failure>true</failure>')
+                        if true_count>0:
+                            result="构建失败"
+                        else:
+                            result="构建成功"
+                        # 计算占比
+                        true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
+
+                        curlData = '''curl '{}' \
+                                                -H 'Content-Type: application/json' \
+                                                --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人 : {}\n>执行接口 : {}个 \n>失败接口 : {}个\n>执行成功率 : {:.2f}%\n>构建结果 ：{} \n>查看接口测试报告:http://192.168.8.22:8050{}","mentioned_mobile_list":["{}"]}}'
+                                                --compressed
+                                                '''.format(dingAddress, projectName[0]["modelData"], modelData,
+                                                           username,total_count,true_count,true_percentage,result, reportAddress,
+                                                           dingPeople)
+
                         os.system(curlData)
                     elif executeType==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
                         curlData = '''curl '{}' \
                         -H 'Content-Type: application/json' \
-                        --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n各位同事，大家好，以下为【{}】-【{}】项目构建信息\n负责人: {}\n构建结果 ：Success \n详情请查看性能测试报告：http://192.168.8.22:8050{}","mentioned_mobile_list":["{}"]}}'
+                        --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人: {}\n>构建结果 ：Success \n>查看：[性能测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
                         --compressed
                         '''.format(dingAddress, projectName[0]["modelData"], modelData, username, performanceReport,
                                    dingPeople)
