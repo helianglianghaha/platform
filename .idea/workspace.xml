@@ -22,10 +22,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="">
+    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="新增文件下载">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QualityPlatform/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quality/view/API/API.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API/API.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/webtestcase.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -213,6 +212,9 @@
     </option>
   </component>
   <component name="JupyterTrust" id="017f0046-babd-4856-bebc-0563c9c4a396" />
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectFrameBounds">
     <option name="x" value="1954" />
     <option name="y" value="33" />
@@ -280,20 +282,24 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/hll/Desktop/git/platform&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RunManager" selected="Django Server.platform">
     <configuration name="Ding" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="platform" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -316,6 +322,7 @@
     </configuration>
     <configuration name="V3.5.0求阈值" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="platform" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -338,6 +345,7 @@
     </configuration>
     <configuration name="batchApiXunJian" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="platform" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -360,6 +368,7 @@
     </configuration>
     <configuration name="test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="platform" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -382,6 +391,7 @@
     </configuration>
     <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="platform" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -404,6 +414,7 @@
     </configuration>
     <configuration name="platform" type="Python.DjangoServer" factoryName="Django server">
       <module name="platform" />
+      <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -411,7 +422,7 @@
         <env name="DJANGO_SETTINGS_MODULE" value="QualityPlatform.settings" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="/Library/Frameworks/Python.framework/Versions/3.12/bin/python3" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -426,6 +437,14 @@
       <option name="customRunCommand" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Django Server.platform" />
+      <item itemvalue="Python.batchApiXunJian" />
+      <item itemvalue="Python.Ding" />
+      <item itemvalue="Python.test" />
+      <item itemvalue="Python.test (1)" />
+      <item itemvalue="Python.V3.5.0求阈值" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.Ding" />
@@ -435,6 +454,13 @@
         <item itemvalue="Python.batchApiXunJian" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -565,7 +591,13 @@
       <workItem from="1702989725571" duration="10600000" />
       <workItem from="1703119621355" duration="69370000" />
       <workItem from="1703465153050" duration="49000" />
-      <workItem from="1703465325758" duration="14614000" />
+      <workItem from="1703465325758" duration="35905000" />
+      <workItem from="1704249045127" duration="2060000" />
+      <workItem from="1704415462434" duration="89000" />
+      <workItem from="1704429418937" duration="4707000" />
+      <workItem from="1704501471946" duration="72000" />
+      <workItem from="1704501579731" duration="2897000" />
+      <workItem from="1704760584219" duration="8615000" />
     </task>
     <task id="LOCAL-00001" summary="后端整体推送">
       <created>1649724864730</created>
@@ -702,7 +734,23 @@
       <option name="project" value="LOCAL" />
       <updated>1703339865532</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="新增企信通知">
+      <option name="closed" value="true" />
+      <created>1703494825564</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1703494825564</updated>
+    </task>
+    <task id="LOCAL-00021" summary="新增文件下载">
+      <option name="closed" value="true" />
+      <created>1704783493720</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1704783493720</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -792,7 +840,9 @@
     <MESSAGE value="新增生成批量发货订单" />
     <MESSAGE value="后台更新最新" />
     <MESSAGE value="修改脚本上传" />
-    <option name="LAST_COMMIT_MESSAGE" value="修改脚本上传" />
+    <MESSAGE value="新增企信通知" />
+    <MESSAGE value="新增文件下载" />
+    <option name="LAST_COMMIT_MESSAGE" value="新增文件下载" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -869,37 +919,37 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>354</line>
+          <line>374</line>
           <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>566</line>
+          <line>609</line>
           <option name="timeStamp" value="53" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>567</line>
+          <line>610</line>
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>568</line>
+          <line>611</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>569</line>
+          <line>612</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>563</line>
+          <line>606</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>564</line>
+          <line>607</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
