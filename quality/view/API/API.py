@@ -19,6 +19,44 @@ import json,re,os,zipfile
 from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
+#sql语句查询
+def sqlcat(request):
+    """sql查询"""
+    import mysql.connector
+    # 连接到MySQL数据库
+    conn = mysql.connector.connect(
+        host='rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com',
+        user='tk_db_test',
+        password='UUueBYYs9U4uptj',
+        database='store'
+    )
+    def dictfetchall(varr):
+        "将游标返回的结果保存到一个字典对象中"
+        desc = varr.description
+        return [dict(zip([col[0] for col in desc], row))for row in varr.fetchall()]
+
+    # 创建游标对象
+    cursor = conn.cursor()
+    requestData = json.loads(request.body)
+    sql=requestData['sql']
+    if  'select' in sql:
+        cursor.execute(sql)
+        # 获取查询结果的字段名称
+        columns = [desc[0] for desc in cursor.description]
+        tableData=dictfetchall(cursor)
+        response = {
+            'columns':columns,
+            'tableData':tableData
+        }
+        cursor.close()
+    else:
+        cursor.execute(sql)
+        conn.commit()
+        cursor.close()
+        response={
+            "status":"success"
+        }
+    return JsonResponse(response, safe=False)
 
 #上传文件
 def download_files(request):

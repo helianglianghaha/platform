@@ -26,6 +26,7 @@ urlpatterns = [
    url('quality/deleteApiScript/',API.deleteApiScript, name='deleteApiScript'),
    url('quality/getReportFileData/',API.getReportFileData, name='getReportFile'),
    url('quality/download_files/',API.download_files, name='download_files'),
+   url('quality/sqlcat/',API.sqlcat, name='sqlcat'),
 
 
    url('quality/readlog/',API.readlog, name='readlog'),

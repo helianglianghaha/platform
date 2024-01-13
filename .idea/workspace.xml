@@ -24,7 +24,11 @@
   <component name="ChangeListManager">
     <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="新增文件下载">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QualityPlatform/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/webtestcase.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt.2023-12-22_10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt.2023-12-22_16" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/quality/view/API/API.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API/API.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -439,11 +443,11 @@
     </configuration>
     <list>
       <item itemvalue="Django Server.platform" />
-      <item itemvalue="Python.batchApiXunJian" />
       <item itemvalue="Python.Ding" />
-      <item itemvalue="Python.test" />
-      <item itemvalue="Python.test (1)" />
       <item itemvalue="Python.V3.5.0求阈值" />
+      <item itemvalue="Python.batchApiXunJian" />
+      <item itemvalue="Python.test (1)" />
+      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
@@ -597,7 +601,11 @@
       <workItem from="1704429418937" duration="4707000" />
       <workItem from="1704501471946" duration="72000" />
       <workItem from="1704501579731" duration="2897000" />
-      <workItem from="1704760584219" duration="8615000" />
+      <workItem from="1704760584219" duration="12848000" />
+      <workItem from="1704933903929" duration="2211000" />
+      <workItem from="1705019683549" duration="8000" />
+      <workItem from="1705020001066" duration="4568000" />
+      <workItem from="1705106423184" duration="7290000" />
     </task>
     <task id="LOCAL-00001" summary="后端整体推送">
       <created>1649724864730</created>
@@ -916,41 +924,6 @@
           <url>file://$PROJECT_DIR$/quality/view/API_version/API_function.py</url>
           <line>151</line>
           <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>374</line>
-          <option name="timeStamp" value="41" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>609</line>
-          <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>610</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>611</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>612</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>606</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/quality/view/API/API.py</url>
-          <line>607</line>
-          <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
