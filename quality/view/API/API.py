@@ -19,9 +19,21 @@ import json,re,os,zipfile
 from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
-#sql语句查询
-def sqlcat(request):
-    """sql查询"""
+
+def readLog(request):
+    '''读取日志文件'''
+    # log_file_path = '/Users/hll/Desktop/git/platform/logs/webtestcase.txt'
+    log_file_path = '/root/platform/logs/webtestcase.txt'
+    logList=[]
+    # 或者按行读取日志文件内容
+    with open(log_file_path, 'r', encoding='gbk') as log_file:
+        for line in log_file:
+            line=line.strip()
+            logList.append(line)
+    return JsonResponse(logList, safe=False)
+
+def selectTableList(request):
+    '''查询所有表'''
     import mysql.connector
     # 连接到MySQL数据库
     conn = mysql.connector.connect(
@@ -30,33 +42,110 @@ def sqlcat(request):
         password='UUueBYYs9U4uptj',
         database='store'
     )
+    # 创建游标对象
+    cursor = conn.cursor()
+    sql = 'show tables'
+    cursor.execute(sql)
+    response=cursor.fetchall()
+    responsedata=[{'value': table[0], 'label': table[0]} for table in response]
+    # print(response)
+    conn.close()
+    cursor.close()
+    return  JsonResponse(responsedata, safe=False)
+
+
+def selectTableDegion(request):
+    '''查询表结构'''
+    import mysql.connector
+    # 连接到MySQL数据库
+    conn = mysql.connector.connect(
+        host='rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com',
+        user='tk_db_test',
+        password='UUueBYYs9U4uptj',
+        database='store'
+    )
+
+    cursor = conn.cursor()
+    requestData = json.loads(request.body)
+    tableName=requestData['tableName']
+    sql_info = "SELECT COLUMN_NAME,IS_NULLABLE,DATA_TYPE,COLUMN_TYPE,COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE  TABLE_NAME = '{}'".format(tableName)
+    cursor.execute(sql_info)
+    # for column_info in  cursor.fetchall():
+    #     print(f"Name: {column_info[0]}, Type: {column_info[1]}, Nullable: {column_info[2]}, Key: {column_info[3]}, Comment: {column_info[4]}{column_info[6]}")
+
     def dictfetchall(varr):
         "将游标返回的结果保存到一个字典对象中"
         desc = varr.description
-        return [dict(zip([col[0] for col in desc], row))for row in varr.fetchall()]
+        return [dict(zip([col[0] for col in desc], row)) for row in varr.fetchall()]
 
-    # 创建游标对象
-    cursor = conn.cursor()
-    requestData = json.loads(request.body)
-    sql=requestData['sql']
-    if  'select' in sql:
-        cursor.execute(sql)
-        # 获取查询结果的字段名称
-        columns = [desc[0] for desc in cursor.description]
-        tableData=dictfetchall(cursor)
-        response = {
-            'columns':columns,
-            'tableData':tableData
-        }
-        cursor.close()
-    else:
-        cursor.execute(sql)
-        conn.commit()
-        cursor.close()
-        response={
-            "status":"success"
-        }
-    return JsonResponse(response, safe=False)
+    formatted_data=dictfetchall(cursor)
+    # formatted_data = [
+    #     {
+    #         "field": row[0],
+    #         "type": row[1],
+    #         "length": row[2],
+    #         "isNullable": row[3] == "YES",
+    #         "isPrimary": row[4] == "PRI",
+    #         "defaultValue": row[5],
+    #         "comments": row[6]
+    #     }
+    #     for row in response
+    # ]
+
+    conn.close()
+    cursor.close()
+
+    return JsonResponse(formatted_data, safe=False)
+
+#sql语句查询
+def sqlcat(request):
+    """sql查询"""
+    try:
+        import mysql.connector
+        # 连接到MySQL数据库
+        conn = mysql.connector.connect(
+            host='rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com',
+            user='tk_db_test',
+            password='UUueBYYs9U4uptj',
+            database='store'
+        )
+        def dictfetchall(varr):
+            "将游标返回的结果保存到一个字典对象中"
+            desc = varr.description
+            return [dict(zip([col[0] for col in desc], row))for row in varr.fetchall()]
+
+        # 创建游标对象
+        cursor = conn.cursor()
+        requestData = json.loads(request.body)
+        sql=requestData['sql']
+        if  'select' in sql:
+            if "limit" not in sql:
+                sql=sql+' limit 100'
+
+            try:
+                cursor.execute(sql)
+            except Exception as e:
+                return JsonResponse(e, safe=False)
+            # 获取查询结果的字段名称
+            columns = [desc[0] for desc in cursor.description]
+            tableData=dictfetchall(cursor)
+            response = {
+                "sql":sql,
+                'columns':columns,
+                'tableData':tableData
+            }
+            cursor.close()
+
+        else:
+            cursor.execute(sql)
+            conn.commit()
+            cursor.close()
+            response={
+                "status":"success"
+            }
+        return JsonResponse(response, safe=False)
+    except Exception as e:
+        return JsonResponse(e, safe=False)
 
 #上传文件
 def download_files(request):
@@ -79,9 +168,9 @@ def download_files(request):
 
 def upload(request):
     data=[]
-    print('上传文件',request.POST)
+    # print('上传文件',request.POST)
     req = request.FILES.get('file')
-    print(req)
+    # print(req)
     # 将上传的文件逐行读取保存到list中
     file_info = {'date': '', 'name': '', 'uuid': '', 'path': ''}
     content = {}
@@ -141,6 +230,150 @@ def deleteApiScript(request):
         }
 
     return JsonResponse(data, safe=False)
+def createScriptFile(request):
+    '''新建脚本文件'''
+    dataList = request.POST
+    for i in dataList.keys():
+        dataDictList = json.loads(i)
+        # 获取执行人姓名
+        username = request.session.get('username', False)
+
+        # 获取项目地址
+        projectName_id = dataDictList['projectName']
+        sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
+        projectName = (commonList().getModelData(sql))
+
+        # 获取版本地址
+        modelDataId = dataDictList['versionName']
+        modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
+        modelDataLIst = (commonList().getModelData(modelDataSql))
+        modelData = modelDataLIst[0]["modelData"]
+
+        # 创建build文件目录
+        ant_build = "/root/ant/apache-ant-1.9.16/build/"
+        if not os.path.exists(ant_build + projectName[0]["modelData"] + "/" + modelData):
+            os.makedirs(ant_build + projectName[0]["modelData"] + "/" + modelData)
+
+        # ant build文件地址
+        antBuildAddress = ant_build + projectName[0]["modelData"] + "/" + modelData + "/build.xml"
+
+        # 创建测试报告文件夹
+        testReportAddress = '/root/platform/static/'
+
+        if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/"):
+            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/")
+        if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/"):
+            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/")
+
+        if not os.path.exists(
+                testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/"):
+            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/")
+
+        folder_path = os.path.join(testReportAddress, projectName[0]["modelData"], modelData, "PerformanceReport",
+                                   "jtl")
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        performanceJtlAddress = testReportAddress + projectName[0][
+            "modelData"] + "/" + modelData + "/PerformanceReport/jtl/"
+
+        # 接口报告文件夹
+        apiReportAdd = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"
+
+        # 性能测试报告文件夹
+        perFormanceReportAdd = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"
+
+        # 接口报告
+        apiReport = '/static/' + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/" + "html/TestReport.html"
+
+        # 性能测试报告
+        perFormanceReport = '/static/' + projectName[0][
+            "modelData"] + "/" + modelData + "/PerformanceReport/" + "html/index.html"
+
+        # 创建日志文件
+        log_path = "/root/platform/logs/"
+
+        if not os.path.exists(
+                os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")):
+            os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")
+        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")):
+            os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
+        if not os.path.exists(os.path.join(
+                log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")):
+            os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")
+        if not os.path.exists(
+                os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")):
+            os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
+
+        # 创建脚本目录
+        # 接口测试脚本
+        apiScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/script/'
+
+        # 性能测试脚本
+        performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
+
+        if not os.path.exists(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+            os.makedirs(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+
+        if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+            os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+
+        apiScriptfile = apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData
+        perFormanceScriptfile = performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData + "/*.jmx"
+
+        performanceData = "jmeter -n -t " + perFormanceScriptfile + " -l " + performanceJtlAddress + " -e -o " + perFormanceReportAdd + "html"
+
+        if "projectstatus" not in dataDictList.keys():
+            status = "Flase"
+        else:
+            status = dataDictList['projectstatus']
+
+        if dataDictList['buildAddress'] == '':
+            dataDictList['buildAddress'] = antBuildAddress
+
+        if dataDictList['reportAddress'] == "":
+            dataDictList['reportAddress'] = apiReport
+
+        if dataDictList['performanceReport'] == '':
+            dataDictList['performanceReport'] = perFormanceReport
+
+        environmentData = dataDictList['environment']
+        sceiptProject_id = dataDictList['sceiptProject_id']
+        projectName = dataDictList['projectName']
+        versionName = dataDictList['versionName']
+        buildAddress = dataDictList['buildAddress']
+        reportAddress = dataDictList['reportAddress']
+
+        scriptName = dataDictList['urlList']
+        executeType = dataDictList['executeType']
+        performanceData = performanceData
+        performanceReport = dataDictList['performanceReport']
+        if dataDictList['creater'] == '':
+            creater = username
+        else:
+            creater = dataDictList['creater']
+        _scriptProject = Scriptproject()
+
+
+        _scriptProject.projectName = projectName
+        _scriptProject.versionName = versionName
+        _scriptProject.buildAddress = buildAddress
+        _scriptProject.reportAddress = reportAddress
+        _scriptProject.environment = environmentData
+        _scriptProject.scriptName = scriptName
+        _scriptProject.executeType = executeType
+        _scriptProject.performanceData = performanceData
+        _scriptProject.performanceReport = performanceReport
+        _scriptProject.creater = creater
+        _scriptProject.status = status
+        time = datetime.datetime.now()
+        _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
+        _scriptProject.save()
+        data = {
+            "code": 200,
+            "msg": "接口脚本保存成功"
+        }
+        return JsonResponse(data, safe=False)
 
 #保存脚本地址
 def saveScriptFile(request):
@@ -166,28 +399,27 @@ def saveScriptFile(request):
 
         # 创建build文件目录
         ant_build = "/root/ant/apache-ant-1.9.16/build/"
-        if not os.path.exists(ant_build + projectName[0]["modelData"] + "/" + modelData):
-            os.makedirs(ant_build + projectName[0]["modelData"] + "/" + modelData)
+        # if not os.path.exists(ant_build + projectName[0]["modelData"] + "/" + modelData):
+        #     os.makedirs(ant_build + projectName[0]["modelData"] + "/" + modelData)
 
         #ant build文件地址
         antBuildAddress=ant_build + projectName[0]["modelData"] + "/" + modelData+"/build.xml"
 
         # 创建测试报告文件夹
         testReportAddress = '/root/platform/static/'
-        # performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/jtl/"
 
-        if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/"):
-
-            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/")
-        if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/"):
-            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/")
-
-        if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/"):
-            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/")
-
-        folder_path = os.path.join(testReportAddress, projectName[0]["modelData"], modelData, "PerformanceReport","jtl")
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
+        # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/"):
+        #
+        #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/")
+        # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/"):
+        #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/")
+        #
+        # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/"):
+        #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/")
+        #
+        # folder_path = os.path.join(testReportAddress, projectName[0]["modelData"], modelData, "PerformanceReport","jtl")
+        # if not os.path.exists(folder_path):
+        #     os.makedirs(folder_path)
 
         performanceJtlAddress=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/jtl/"
 
@@ -207,14 +439,14 @@ def saveScriptFile(request):
         log_path = "/root/platform/logs/"
 
 
-        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")):
-            os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")
-        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")):
-            os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
-        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")):
-            os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")
-        if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")):
-            os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
+        # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")):
+        #     os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")
+        # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")):
+        #     os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
+        # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")):
+        #     os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")
+        # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")):
+        #     os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
 
         #创建脚本目录
         #接口测试脚本
@@ -223,11 +455,11 @@ def saveScriptFile(request):
         #性能测试脚本
         performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
 
-        if not os.path.exists(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
-            os.makedirs(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
-
-        if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
-            os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+        # if not os.path.exists(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+        #     os.makedirs(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+        #
+        # if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+        #     os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
 
         apiScriptfile=apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData
         perFormanceScriptfile=performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData+"/*.jmx"
@@ -250,11 +482,13 @@ def saveScriptFile(request):
         if dataDictList['performanceReport']=='':
             dataDictList['performanceReport']=perFormanceReport
 
+        environmentData=dataDictList['environment']
         sceiptProject_id = dataDictList['sceiptProject_id']
         projectName = dataDictList['projectName']
         versionName = dataDictList['versionName']
         buildAddress = dataDictList['buildAddress']
         reportAddress = dataDictList['reportAddress']
+
         scriptName = dataDictList['urlList']
         executeType = dataDictList['executeType']
         performanceData = performanceData
@@ -271,6 +505,7 @@ def saveScriptFile(request):
             _scriptProject.versionName = versionName
             _scriptProject.buildAddress = buildAddress
             _scriptProject.reportAddress = reportAddress
+            _scriptProject.environment = environmentData
             _scriptProject.scriptName = scriptName
             _scriptProject.executeType = executeType
             _scriptProject.performanceData = performanceData
@@ -290,6 +525,7 @@ def saveScriptFile(request):
             _scriptProject.versionName = versionName
             _scriptProject.buildAddress = buildAddress
             _scriptProject.reportAddress = reportAddress
+            _scriptProject.environment = environmentData
             _scriptProject.scriptName = scriptName
             _scriptProject.executeType = executeType
             _scriptProject.performanceData = performanceData
@@ -317,13 +553,24 @@ def deleteScriptFile(request):
     return JsonResponse(data, safe=False)
 #查询接口脚本信息
 def selectScriptFile(request):
-    '''查询脚本信息'''
+    '''查询测试脚本信息'''
     import ast
-    sql="select * from quality_scriptproject a,quality_modeldata b,auth_user C where a.versionName=b.modeldata_id AND a.creater=c.username order by a.createtime DESC "
+    sql="select * from quality_scriptproject a,quality_modeldata b,auth_user C where a.versionName=b.modeldata_id AND a.creater=c.username and a.environment='1' order by a.createtime DESC "
     data = commonList().getModelData(sql)
-    print(data)
+    # print(data)
     for projectData in data:
-        print(projectData["scriptName"])
+        # print(projectData["scriptName"])
+        projectData["scriptName"]=ast.literal_eval(projectData["scriptName"])
+    return JsonResponse(data, safe=False)
+
+def selectProScriptFile(request):
+    '''查询生产脚本信息'''
+    import ast
+    sql="select * from quality_scriptproject a,quality_modeldata b,auth_user C where a.versionName=b.modeldata_id AND a.creater=c.username and a.environment='2' order by a.createtime DESC "
+    data = commonList().getModelData(sql)
+    # print(data)
+    for projectData in data:
+        # print(projectData["scriptName"])
         projectData["scriptName"]=ast.literal_eval(projectData["scriptName"])
     return JsonResponse(data, safe=False)
 
@@ -620,7 +867,7 @@ def readHtmlReport(request):
     '''读取html报告'''
     try:
         reportAddress=request.POST.get("reportAddress")
-        print("reportAddress",reportAddress)
+        # print("reportAddress",reportAddress)
         #测试环境
         path="D:\\Jmeter\\apache-jmeter-5.4.1\\TestReport.html"
 
@@ -643,7 +890,7 @@ def readHtmlReport(request):
 def readScriptLog(request):
     '''读取ant执行日志'''
     requestData = json.loads(request.body)
-    print(requestData)
+    # print(requestData)
     # 获取项目地址
     projectName_id = requestData['projectName']
     executeType=requestData["executeType"]
@@ -699,7 +946,7 @@ def readlog(request):
         }
     return JsonResponse(data,safe=False)
 def addModelVersion(request):
-    print('version',request.POST)
+    # print('version',request.POST)
     Modelversion_id=request.POST.get('Modelversion_id')
     modeldata_id_id=request.POST.get("modeldata_id_id")
     modeldata_name=request.POST.get("modeldata_name")
@@ -784,7 +1031,7 @@ def selectAllModelTree(request):
 
 #删除模块信息
 def deleteModelDataList(request):
-    print("删除modelData",request.POST)
+    # print("删除modelData",request.POST)
     modeldata_id=request.POST.get('modeldata_id')
     Modeldatalist=Modeldata.objects.get(modeldata_id=modeldata_id)
     Modeldatalist.delete()
@@ -1103,7 +1350,7 @@ def deleteTestData(request):
     return JsonResponse(data)
 #删除脚本
 def deleteScript(request):
-    print(request.POST)
+    # print(request.POST)
     script_id=request.POST.get("script_id")
     print('script_id',script_id)
     scriptData=Script.objects.get(script_id=script_id)
@@ -1124,7 +1371,7 @@ def saveScriptData(request):
     script_data=request.POST.get("script_data")
     script_timeout=request.POST.get("script_timeout")
 
-    print((script_timeout))
+    # print((script_timeout))
     script_assert=request.POST.get("script_assert")
     script_keyword=request.POST.get("script_keyword")
 

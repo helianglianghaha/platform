@@ -84,6 +84,7 @@ class Scriptproject(models.Model):
     performanceData=models.CharField(max_length=1000, verbose_name="性能测试命令")
     performanceReport=models.CharField(max_length=100, verbose_name="性能测试报告")
     creater=models.CharField(max_length=100, verbose_name="创建人")
+    environment = models.CharField(max_length=10, verbose_name="执行环境")
     status=models.CharField(max_length=100, verbose_name="项目状态")
     runstatus = models.CharField(max_length=100, verbose_name="运行状态")
     createtime=models.DateTimeField()

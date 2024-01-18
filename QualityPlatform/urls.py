@@ -27,6 +27,13 @@ urlpatterns = [
    url('quality/getReportFileData/',API.getReportFileData, name='getReportFile'),
    url('quality/download_files/',API.download_files, name='download_files'),
    url('quality/sqlcat/',API.sqlcat, name='sqlcat'),
+   url('quality/readLog/',API.readLog, name='readLog'),
+   url('quality/selectTableList/',API.selectTableList, name='selectTableList'),
+   url('quality/selectTableDegion/',API.selectTableDegion, name='selectTableDegion'),
+   url('quality/selectProScriptFile/',API.selectProScriptFile, name='selectProScriptFile'),
+   url('quality/createScriptFile/',API.createScriptFile, name='createScriptFile'),
+
+
 
 
    url('quality/readlog/',API.readlog, name='readlog'),
@@ -41,6 +48,7 @@ urlpatterns = [
    url('quality/selectProAddress/',UI_data.selectProAddress, name='selectProAddress'),
    url('quality/deleteProAddress/',UI_data.deleteProAddress, name='deleteProAddress'),
    url('quality/selectTestCaseList/',UI_data.selectTestCaseList, name='selectTestCaseList'),
+
 
 
    url('quality/selectCookiesSelection/',API_data.selectCookiesSelection, name='selectCookiesSelection'),
