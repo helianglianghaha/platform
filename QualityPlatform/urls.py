@@ -33,9 +33,6 @@ urlpatterns = [
    url('quality/selectProScriptFile/',API.selectProScriptFile, name='selectProScriptFile'),
    url('quality/createScriptFile/',API.createScriptFile, name='createScriptFile'),
 
-
-
-
    url('quality/readlog/',API.readlog, name='readlog'),
    url('quality/selectAllModelTree/',API.selectAllModelTree, name='selectAllModelTree'),
    url('quality/deleteModelDataList/',API.deleteModelDataList, name='deleteModelDataList'),
@@ -48,8 +45,6 @@ urlpatterns = [
    url('quality/selectProAddress/',UI_data.selectProAddress, name='selectProAddress'),
    url('quality/deleteProAddress/',UI_data.deleteProAddress, name='deleteProAddress'),
    url('quality/selectTestCaseList/',UI_data.selectTestCaseList, name='selectTestCaseList'),
-
-
 
    url('quality/selectCookiesSelection/',API_data.selectCookiesSelection, name='selectCookiesSelection'),
    url('quality/delCookies/',API_data.delCookies, name='delCookies'),
