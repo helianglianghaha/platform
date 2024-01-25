@@ -22,10 +22,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="接口模块拆分测试环境和生产环境">
+    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="新增版本管理">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/QualityPlatform/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/webtestcase.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quality/view/API/API.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API/API.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quality/view/API/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/API/model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -585,7 +587,11 @@
       <workItem from="1705366197625" duration="5251000" />
       <workItem from="1705452444098" duration="4496000" />
       <workItem from="1705538621833" duration="14796000" />
-      <workItem from="1705624794090" duration="6540000" />
+      <workItem from="1705624794090" duration="6766000" />
+      <workItem from="1705884733519" duration="2483000" />
+      <workItem from="1705969937190" duration="1331000" />
+      <workItem from="1706056860271" duration="2182000" />
+      <workItem from="1706144341508" duration="7990000" />
     </task>
     <task id="LOCAL-00001" summary="后端整体推送">
       <created>1649724864730</created>
@@ -754,7 +760,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705581091585</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="新增版本管理">
+      <option name="closed" value="true" />
+      <created>1705749681864</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1705749681864</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -848,7 +862,8 @@
     <MESSAGE value="新增文件下载" />
     <MESSAGE value="新增测试工具" />
     <MESSAGE value="接口模块拆分测试环境和生产环境" />
-    <option name="LAST_COMMIT_MESSAGE" value="接口模块拆分测试环境和生产环境" />
+    <MESSAGE value="新增版本管理" />
+    <option name="LAST_COMMIT_MESSAGE" value="新增版本管理" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

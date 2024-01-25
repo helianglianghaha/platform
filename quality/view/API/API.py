@@ -9,6 +9,7 @@ from django.http.response import JsonResponse,FileResponse
 from quality.view.API.model import Modeldata
 from quality.view.API.model import Modelversion
 from quality.view.API.model import  Scriptproject
+from quality.view.API.model import Versionmanager
 from django.core import serializers
 from quality.common.logger import Log
 from pathlib import Path
@@ -19,6 +20,91 @@ import json,re,os,zipfile
 from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
+
+def saveVersionManger(request):
+    '''保存版本管理'''
+    requestData = json.loads(request.body)
+    for versionManer in requestData:
+        autoTableID=versionManer['autoTableID']
+        tableID=versionManer['tableID']
+        version = versionManer['version']
+        description = versionManer['description']
+        priority = versionManer['priority']
+        owner = versionManer['owner']
+        development = versionManer['development']
+        status = versionManer['status']
+        testCases = versionManer['testCases']
+        testCaseReview = versionManer['testCaseReview']
+        firstRoundTest = versionManer['firstRoundTest']
+        secondRoundTest = versionManer['secondRoundTest']
+        thirdRoundTest = versionManer['thirdRoundTest']
+        remarks = versionManer['remarks']
+        yueLinProgress = versionManer['yueLinProgress']
+        yueLinRemarks = versionManer['yueLinRemarks']
+        juHaoMaiProgress = versionManer['juHaoMaiProgress']
+        juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
+        editable = versionManer['editable']
+
+        _Versionmanager = Versionmanager()
+        if autoTableID:
+            _Versionmanager.autoTableID=autoTableID
+            _Versionmanager.tableID = tableID
+            _Versionmanager.version = version
+            _Versionmanager.description = description
+            _Versionmanager.priority = priority
+            _Versionmanager.owner = owner
+            _Versionmanager.development = development
+            _Versionmanager.status = status
+            _Versionmanager.testCases = testCases
+            _Versionmanager.testCaseReview = testCaseReview
+            _Versionmanager.firstRoundTest = firstRoundTest
+            _Versionmanager.secondRoundTest = secondRoundTest
+            _Versionmanager.thirdRoundTest = thirdRoundTest
+            _Versionmanager.remarks = remarks
+            _Versionmanager.yueLinProgress = yueLinProgress
+            _Versionmanager.yueLinRemarks = yueLinRemarks
+            _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+            _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+            _Versionmanager.editable = editable
+        else:
+            _Versionmanager.tableID = tableID
+            _Versionmanager.version = version
+            _Versionmanager.description = description
+            _Versionmanager.priority = priority
+            _Versionmanager.owner = owner
+            _Versionmanager.development = development
+            _Versionmanager.status = status
+            _Versionmanager.testCases = testCases
+            _Versionmanager.testCaseReview = testCaseReview
+            _Versionmanager.firstRoundTest = firstRoundTest
+            _Versionmanager.secondRoundTest = secondRoundTest
+            _Versionmanager.thirdRoundTest = thirdRoundTest
+            _Versionmanager.remarks = remarks
+            _Versionmanager.yueLinProgress = yueLinProgress
+            _Versionmanager.yueLinRemarks = yueLinRemarks
+            _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+            _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+            _Versionmanager.editable = editable
+        _Versionmanager.save()
+
+    data = {
+        "code": 200,
+        "msg": "保存版本管理信息成功"
+    }
+    return JsonResponse(data, safe=False)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def readLog(request):
     '''读取日志文件'''

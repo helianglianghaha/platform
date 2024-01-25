@@ -78,6 +78,8 @@ urlpatterns = [
    url('quality/selectTablesColumns/',API_data.selectTablesColumns, name='selectTablesColumns'),
    url('quality/selectColumns/',API_data.selectColumns, name='selectColumns'),
    url('quality/selectDianWei/',API_data.selectDianWei, name='selectDianWei'),
+   url('quality/saveVersionManger/',API.saveVersionManger, name='saveVersionManger'),
+
 
    url('quality/readLog/',UI_data.readLog, name='readLog'),
    url('quality/selectUiTestCase/',UI_data.selectUiTestCase, name='selectUiTestCase'),
