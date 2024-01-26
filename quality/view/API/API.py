@@ -21,11 +21,113 @@ from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
 
+def editTagsManger(request):
+    '''修改版本管理名称'''
+    requestData = json.loads(request.body)
+    tabledata = requestData['tabledata']
+
+def selectTagsManger(request):
+    '''页面初始化查询'''
+    sqldata='SELECT DISTINCT(tableID) FROM quality_versionmanager'
+    data = commonList().getModelData(sqldata)
+    print("data====",data)
+    return JsonResponse(data, safe=False)
+
+def selectVersionManger(request):
+    '''查询版本管理'''
+    requestData = json.loads(request.body)
+    tableName=requestData['tableName']
+
+    sql='select * from  quality_versionmanager where tableID ='+"\'"+tableName+"\'"
+    # print("sql====", sql)
+    data=commonList().getModelData(sql)
+    print("data====", data)
+
+
+    return JsonResponse(data, safe=False)
+
+
+def saveSingleVersionManger(request):
+    '''保存单个版本'''
+    requestData = json.loads(request.body)
+    autoTableID = requestData['tabledata']['autoTableID']
+    tableName = requestData['tabledata']['tableName']
+    tableID = requestData['tabledata']['tableID']
+    version = requestData['tabledata']['version']
+    description = requestData['tabledata']['description']
+    priority = requestData['tabledata']['priority']
+    owner = requestData['tabledata']['owner']
+    development = requestData['tabledata']['development']
+    status = requestData['tabledata']['status']
+    testCases = requestData['tabledata']['testCases']
+    testCaseReview = requestData['tabledata']['testCaseReview']
+    firstRoundTest = requestData['tabledata']['firstRoundTest']
+    secondRoundTest = requestData['tabledata']['secondRoundTest']
+    thirdRoundTest = requestData['tabledata']['thirdRoundTest']
+    remarks = requestData['tabledata']['remarks']
+    yueLinProgress = requestData['tabledata']['yueLinProgress']
+    yueLinRemarks = requestData['tabledata']['yueLinRemarks']
+    juHaoMaiProgress = requestData['tabledata']['juHaoMaiProgress']
+    juHaoMaiRemarks = requestData['tabledata']['juHaoMaiRemarks']
+    editable = requestData['tabledata']['editable']
+
+    _Versionmanager = Versionmanager()
+    if autoTableID:
+        _Versionmanager.autoTableID = autoTableID
+        _Versionmanager.tableID = tableID
+        _Versionmanager.tableName = tableName
+        _Versionmanager.version = version
+        _Versionmanager.description = description
+        _Versionmanager.priority = priority
+        _Versionmanager.owner = owner
+        _Versionmanager.development = development
+        _Versionmanager.status = status
+        _Versionmanager.testCases = testCases
+        _Versionmanager.testCaseReview = testCaseReview
+        _Versionmanager.firstRoundTest = firstRoundTest
+        _Versionmanager.secondRoundTest = secondRoundTest
+        _Versionmanager.thirdRoundTest = thirdRoundTest
+        _Versionmanager.remarks = remarks
+        _Versionmanager.yueLinProgress = yueLinProgress
+        _Versionmanager.yueLinRemarks = yueLinRemarks
+        _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+        _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+        _Versionmanager.editable = editable
+    else:
+        _Versionmanager.tableID = tableID
+        _Versionmanager.version = version
+        _Versionmanager.tableName = tableName
+        _Versionmanager.description = description
+        _Versionmanager.priority = priority
+        _Versionmanager.owner = owner
+        _Versionmanager.development = development
+        _Versionmanager.status = status
+        _Versionmanager.testCases = testCases
+        _Versionmanager.testCaseReview = testCaseReview
+        _Versionmanager.firstRoundTest = firstRoundTest
+        _Versionmanager.secondRoundTest = secondRoundTest
+        _Versionmanager.thirdRoundTest = thirdRoundTest
+        _Versionmanager.remarks = remarks
+        _Versionmanager.yueLinProgress = yueLinProgress
+        _Versionmanager.yueLinRemarks = yueLinRemarks
+        _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+        _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+        _Versionmanager.editable = editable
+    _Versionmanager.save()
+
+    data = {
+        "code": 200,
+        "msg": "Success"
+    }
+    return JsonResponse(data, safe=False)
 def saveVersionManger(request):
     '''保存版本管理'''
     requestData = json.loads(request.body)
-    for versionManer in requestData:
+    print(requestData)
+    for versionManer in requestData['tabledata']:
+        print(versionManer)
         autoTableID=versionManer['autoTableID']
+        tableName=versionManer['tableName']
         tableID=versionManer['tableID']
         version = versionManer['version']
         description = versionManer['description']
@@ -49,6 +151,7 @@ def saveVersionManger(request):
         if autoTableID:
             _Versionmanager.autoTableID=autoTableID
             _Versionmanager.tableID = tableID
+            _Versionmanager.tableName=tableName
             _Versionmanager.version = version
             _Versionmanager.description = description
             _Versionmanager.priority = priority
@@ -69,6 +172,7 @@ def saveVersionManger(request):
         else:
             _Versionmanager.tableID = tableID
             _Versionmanager.version = version
+            _Versionmanager.tableName = tableName
             _Versionmanager.description = description
             _Versionmanager.priority = priority
             _Versionmanager.owner = owner

@@ -112,3 +112,4 @@ class Versionmanager(models.Model):
     juHaoMaiProgress = models.CharField(max_length=50, verbose_name="聚好麦上线进度")
     juHaoMaiRemarks = models.CharField(max_length=50, verbose_name="备注")
     editable = models.BooleanField(max_length=50, verbose_name="项目名称")
+    tableName=models.CharField(max_length=50, verbose_name="周计划名称")

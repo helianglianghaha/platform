@@ -32,6 +32,10 @@ urlpatterns = [
    url('quality/selectTableDegion/',API.selectTableDegion, name='selectTableDegion'),
    url('quality/selectProScriptFile/',API.selectProScriptFile, name='selectProScriptFile'),
    url('quality/createScriptFile/',API.createScriptFile, name='createScriptFile'),
+   url('quality/selectTagsManger/',API.selectTagsManger, name='selectTagsManger'),
+   url('quality/selectVersionManger/',API.selectVersionManger, name='selectVersionManger'),
+   url('quality/saveSingleVersionManger/',API.saveSingleVersionManger, name='saveSingleVersionManger'),
+
 
    url('quality/readlog/',API.readlog, name='readlog'),
    url('quality/selectAllModelTree/',API.selectAllModelTree, name='selectAllModelTree'),
