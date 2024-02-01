@@ -35,6 +35,8 @@ urlpatterns = [
    url('quality/selectTagsManger/',API.selectTagsManger, name='selectTagsManger'),
    url('quality/selectVersionManger/',API.selectVersionManger, name='selectVersionManger'),
    url('quality/saveSingleVersionManger/',API.saveSingleVersionManger, name='saveSingleVersionManger'),
+   url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
+
 
 
    url('quality/readlog/',API.readlog, name='readlog'),

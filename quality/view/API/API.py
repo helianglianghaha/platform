@@ -21,6 +21,33 @@ from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
 
+
+def delVersionManger(request):
+    '''删除版本名称'''
+    requestData = json.loads(request.body)
+    tableID = requestData['tableID']
+    autoTableID = requestData['autoTableID']
+    print(autoTableID)
+
+    sql='select * from  quality_versionmanager where tableID='+'\''+str(tableID)+'\''
+    print('sql=======',sql)
+    result=commonList().getModelData(sql)
+    if len(result)==1:
+        data = {
+            "code": 200,
+            "msg": "不能再删了，就剩一条了"
+        }
+    else:
+        _Versionmanager = Versionmanager.objects.get(autoTableID=autoTableID)
+        print('=====111111======',autoTableID)
+        _Versionmanager.delete()
+        data = {
+            "code": 200,
+            "msg": "删除成功"
+        }
+    return JsonResponse(data, safe=False)
+
+
 def editTagsManger(request):
     '''修改版本管理名称'''
     requestData = json.loads(request.body)
@@ -28,9 +55,13 @@ def editTagsManger(request):
 
 def selectTagsManger(request):
     '''页面初始化查询'''
-    sqldata='SELECT DISTINCT(tableID) FROM quality_versionmanager'
+    sqldata='SELECT tableID FROM quality_versionmanager GROUP BY tableID ORDER BY MAX(autoTableID) desc '
     data = commonList().getModelData(sqldata)
-    print("data====",data)
+    print("====data====",data)
+    # for i in data:
+    #     print(i)
+    #     data[i]['owner']=json.loads(i['owner'])
+    #     data[i]['development']=json.loads(i['development'])
     return JsonResponse(data, safe=False)
 
 def selectVersionManger(request):
@@ -43,8 +74,21 @@ def selectVersionManger(request):
     data=commonList().getModelData(sql)
     print("data====", data)
 
+    def convert_lists(item):
+        if item['owner']:
+            item['owner'] = eval(item['owner'])
+        else:
+            item['owner']=[]
+        if item['development']:
+            item['development'] = eval(item['development'])
+        else:
+            item['development']=[]
+        return item
 
-    return JsonResponse(data, safe=False)
+    # Apply the conversion to each dictionary in the list
+    modified_list = [convert_lists(item) for item in data]
+
+    return JsonResponse(modified_list, safe=False)
 
 
 def saveSingleVersionManger(request):
@@ -124,7 +168,7 @@ def saveVersionManger(request):
     '''保存版本管理'''
     requestData = json.loads(request.body)
     print(requestData)
-    for versionManer in requestData['tabledata']:
+    for versionManer in requestData:
         print(versionManer)
         autoTableID=versionManer['autoTableID']
         tableName=versionManer['tableName']
