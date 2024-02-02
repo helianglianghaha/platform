@@ -1,5 +1,12 @@
-[2024-02-01 08:50:54,882] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2024-02-01 08:50:54,886] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-01 08:50:54,912] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
-[2024-02-01 08:55:21,213] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-01 08:59:14,150] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-02 17:46:28,302] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-02 17:46:28,308] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2024-02-02 17:46:28,302] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-02 17:46:28,308] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2024-02-02 17:46:28,329] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2024-02-02 17:50:32,952] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
+[2024-02-02 17:50:32,954] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-02 17:50:32,974] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2024-02-02 17:56:25,963] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-02 17:58:37,558] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-02 18:00:00,213] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-02 18:02:49,897] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>

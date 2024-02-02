@@ -189,6 +189,7 @@ def saveVersionManger(request):
         yueLinRemarks = versionManer['yueLinRemarks']
         juHaoMaiProgress = versionManer['juHaoMaiProgress']
         juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
+        liveTime=versionManer['liveTime']
         editable = versionManer['editable']
 
         _Versionmanager = Versionmanager()
@@ -207,6 +208,7 @@ def saveVersionManger(request):
             _Versionmanager.firstRoundTest = firstRoundTest
             _Versionmanager.secondRoundTest = secondRoundTest
             _Versionmanager.thirdRoundTest = thirdRoundTest
+            _Versionmanager.liveTime=liveTime
             _Versionmanager.remarks = remarks
             _Versionmanager.yueLinProgress = yueLinProgress
             _Versionmanager.yueLinRemarks = yueLinRemarks
@@ -228,6 +230,7 @@ def saveVersionManger(request):
             _Versionmanager.secondRoundTest = secondRoundTest
             _Versionmanager.thirdRoundTest = thirdRoundTest
             _Versionmanager.remarks = remarks
+            _Versionmanager.liveTime = liveTime
             _Versionmanager.yueLinProgress = yueLinProgress
             _Versionmanager.yueLinRemarks = yueLinRemarks
             _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
