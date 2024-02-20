@@ -15,8 +15,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 from django.conf import settings
 from django.conf.urls.static import static
-# from quality.view.API.model import  Modeldata
-# from django.views.generic import  TemplateView
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -98,8 +97,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'QualityPlatform.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases AYXQA_TEST
 
 DATABASES = {
     'default': {
@@ -109,20 +106,8 @@ DATABASES = {
         'PASSWORD':'UUueBYYs9U4uptj',
         'HOST':'rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com',
         'PORT':'3306',
-
-        # 'ENGINE':'django.db.backends.mysql',
-        # 'NAME':'testplatform',
-            # 'USER':'root1',
-        # 'PASSWORD':'Goodlearning2021@@',
-        # 'HOST':'rm-uf60nso6wlf92lhtjzo.mysql.rds.aliyuncs.com',
-        # 'PORT':'3306',
-        #     'ENGINE': 'django.db.backends.sqlite3',
-        #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-# Password validation
-# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -187,63 +172,10 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 CRONJOBS = [
     #('*/1 * * * *', '你的app名.定时函数所在的py文件名.定时函数名'),
     # ('0   0 1 * *', '你的app名.定时函数所在的py文件名.定时函数名', '> 输出文件路径和名称'),
-    #('*/5 * * * *','quality.jira.Issues.get_updated_issues_insert_db','>>../issues.log')
-    ('*/5 * * * *','E:/TestPlatClone/TestPlat/platForm/quality/xunJian/batchXunJian')
+    ('*/2 * * * *','quality.view.bugAnalysis.analysis.BUGAnalysis','>logs/bugAnalysis.log')
 ]
 STATIC_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
-# LOG_PATH = os.path.join(STATIC_ROOT, 'logs')
-# if not os.path.isdir(LOG_PATH):
-#     os.mkdir(LOG_PATH)
 
-# LOGGING = {
-#     'version': 1, # 必须指定为1
-#     'disable_existing_loggers': False,  # 禁用默认配置中的所有logger
-#     'encoding':'utf-8',
-#     'formatters': {
-#         'verbose': {
-#             'format': '%(levelname)s %(asctime)s %(module)s %(funcName)s %(lineno)d %(message)s'
-#         },
-#         # 详细的日志格式
-#         'standard': {
-#             'format': '[%(asctime)s][%(threadName)s:%(thread)d][task_id:%(name)s][%(filename)s:%(lineno)d]'
-#                       '[%(levelname)s][%(message)s]'
-#         },
-#         'simple': {
-#             'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
-#         },
-#     },
-#     'filters': {
-#         'require_debug_true': {
-#             '()': 'django.utils.log.RequireDebugTrue',
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'filters': ['require_debug_true'],
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'simple'
-#         },
-#         'file': {
-#             'level': 'INFO',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': os.path.join(LOG_PATH,'console.log'),  # 日志文件的位置
-#             'maxBytes': 3 * 1024 * 1024, #每个日志文件大小 这里是文件到 3M 会自动清空
-#             'encoding':'utf-8',
-#             'backupCount': 5, # 日志文件个数:备份份数
-#             'formatter': 'verbose'
-#         },
-
-#     },
-#     'loggers': {
-#         'django': {  # 定义了一个名为django的日志器
-#             'handlers': ['console', 'file'],
-#             'propagate': True,
-#             'level': 'INFO'
-#         },
-#     }
-
-# }
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -255,19 +187,6 @@ CACHES = {
     }
 }
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         # 'LOCATION': 'redis://10.10.254.4:9055',#生产
-#         # 'LOCATION': 'redis://127.0.0.1:6379',#测试
-#         "OPTIONS": {
-#             # "CONNECTION_POOL_KWARGS": {"max_connections": 100},
-#             # "CLIENT_CLASS": "django_redis.client.DefaultClient",
-#             # "PASSWORD": "",
-#             "PICKLE_VERSION": -1
-#         },
-#     },
-# }
 REDIS_TIMEOUT=7*24*60*60
 CUBES_REDIS_TIMEOUT=60*60
 NEVER_REDIS_TIMEOUT=365*24*60*60

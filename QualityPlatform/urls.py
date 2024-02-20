@@ -9,6 +9,7 @@ from quality.view.project import login
 from quality.view.API import API
 from quality.view.UI import UI_data
 from quality.view.API_version import API_data
+from quality.view.bugAnalysis import analysis
 
 urlpatterns = [
    url('admin/',admin.site.urls),
@@ -36,8 +37,8 @@ urlpatterns = [
    url('quality/selectVersionManger/',API.selectVersionManger, name='selectVersionManger'),
    url('quality/saveSingleVersionManger/',API.saveSingleVersionManger, name='saveSingleVersionManger'),
    url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
-
-
+   url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
+   url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
 
    url('quality/readlog/',API.readlog, name='readlog'),
    url('quality/selectAllModelTree/',API.selectAllModelTree, name='selectAllModelTree'),
