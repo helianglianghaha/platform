@@ -1,12 +1,17 @@
-[2024-02-02 17:46:28,302] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-02 17:46:28,308] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2024-02-02 17:46:28,302] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-02 17:46:28,308] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2024-02-02 17:46:28,329] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
-[2024-02-02 17:50:32,952] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2024-02-02 17:50:32,954] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-02 17:50:32,974] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
-[2024-02-02 17:56:25,963] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-02 17:58:37,558] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-02 18:00:00,213] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-02 18:02:49,897] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 13:56:54,440] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 15:33:40,436] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 15:40:12,540] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 15:40:24,988] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 15:50:31,400] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 15:58:35,892] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 15:59:09,308] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 16:35:33,844] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 16:43:05,026] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 17:24:45,449] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 17:58:07,149] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 18:04:54,157] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 18:06:05,365] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 18:12:04,676] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 18:13:20,712] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 18:24:31,224] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-02-21 18:32:37,761] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>

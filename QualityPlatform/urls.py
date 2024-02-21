@@ -39,6 +39,7 @@ urlpatterns = [
    url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
    url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
+   url('quality/selectSigleVersionBugData/',analysis.selectSigleVersionBugData, name='selectSigleVersionBugData'),
 
    url('quality/readlog/',API.readlog, name='readlog'),
    url('quality/selectAllModelTree/',API.selectAllModelTree, name='selectAllModelTree'),

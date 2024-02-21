@@ -26,13 +26,152 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 #添加定时任务
 scheduler = BackgroundScheduler()
+
+def selectSigleVersionBugData(request):
+    '''bug条件查询'''
+    requestData = json.loads(request.body)
+    title = requestData['title']
+    version_report = requestData['version_report']
+    reporter = requestData['reporter']
+    severity = requestData['severity']
+    status_alias = requestData['status']
+    priority = requestData['priority']
+    created = requestData['createdTime']
+
+    sql = 'SELECT * FROM quality_bugAnalysis WHERE '
+    conditions = []
+
+    if len(version_report) > 0:
+        version_conditions = ["version_report = '{}'".format(v) for v in version_report]
+        conditions.append("(" + " OR ".join(version_conditions) + ")")
+
+    if len(reporter) > 0:
+        reporter_conditions = ["reporter = '{}'".format(r) for r in reporter]
+        conditions.append("(" + " OR ".join(reporter_conditions) + ")")
+
+    if len(severity) > 0:
+        severity_conditions = ["severity = '{}'".format(s) for s in severity]
+        conditions.append("(" + " OR ".join(severity_conditions) + ")")
+
+    if len(status_alias) > 0:
+        status_conditions = ["status_alias = '{}'".format(s) for s in status_alias]
+        conditions.append("(" + " OR ".join(status_conditions) + ")")
+
+    if len(priority) > 0:
+        priority_conditions = ["priority = '{}'".format(p) for p in priority]
+        conditions.append("(" + " OR ".join(priority_conditions) + ")")
+
+    if len(created) == 2:
+        start_time, end_time = created
+        start_time = datetime.datetime.fromisoformat(start_time)
+        end_time = datetime.datetime.fromisoformat(end_time)
+
+
+        # Format timestamps as "年-月-日 时-分-秒"
+        start_time_formatted = start_time.strftime("%Y-%m-%d %H:%M:%S")
+        end_time_formatted = end_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        conditions.append("created BETWEEN '{}' AND '{}'".format(start_time_formatted, end_time_formatted))
+
+    if len(title) > 0:
+        conditions.append("title = '{}'".format(title))
+
+    if conditions:
+        sql += " AND ".join(conditions)
+
+    if len(version_report)==0 and len(reporter)==0 and len(severity)==0 and len(status_alias)==0 and len(priority)==0 and len(created)==0:
+        sql='SELECT * FROM quality_bugAnalysis'
+
+    print('=======sql========', sql)
+    data = commonList().getModelData(sql)
+
+    # 获取版本信息
+    reportSql = 'SELECT DISTINCT version_report  FROM quality_buganalysis where version_report IS NOT NULL ORDER BY version_report  desc'
+    reportListData = commonList().getModelData(reportSql)
+    reportList = []
+    for report in reportListData:
+        reportdict = {}
+        reportdict['label'] = report['version_report']
+        reportdict['value'] = report['version_report']
+        reportList.append(reportdict)
+
+    # 获取处理人信息
+    current_ownersql = 'SELECT DISTINCT current_owner FROM quality_buganalysis;'
+    current_ownerListData = commonList().getModelData(current_ownersql)
+    current_ownerList = []
+    for current_owner in current_ownerListData:
+        current_ownerdict = {}
+        current_ownerdict['label'] = current_owner['current_owner']
+        current_ownerdict['value'] = current_owner['current_owner']
+        current_ownerList.append(current_ownerdict)
+
+    data = {
+        "code": 200,
+        "data": data,
+        "reportList": reportList,
+        "current_ownerList": current_ownerList
+    }
+
+    return JsonResponse(data, safe=False)
+
+
+
+
+
+
+
+
+
+
+
+
 def selectBugDataList(request):
     '''查询BUG数据'''
     sql='select *  from quality_buganalysis ORDER BY created DESC '
     bugList=commonList().getModelData(sql)
+    # 获取版本信息
+    reportSql = 'SELECT DISTINCT version_report  FROM quality_buganalysis where version_report IS NOT NULL ORDER BY version_report  desc'
+    reportListData = commonList().getModelData(reportSql)
+    reportList=[]
+    for report in reportListData:
+        reportdict={}
+        reportdict['label']=report['version_report']
+        reportdict['value']=report['version_report']
+        reportList.append(reportdict)
+
+
+    # 获取处理人信息
+    current_ownersql = 'SELECT DISTINCT current_owner FROM quality_buganalysis;'
+    current_ownerListData = commonList().getModelData(current_ownersql)
+    current_ownerList=[]
+    for current_owner in current_ownerListData:
+        current_ownerdict={}
+        current_ownerdict['label']=current_owner['current_owner']
+        current_ownerdict['value'] = current_owner['current_owner']
+        current_ownerList.append(current_ownerdict)
+
+    # 获取未解决BUG
+    unsolvesql='select count(*) as number from quality_buganalysis where status_alias=\'新\''
+    unsolveData = commonList().getModelData(unsolvesql)
+
+    # 每日新增BUG
+
+    todayBug='select  count(*) as number from quality_buganalysis where Date(created)=CURRENT_DATE'
+    todayBugData=commonList().getModelData(todayBug)
+
+
+
+
+    # 获取每日新增BUG
+
+
     data = {
         "code": 200,
-        "data": bugList
+        "data": bugList,
+        "reportList":reportList,
+        "current_ownerList":current_ownerList,
+        "unSolveBug":unsolveData,
+        "todyBugNumber":todayBugData
     }
 
     return JsonResponse(data, safe=False)
@@ -114,6 +253,8 @@ def BUGAnalysis():
 
         if page_number >=2:
             break
+
+
 
     print("=====所有bug数据更新完成========")
     # 关闭数据库连接

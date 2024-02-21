@@ -22,7 +22,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="新年样式优化" />
+    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="新增BUG管理">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/platform.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/platform.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/QualityPlatform/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/webtestcase.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/quality/view/bugAnalysis/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/bugAnalysis/analysis.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -286,7 +293,7 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/hll/Desktop/git/platform&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/hll/Desktop/git/platform/quality/view/bugAnalysis&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -295,6 +302,11 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/quality/view/bugAnalysis" />
+    </key>
+  </component>
   <component name="RunManager" selected="Django Server.platform">
     <configuration name="Ding" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="platform" />
@@ -412,12 +424,12 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Django Server.platform" />
       <item itemvalue="Python.Ding" />
       <item itemvalue="Python.V3.5.0求阈值" />
       <item itemvalue="Python.batchApiXunJian" />
       <item itemvalue="Python.test (1)" />
       <item itemvalue="Python.test" />
-      <item itemvalue="Django Server.platform" />
     </list>
     <recent_temporary>
       <list>
@@ -595,6 +607,12 @@
       <workItem from="1706673311317" duration="1996000" />
       <workItem from="1706748509422" duration="2195000" />
       <workItem from="1706834844862" duration="1299000" />
+      <workItem from="1706868236384" duration="17000" />
+      <workItem from="1708310548885" duration="24964000" />
+      <workItem from="1708389270925" duration="220000" />
+      <workItem from="1708389639031" duration="12056000" />
+      <workItem from="1708475294377" duration="3156000" />
+      <workItem from="1708499847843" duration="9089000" />
     </task>
     <task id="LOCAL-00001" summary="后端整体推送">
       <created>1649724864730</created>
@@ -803,7 +821,23 @@
       <option name="project" value="LOCAL" />
       <updated>1706868223722</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="新年样式优化">
+      <option name="closed" value="true" />
+      <created>1706868245244</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1706868245244</updated>
+    </task>
+    <task id="LOCAL-00030" summary="新增BUG管理">
+      <option name="closed" value="true" />
+      <created>1708413621819</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1708413621819</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -874,7 +908,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="新增断言" />
     <MESSAGE value="修复BUG测试报告参数解析问题及多重断言" />
     <MESSAGE value="新增sql自查询" />
     <MESSAGE value="修改脚本生成测试报告及日志的地址" />
@@ -899,7 +932,8 @@
     <MESSAGE value="版本管理-样式修改" />
     <MESSAGE value="版本管理优化" />
     <MESSAGE value="新年样式优化" />
-    <option name="LAST_COMMIT_MESSAGE" value="新年样式优化" />
+    <MESSAGE value="新增BUG管理" />
+    <option name="LAST_COMMIT_MESSAGE" value="新增BUG管理" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
