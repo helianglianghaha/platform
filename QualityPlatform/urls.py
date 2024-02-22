@@ -10,6 +10,7 @@ from quality.view.API import API
 from quality.view.UI import UI_data
 from quality.view.API_version import API_data
 from quality.view.bugAnalysis import analysis
+from quality.view.bugAnalysis import timeTask
 
 urlpatterns = [
    url('admin/',admin.site.urls),
@@ -40,6 +41,8 @@ urlpatterns = [
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
    url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
    url('quality/selectSigleVersionBugData/',analysis.selectSigleVersionBugData, name='selectSigleVersionBugData'),
+   url('quality/update_versioninfo/',timeTask.update_versioninfo, name='totalVersionData'),
+   url('quality/update_bug_info/',timeTask.update_bug_info, name='update_bug_info'),
 
    url('quality/readlog/',API.readlog, name='readlog'),
    url('quality/selectAllModelTree/',API.selectAllModelTree, name='selectAllModelTree'),

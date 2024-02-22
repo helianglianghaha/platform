@@ -82,6 +82,8 @@ def selectSigleVersionBugData(request):
     if len(version_report)==0 and len(reporter)==0 and len(severity)==0 and len(status_alias)==0 and len(priority)==0 and len(created)==0:
         sql='SELECT * FROM quality_bugAnalysis'
 
+    sql += " ORDER BY  created DESC"
+
     print('=======sql========', sql)
     data = commonList().getModelData(sql)
 
@@ -113,14 +115,6 @@ def selectSigleVersionBugData(request):
     }
 
     return JsonResponse(data, safe=False)
-
-
-
-
-
-
-
-
 
 
 
@@ -190,6 +184,7 @@ def BUGAnalysis():
     )
     # 创建游标对象
     cursor = conn.cursor()
+
     def fetch_data(page_number, page_size):
         url = "https://www.tapd.cn/api/aggregation/bug_aggregation/get_bug_fields_userview_and_list"
 
@@ -251,10 +246,8 @@ def BUGAnalysis():
         print("===第{}页数据更新完成====".format(page_number))
         page_number += 1
 
-        if page_number >=2:
+        if page_number >=3:
             break
-
-
 
     print("=====所有bug数据更新完成========")
     # 关闭数据库连接
@@ -264,7 +257,6 @@ def BUGAnalysis():
         "code":200,
         "data":"所有bug数据更新完成"
     }
-
     return JsonResponse(data)
 scheduler.add_job(BUGAnalysis, 'interval', minutes=10)
 
