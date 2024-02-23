@@ -14,7 +14,6 @@ from quality.view.bugAnalysis import timeTask
 
 urlpatterns = [
    url('admin/',admin.site.urls),
-   # url('quality/admin/', admin.site.urls),
    path('',TemplateView.as_view(template_name='index.html')),
    url('quality/saveScriptData/',API.saveScriptData, name='saveScriptData'),
    url('quality/deleteScript/',API.deleteScript, name='deleteScript'),
@@ -40,6 +39,8 @@ urlpatterns = [
    url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
    url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
+   url('quality/selectTopBugData/',analysis.selectTopBugData, name='selectTopBugData'),
+
    url('quality/selectSigleVersionBugData/',analysis.selectSigleVersionBugData, name='selectSigleVersionBugData'),
    url('quality/update_versioninfo/',timeTask.update_versioninfo, name='totalVersionData'),
    url('quality/update_bug_info/',timeTask.update_bug_info, name='update_bug_info'),
@@ -129,13 +130,3 @@ urlpatterns = [
    url('quality/selectVersionData/',API.selectVersionData, name='selectVersionData'),
    url('quality/Login/',login.Login, name='Login'),
     ]
-# from apscheduler.scheduler import Scheduler
-from quality.xunJian.batchApiXunJian import batchApiCases
-# from quality.view.UI.UIFunction import batchXunJianTestCase
-# sched = Scheduler()
-#
-#
-# @sched.interval_schedule(seconds=120)
-# def my_task():
-#    batchApiCases().selectAllApiTestCase()
-# sched.start()

@@ -27,6 +27,63 @@ from apscheduler.schedulers.background import BackgroundScheduler
 #添加定时任务
 scheduler = BackgroundScheduler()
 
+def selectTopBugData(request):
+    '''查询首页数据'''
+    sql = '''
+            SELECT 
+            version_report,
+            SUM(CASE WHEN severity = 'suggestion' THEN 1 ELSE 0 END) AS suggestion_count,
+            SUM(CASE WHEN severity = 'prompt' THEN 1 ELSE 0 END) AS prompt_count,
+            SUM(CASE WHEN severity = 'normal' THEN 1 ELSE 0 END) AS normal_count,
+            SUM(CASE WHEN severity = 'serious' THEN 1 ELSE 0 END) AS serious_count,
+            SUM(CASE WHEN severity = 'critical' THEN 1 ELSE 0 END) AS critical_count,
+            SUM(CASE WHEN status_alias = '新' THEN 1 ELSE 0 END) AS open_count,
+            SUM(CASE WHEN status_alias = '已解决' THEN 1 ELSE 0 END) AS close_count,
+            SUM(CASE WHEN status_alias = '已关闭' THEN 1 ELSE 0 END) AS closed_count,
+            count(version_report is not NULL) AS total_count
+            FROM quality_buganalysis
+            GROUP BY version_report
+        '''
+    print(sql)
+    bugData = commonList().getModelData(sql)
+
+    # 汇总数据
+    sqlTotal='''
+            SELECT 
+            SUM(CASE WHEN status_alias = '新' THEN 1 ELSE 0 END) AS open_count,
+            SUM(CASE WHEN status_alias = '已解决' THEN 1 ELSE 0 END) AS close_count,
+            SUM(CASE WHEN status_alias = '已关闭' THEN 1 ELSE 0 END) AS closed_count,
+            count(version_report is not NULL) AS total_count
+            FROM quality_buganalysis
+    '''
+    totalBugData=commonList().getModelData(sqlTotal)
+
+
+    versiondata='''
+            SELECT 
+            SUM(CASE WHEN status = '开发中' THEN 1 ELSE 0 END) AS open_count,
+            SUM(CASE WHEN status = '已上线' THEN 1 ELSE 0 END) AS ready_count,
+            SUM(CASE WHEN status = '规划中' THEN 1 ELSE 0 END) AS guihua_count,
+            SUM(CASE WHEN status = '待测试' THEN 1 ELSE 0 END) AS test_count,
+            SUM(CASE WHEN status = '暂停' THEN 1 ELSE 0 END) AS stop_count,
+            SUM(CASE WHEN status = '已测试待上线' THEN 1 ELSE 0 END) AS already_count,
+            SUM(CASE WHEN status = '测试中' THEN 1 ELSE 0 END) AS testing_count,
+            SUM(CASE WHEN status = '部分上线' THEN 1 ELSE 0 END) AS bufenReady_count
+            FROM quality_versionmanager
+    '''
+    print(versiondata)
+    versionList=commonList().getModelData(versiondata)
+
+
+
+    data = {
+        "code": 200,
+        "data": bugData,
+        "version":versionList,
+        "total":totalBugData
+        }
+    return JsonResponse(data, safe=False)
+
 def selectSigleVersionBugData(request):
     '''bug条件查询'''
     requestData = json.loads(request.body)

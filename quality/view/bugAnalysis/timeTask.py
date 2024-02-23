@@ -6,7 +6,7 @@ import time
 import datetime
 
 #版本信息定时通知
-def update_versioninfo(request):
+def update_versioninfo():
     # Check if today is Sunday
     if datetime.datetime.now().weekday() == 6:  # Sunday is represented by 6
         print("Today is Sunday. Skipping interface update.")
@@ -83,16 +83,10 @@ def update_bug_info():
             SUM(CASE WHEN severity = 'serious' THEN 1 ELSE 0 END) AS serious_count,
             SUM(CASE WHEN severity = 'critical' THEN 1 ELSE 0 END) AS critical_count,
             SUM(CASE WHEN status_alias = '新' THEN 1 ELSE 0 END) AS open_count,
-            SUM(CASE WHEN status_alias = '已解决' THEN 1 ELSE 0 END) AS close_count
+            SUM(CASE WHEN status_alias = '已解决' THEN 1 ELSE 0 END) AS close_count,
+            SUM(CASE WHEN status_alias = '已关闭' THEN 1 ELSE 0 END) AS closed_count,
+            count(*) AS total_count,
         FROM quality_buganalysis
-        WHERE version_report = (
-            SELECT version_report 
-            FROM quality_buganalysis 
-            WHERE bug_id = (
-                SELECT MAX(bug_id) 
-                FROM quality_buganalysis
-            )
-        )
         GROUP BY version_report;
     '''
     bugData=commonList().getModelData(sql)
@@ -131,5 +125,5 @@ scheduler.add_job(update_bug_info, 'cron', hour=9)
 scheduler.add_job(update_bug_info, 'cron', hour=12)
 scheduler.add_job(update_bug_info, 'cron', hour=20)
 
-scheduler.start()
+# scheduler.start()
   # Check every minute
