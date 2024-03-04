@@ -43,6 +43,7 @@ def selectTopBugData(request):
             count(version_report is not NULL) AS total_count
             FROM quality_buganalysis
             GROUP BY version_report
+            ORDER BY MAX(created) DESC
         '''
     print(sql)
     bugData = commonList().getModelData(sql)
@@ -57,7 +58,6 @@ def selectTopBugData(request):
             FROM quality_buganalysis
     '''
     totalBugData=commonList().getModelData(sqlTotal)
-
 
     versiondata='''
             SELECT 
@@ -206,16 +206,10 @@ def selectBugDataList(request):
     unsolveData = commonList().getModelData(unsolvesql)
 
     # 每日新增BUG
-
     todayBug='select  count(*) as number from quality_buganalysis where Date(created)=CURRENT_DATE'
     todayBugData=commonList().getModelData(todayBug)
 
-
-
-
     # 获取每日新增BUG
-
-
     data = {
         "code": 200,
         "data": bugList,
@@ -284,14 +278,14 @@ def BUGAnalysis():
         if response.status_code == 200:
             data = response.json()
         else:
-            print('Error:', response.status_code)
+            # print('Error:', response.status_code)
             data=None
         return data
 
 
     while True:
         data=fetch_data(page_number,page_size)
-        print("===正在获取第{}页数据====".format(page_number))
+        # print("===正在获取第{}页数据====".format(page_number))
         bugs_list = data['data']['bugs_list_ret']['data']['bugs_list']
         if not bugs_list:
             break
@@ -300,13 +294,13 @@ def BUGAnalysis():
             from .sqlData import selectSqlData
             selectSqlData().insert_or_update_data(cursor,conn,item['Bug'])
         conn.commit()
-        print("===第{}页数据更新完成====".format(page_number))
+        # print("===第{}页数据更新完成====".format(page_number))
         page_number += 1
 
         if page_number >=3:
             break
 
-    print("=====所有bug数据更新完成========")
+    # print("=====所有bug数据更新完成========")
     # 关闭数据库连接
     cursor.close()
     conn.close()

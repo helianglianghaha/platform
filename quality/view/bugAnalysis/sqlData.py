@@ -15,12 +15,12 @@ class selectSqlData:
             new_data_list=new_data.values()
             old_data_list=existing_data[0].values()
             # print('newData',new_data)
-            print("=============已存在的数据=old_data_list=================", old_data_list)
-            print("================新数据==new_data_list============", new_data_list)
+            # print("=============已存在的数据=old_data_list=================", old_data_list)
+            # print("================新数据==new_data_list============", new_data_list)
             for newData in new_data_list:
                 if newData not in old_data_list:
                     # 如果数据不同，执行更新操作
-                    print("数据不同需要更新")
+                    # print("数据不同需要更新")
                     columns = ', '.join(new_data.keys())
                     values_template = ', '.join(['%s'] * len(new_data))
 
@@ -33,10 +33,11 @@ class selectSqlData:
                     cursor.execute(update_query, tuple(new_data.values()) + (new_data['short_id'],))
 
                     connection.commit()
-                    print("Data updated successfully.")
+                    # print("Data updated successfully.")
                     break
                 else:
-                    print("数据相同，不用更新")
+                    pass
+                    # print("数据相同，不用更新")
         else:
             columns = ', '.join(new_data.keys())
             values_template = ', '.join(['%s'] * len(new_data))
@@ -44,4 +45,4 @@ class selectSqlData:
             # 如果数据库中不存在相同的数据，执行插入操作
             cursor.execute(insert_query, tuple(new_data.values()))
             connection.commit()
-            print("Data inserted successfully.")
+            # print("Data inserted successfully.")

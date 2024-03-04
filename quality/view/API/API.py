@@ -12,6 +12,9 @@ from quality.view.API.model import  Scriptproject
 from quality.view.API.model import Versionmanager
 from django.core import serializers
 from quality.common.logger import Log
+from quality.common.msg import msgMessage, msglogger
+from quality.common.msg import loginRequired
+from quality.common.logger import Log
 from pathlib import Path
 import  os,shutil
 log=Log()
@@ -21,7 +24,7 @@ from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
 
-
+@msgMessage
 def delVersionManger(request):
     '''删除版本名称'''
     requestData = json.loads(request.body)
@@ -47,7 +50,7 @@ def delVersionManger(request):
         }
     return JsonResponse(data, safe=False)
 
-
+@msgMessage
 def editTagsManger(request):
     '''修改版本管理名称'''
     requestData = json.loads(request.body)
@@ -63,7 +66,7 @@ def selectTagsManger(request):
     #     data[i]['owner']=json.loads(i['owner'])
     #     data[i]['development']=json.loads(i['development'])
     return JsonResponse(data, safe=False)
-
+@msgMessage
 def selectVersionManger(request):
     '''查询版本管理'''
     requestData = json.loads(request.body)
@@ -90,7 +93,7 @@ def selectVersionManger(request):
 
     return JsonResponse(modified_list, safe=False)
 
-
+@msgMessage
 def saveSingleVersionManger(request):
     '''保存单个版本'''
     requestData = json.loads(request.body)
@@ -136,7 +139,7 @@ def saveSingleVersionManger(request):
         _Versionmanager.yueLinRemarks = yueLinRemarks
         _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
         _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
-        _Versionmanager.editable = editable
+        _Versionmanager.editable = 0
     else:
         _Versionmanager.tableID = tableID
         _Versionmanager.version = version
@@ -156,7 +159,7 @@ def saveSingleVersionManger(request):
         _Versionmanager.yueLinRemarks = yueLinRemarks
         _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
         _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
-        _Versionmanager.editable = editable
+        _Versionmanager.editable = 0
     _Versionmanager.save()
 
     data = {
@@ -164,6 +167,7 @@ def saveSingleVersionManger(request):
         "msg": "Success"
     }
     return JsonResponse(data, safe=False)
+@msgMessage
 def saveVersionManger(request):
     '''保存版本管理'''
     requestData = json.loads(request.body)
@@ -214,7 +218,7 @@ def saveVersionManger(request):
             _Versionmanager.yueLinRemarks = yueLinRemarks
             _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
             _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
-            _Versionmanager.editable = editable
+            _Versionmanager.editable = 0
         else:
             _Versionmanager.tableID = tableID
             _Versionmanager.version = version
@@ -235,7 +239,7 @@ def saveVersionManger(request):
             _Versionmanager.yueLinRemarks = yueLinRemarks
             _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
             _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
-            _Versionmanager.editable = editable
+            _Versionmanager.editable = 0
         _Versionmanager.save()
 
     data = {
@@ -268,7 +272,7 @@ def readLog(request):
             line=line.strip()
             logList.append(line)
     return JsonResponse(logList, safe=False)
-
+@msgMessage
 def selectTableList(request):
     '''查询所有表'''
     import mysql.connector
@@ -290,7 +294,7 @@ def selectTableList(request):
     cursor.close()
     return  JsonResponse(responsedata, safe=False)
 
-
+@msgMessage
 def selectTableDegion(request):
     '''查询表结构'''
     import mysql.connector
@@ -333,7 +337,7 @@ def selectTableDegion(request):
     cursor.close()
 
     return JsonResponse(formatted_data, safe=False)
-
+@msgMessage
 #sql语句查询
 def sqlcat(request):
     """sql查询"""
@@ -383,7 +387,7 @@ def sqlcat(request):
         return JsonResponse(response, safe=False)
     except Exception as e:
         return JsonResponse(e, safe=False)
-
+@msgMessage
 #上传文件
 def download_files(request):
     file_paths = json.loads(request.body)
@@ -403,6 +407,7 @@ def download_files(request):
 
 
 
+@msgMessage
 def upload(request):
     data=[]
     # print('上传文件',request.POST)
@@ -432,7 +437,9 @@ def upload(request):
     data.append(content)
 
     return JsonResponse(data, safe=False)
+
 #删除脚本
+@msgMessage
 def deleteApiScript(request):
     '''删除脚本'''
     urlName=request.POST.get('urlName')
@@ -467,6 +474,8 @@ def deleteApiScript(request):
         }
 
     return JsonResponse(data, safe=False)
+
+@msgMessage
 def createScriptFile(request):
     '''新建脚本文件'''
     dataList = request.POST
@@ -613,6 +622,7 @@ def createScriptFile(request):
         return JsonResponse(data, safe=False)
 
 #保存脚本地址
+@msgMessage
 def saveScriptFile(request):
     '''保存脚本文件地址'''
     # print(request.POST)
@@ -778,6 +788,7 @@ def saveScriptFile(request):
             }
             return JsonResponse(data, safe=False)
 #删除脚本信息
+@msgMessage
 def deleteScriptFile(request):
     '''删除脚本信息'''
     sceiptProject_id = request.POST.get('sceiptProject_id')
@@ -799,7 +810,7 @@ def selectScriptFile(request):
         # print(projectData["scriptName"])
         projectData["scriptName"]=ast.literal_eval(projectData["scriptName"])
     return JsonResponse(data, safe=False)
-
+@msgMessage
 def selectProScriptFile(request):
     '''查询生产脚本信息'''
     import ast
@@ -812,6 +823,7 @@ def selectProScriptFile(request):
     return JsonResponse(data, safe=False)
 
 # 获取测试报告地址是否存在
+@msgMessage
 def getReportFileData(request):
     '''获取报告状态'''
     requestData = json.loads(request.body)
@@ -858,6 +870,7 @@ def getReportFileData(request):
 
 
 # 执行脚本
+@msgMessage
 def executeScript(request):
     '''执行脚本'''
     # try:
@@ -1099,7 +1112,7 @@ def executeScript(request):
         }
 
     return JsonResponse(data, safe=False)
-
+@msgMessage
 def readHtmlReport(request):
     '''读取html报告'''
     try:
@@ -1124,6 +1137,8 @@ def readHtmlReport(request):
             "msg":'获取日志出错'
         }
     return JsonResponse(data,safe=False)
+
+@msgMessage
 def readScriptLog(request):
     '''读取ant执行日志'''
     requestData = json.loads(request.body)
@@ -1182,6 +1197,8 @@ def readlog(request):
             "msg":'获取日志出错'
         }
     return JsonResponse(data,safe=False)
+
+@msgMessage
 def addModelVersion(request):
     # print('version',request.POST)
     Modelversion_id=request.POST.get('Modelversion_id')
@@ -1217,11 +1234,13 @@ def addModelVersion(request):
 
 
 #查询版本信息
+@msgMessage
 def selectModelVersion(request):
     sql='select modeldata_id as value,modelData as label from quality_modeldata where subModelData!=0'
     data=commonList().getModelData(sql)
     return JsonResponse(data,safe=False)
 #查询模块信息
+@msgMessage
 def selectAllModelTree(request):
     sql='select * from quality_modeldata where subModelData=0'
     data1=commonList().getModelData(sql)
@@ -1267,6 +1286,7 @@ def selectAllModelTree(request):
 
 
 #删除模块信息
+@msgMessage
 def deleteModelDataList(request):
     # print("删除modelData",request.POST)
     modeldata_id=request.POST.get('modeldata_id')
@@ -1281,17 +1301,20 @@ def deleteModelDataList(request):
 
 
 #查询所有的模块信息
+@msgMessage
 def selectAllModel(request):
     sql="SELECT b.modelData,b.modeldata_id,b.subModelData,b.modelData_proenvironment,b.modelData_testenvironment,b.modelData_pripeople,a.modelData AS"+"\'"+'name'+"\'"+"FROM quality_modeldata b LEFT JOIN quality_modeldata a on a.modeldata_id=b.subModelData order by modeldata_id  desc"
     data = commonList().getModelData(sql)   
     return JsonResponse(data,safe=False)
 #查询模块信息
+@msgMessage
 def selectModelList(request):
     sql="select modeldata_id 'value' , modelData 'label' from quality_modeldata where subModelData=0"
     data = commonList().getModelData(sql)
     return JsonResponse(data,safe=False)
 
 #保存模块信息
+@msgMessage
 def saveModelData(request):
     modeldata_id=request.POST.get('modeldata_id')
     modelData=request.POST.get('modelData')

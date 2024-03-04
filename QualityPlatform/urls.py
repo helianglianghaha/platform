@@ -11,6 +11,7 @@ from quality.view.UI import UI_data
 from quality.view.API_version import API_data
 from quality.view.bugAnalysis import analysis
 from quality.view.bugAnalysis import timeTask
+from quality.view.documentMan import doc_api
 
 urlpatterns = [
    url('admin/',admin.site.urls),
@@ -40,6 +41,13 @@ urlpatterns = [
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
    url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
    url('quality/selectTopBugData/',analysis.selectTopBugData, name='selectTopBugData'),
+   url('quality/savefileData/',doc_api.savefileData, name='savefileData'),
+   url('quality/selectFiles/',doc_api.selectFiles, name='selectFiles'),
+   url('quality/delFileName/',doc_api.delFileName, name='delFileName'),
+   url('quality/editFiles/',doc_api.editFiles, name='editFiles'),
+   url('quality/filesupload/',doc_api.filesupload, name='filesupload'),
+   url('quality/saveFilsList/',doc_api.saveFilsList, name='saveFilsList'),
+   url('quality/selectFileLists/',doc_api.selectFileLists, name='selectFileLists'),
 
    url('quality/selectSigleVersionBugData/',analysis.selectSigleVersionBugData, name='selectSigleVersionBugData'),
    url('quality/update_versioninfo/',timeTask.update_versioninfo, name='totalVersionData'),
