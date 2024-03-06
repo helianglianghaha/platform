@@ -12,10 +12,16 @@ from quality.view.API_version import API_data
 from quality.view.bugAnalysis import analysis
 from quality.view.bugAnalysis import timeTask
 from quality.view.documentMan import doc_api
+from quality.view.testCasesMan import  cases_api
 
 urlpatterns = [
    url('admin/',admin.site.urls),
    path('',TemplateView.as_view(template_name='index.html')),
+
+   url('quality/casesfilesupload/',cases_api.casesfilesupload, name='casesfilesupload'),
+   url('quality/testCasesUpload/',cases_api.testCasesUpload, name='testCasesUpload'),
+   url('quality/selectCasesData/',cases_api.selectCasesData, name='selectCasesData'),
+
    url('quality/saveScriptData/',API.saveScriptData, name='saveScriptData'),
    url('quality/deleteScript/',API.deleteScript, name='deleteScript'),
    url('quality/upload/',API.upload, name='upload'),
@@ -48,6 +54,9 @@ urlpatterns = [
    url('quality/filesupload/',doc_api.filesupload, name='filesupload'),
    url('quality/saveFilsList/',doc_api.saveFilsList, name='saveFilsList'),
    url('quality/selectFileLists/',doc_api.selectFileLists, name='selectFileLists'),
+   url('quality/delFilsList/',doc_api.delFilsList, name='delFilsList'),
+   url('quality/downFiles/',doc_api.downFiles, name='downFiles'),
+
 
    url('quality/selectSigleVersionBugData/',analysis.selectSigleVersionBugData, name='selectSigleVersionBugData'),
    url('quality/update_versioninfo/',timeTask.update_versioninfo, name='totalVersionData'),
@@ -61,6 +70,9 @@ urlpatterns = [
    url('quality/saveModelData/',API.saveModelData, name='saveModelData'),
    url('quality/addModelVersion/',API.addModelVersion, name='addModelVersion'),
    url('quality/selectModelVersion/',API.selectModelVersion, name='selectModelVersion'),
+   url('quality/selectVersionList/',API.selectVersionList, name='selectVersionList'),
+
+
    url('quality/saveProAddress/',UI_data.saveProAddress, name='saveProAddress'),
    url('quality/selectProAddress/',UI_data.selectProAddress, name='selectProAddress'),
    url('quality/deleteProAddress/',UI_data.deleteProAddress, name='deleteProAddress'),
@@ -136,5 +148,9 @@ urlpatterns = [
    url('quality/selectAPIdata/',API.selectAPIdata, name='selectAPIdata'),
    url('quality/saveAPIdata/',API.saveAPIdata, name='saveAPIdata'),
    url('quality/selectVersionData/',API.selectVersionData, name='selectVersionData'),
+   url('quality/copyVersionManger/',API.copyVersionManger, name='selectVersionData'),
+
+
+
    url('quality/Login/',login.Login, name='Login'),
     ]

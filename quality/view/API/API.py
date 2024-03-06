@@ -24,6 +24,65 @@ from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
 
+def selectVersionList(request):
+    '''筛选版本名称'''
+
+    requestData = json.loads(request.body)
+    owner=requestData['select_owner_value']
+    development = requestData['select_development_value']
+    status=requestData['select_status_value']
+    tableID=requestData['tabelID']
+
+    sql = 'SELECT * FROM quality_versionmanager WHERE '
+    conditions = []
+
+    if len(owner) > 0:
+        owner_conditions = ["owner LIKE '%{}%'".format(v) for v in owner]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(development) > 0:
+        development_conditions = ["development LIKE '%{}%'".format(r) for r in development]
+        conditions.append("(" + " OR ".join(development_conditions) + ")")
+
+    if len(status) > 0:
+        status_conditions = ["status LIKE '%{}%'".format(s) for s in status]
+        conditions.append("(" + " OR ".join(status_conditions) + ")")
+
+    if conditions:
+        sql += " AND ".join(conditions)
+
+    if len(owner) != 0 or len(development) != 0 or len(status) != 0:
+        sql += " and tableID='{}'".format(tableID)
+
+    if len(owner) == 0 and len(development) == 0 and len(status) == 0:
+        sql = "SELECT * FROM quality_versionmanager where tableID='{}'".format(tableID)
+
+
+    print('=======sql========', sql)
+    data = commonList().getModelData(sql)
+
+
+    def convert_lists(item):
+        if item['owner']:
+            item['owner'] = eval(item['owner'])
+        else:
+            item['owner']=[]
+        if item['development']:
+            item['development'] = eval(item['development'])
+        else:
+            item['development']=[]
+        return item
+
+    # Apply the conversion to each dictionary in the list
+    modified_list = [convert_lists(item) for item in data]
+
+    data = {
+                "code": 200,
+                "data": modified_list
+            }
+    return JsonResponse(data, safe=False)
+
+
 @msgMessage
 def delVersionManger(request):
     '''删除版本名称'''
@@ -165,6 +224,58 @@ def saveSingleVersionManger(request):
     data = {
         "code": 200,
         "msg": "Success"
+    }
+    return JsonResponse(data, safe=False)
+def copyVersionManger(request):
+    '''复制当前版本管理'''
+    requestData = json.loads(request.body)
+    for versionManer in requestData:
+        tableName = versionManer['tableName']
+        tableID = versionManer['tableID']
+        version = versionManer['version']
+        description = versionManer['description']
+        priority = versionManer['priority']
+        owner = versionManer['owner']
+        development = versionManer['development']
+        status = versionManer['status']
+        testCases = versionManer['testCases']
+        testCaseReview = versionManer['testCaseReview']
+        firstRoundTest = versionManer['firstRoundTest']
+        secondRoundTest = versionManer['secondRoundTest']
+        thirdRoundTest = versionManer['thirdRoundTest']
+        remarks = versionManer['remarks']
+        yueLinProgress = versionManer['yueLinProgress']
+        yueLinRemarks = versionManer['yueLinRemarks']
+        juHaoMaiProgress = versionManer['juHaoMaiProgress']
+        juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
+        liveTime = versionManer['liveTime']
+        _Versionmanager = Versionmanager()
+
+        _Versionmanager.tableID = tableID
+        _Versionmanager.version = version
+        _Versionmanager.tableName = tableName
+        _Versionmanager.description = description
+        _Versionmanager.priority = priority
+        _Versionmanager.owner = owner
+        _Versionmanager.development = development
+        _Versionmanager.status = status
+        _Versionmanager.testCases = testCases
+        _Versionmanager.testCaseReview = testCaseReview
+        _Versionmanager.firstRoundTest = firstRoundTest
+        _Versionmanager.secondRoundTest = secondRoundTest
+        _Versionmanager.thirdRoundTest = thirdRoundTest
+        _Versionmanager.remarks = remarks
+        _Versionmanager.liveTime = liveTime
+        _Versionmanager.yueLinProgress = yueLinProgress
+        _Versionmanager.yueLinRemarks = yueLinRemarks
+        _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+        _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+        _Versionmanager.editable = 0
+        _Versionmanager.save()
+
+    data = {
+        "code": 200,
+        "msg": "复制版本管理信息成功"
     }
     return JsonResponse(data, safe=False)
 @msgMessage
