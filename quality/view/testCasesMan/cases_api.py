@@ -16,6 +16,211 @@ from django.db import transaction
 from quality.view.testCasesMan.cases_model import testcasemanager
 from pathlib import Path
 log=Log()
+
+def detTestCase(request):
+    '''删除用例'''
+    returnData = json.loads(request.body)
+    print(returnData)
+    requestData = returnData['value']
+    case_id = requestData['case_id']
+    _testcasemanager = testcasemanager()
+    _testcasemanager = testcasemanager.objects.get(case_id=case_id)
+    _testcasemanager.delete()
+
+    data = {
+        "code": 200,
+        "data": "删除成功"
+    }
+
+    return JsonResponse(data, safe=False)
+def copyTestCase(request):
+    '''复制单条用例'''
+    returnData = json.loads(request.body)
+    print(returnData)
+    requestData = returnData['value']
+    caseName = requestData['caseName']
+    caseType = requestData['caseType']
+    case_id = requestData['case_id']
+    condition = requestData['condition']
+    creater = requestData['creater']
+
+    createrTime = requestData['createrTime']
+    exceptResult = requestData['exceptResult']
+    firstModel = requestData['firstModel']
+    prdName = requestData['prdName']
+    secondModel = requestData['secondModel']
+    actualResult = requestData['actualResult']
+    steps = requestData['steps']
+    thirdModel = requestData['thirdModel']
+    versionName = requestData['versionName']
+
+    name = request.session.get('username', False)
+    sql = "select first_name from auth_user where username='{}'".format(name)
+    nameList = commonList().getModelData(sql)
+    print(nameList)
+    username = nameList[0]['first_name']
+    if len(creater) == 0:
+        creater = username
+    if len(createrTime) == 0:
+        createrTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    _testcasemanager = testcasemanager()
+    _testcasemanager.caseName = caseName
+    _testcasemanager.caseType = caseType
+    _testcasemanager.condition = condition
+    _testcasemanager.creater = creater
+    _testcasemanager.actualResult = actualResult
+    _testcasemanager.createrTime = createrTime
+    _testcasemanager.exceptResult = exceptResult
+    _testcasemanager.firstModel = firstModel
+    _testcasemanager.prdName = prdName
+    _testcasemanager.executor = ''
+    _testcasemanager.secondModel = secondModel
+    _testcasemanager.steps = steps
+    _testcasemanager.thirdModel = thirdModel
+    _testcasemanager.versionName = versionName
+    _testcasemanager.save()
+
+    data = {
+        "code": 200,
+        "data": "复制用例成功"
+    }
+
+    return JsonResponse(data, safe=False)
+
+def saveTestCase(request):
+    '''保存单条用例'''
+    returnData = json.loads(request.body)
+    print(returnData)
+    requestData=returnData['value']
+    caseName=requestData['caseName']
+    caseType = requestData['caseType']
+    case_id = requestData['case_id']
+    condition = requestData['condition']
+    creater = requestData['creater']
+
+    createrTime = requestData['createrTime']
+    exceptResult = requestData['exceptResult']
+    firstModel = requestData['firstModel']
+    prdName = requestData['prdName']
+    secondModel = requestData['secondModel']
+    actualResult=requestData['actualResult']
+    steps = requestData['steps']
+    thirdModel = requestData['thirdModel']
+    versionName = requestData['versionName']
+
+    name = request.session.get('username', False)
+    sql = "select first_name from auth_user where username='{}'".format(name)
+    nameList = commonList().getModelData(sql)
+    print(nameList)
+    username = nameList[0]['first_name']
+    if len(creater)==0:
+        creater=username
+    if len(createrTime)==0:
+        createrTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
+    _testcasemanager=testcasemanager()
+    if case_id:
+        _testcasemanager = testcasemanager.objects.get(case_id=case_id)
+        _testcasemanager.caseName=caseName
+        _testcasemanager.caseType = caseType
+        _testcasemanager.condition = condition
+        _testcasemanager.creater = creater
+        _testcasemanager.createrTime = createrTime
+        _testcasemanager.actualResult=actualResult
+        _testcasemanager.exceptResult = exceptResult
+        _testcasemanager.firstModel = firstModel
+        _testcasemanager.prdName = prdName
+        _testcasemanager.secondModel = secondModel
+        _testcasemanager.executor = username
+        _testcasemanager.steps = steps
+        _testcasemanager.thirdModel = thirdModel
+        _testcasemanager.versionName = versionName
+    else:
+        _testcasemanager.caseName = caseName
+        _testcasemanager.caseType = caseType
+        _testcasemanager.condition = condition
+        _testcasemanager.creater = creater
+        _testcasemanager.actualResult = actualResult
+        _testcasemanager.createrTime = createrTime
+        _testcasemanager.exceptResult = exceptResult
+        _testcasemanager.firstModel = firstModel
+        _testcasemanager.prdName = prdName
+        _testcasemanager.executor = username
+        _testcasemanager.secondModel = secondModel
+        _testcasemanager.steps = steps
+        _testcasemanager.thirdModel = thirdModel
+        _testcasemanager.versionName = versionName
+    _testcasemanager.save()
+    data = {
+        "code": 200,
+        "data": "更新用例成功"
+    }
+
+    return JsonResponse(data, safe=False)
+
+
+
+
+def selectTotalCases(request):
+    '''查询所有用例'''
+    requestData = json.loads(request.body)
+    versionName=requestData['versionName']
+    sql="select * from quality_testcasemanager where versionName='{}' order by case_id desc".format(versionName)
+    responseData=commonList().getModelData(sql)
+
+    data = {
+        "code": 200,
+        "data": responseData
+    }
+
+    return JsonResponse(data, safe=False)
+
+
+def selectSingleTest(request):
+    '''用例查询'''
+    requestData = json.loads(request.body)
+    owner=requestData['owner']
+    result=requestData['result']
+    caseType=requestData['caseType']
+    versionName = requestData['versionName']
+
+
+    sql = 'SELECT * FROM quality_testcasemanager WHERE '
+    conditions = []
+
+    if len(owner) > 0:
+        owner_conditions = ["creater LIKE '%{}%'".format(v) for v in owner]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(result) > 0:
+        development_conditions = ["actualResult LIKE '%{}%'".format(r) for r in result]
+        conditions.append("(" + " OR ".join(development_conditions) + ")")
+
+    if len(caseType) > 0:
+        status_conditions = ["caseType LIKE '%{}%'".format(s) for s in caseType]
+        conditions.append("(" + " OR ".join(status_conditions) + ")")
+
+    if conditions:
+        sql += " AND ".join(conditions)
+
+    if len(owner) != 0 or len(result) != 0 or len(caseType) != 0:
+        sql += " and versionName='{}'".format(versionName)
+
+    if len(owner) == 0 and len(result) == 0 and len(caseType) == 0:
+        sql = "SELECT * FROM quality_testcasemanager where versionName='{}' order by case_id desc".format(versionName)
+
+    print('=======sql========', sql)
+    data = commonList().getModelData(sql)
+
+    data = {
+            "code": 200,
+            "data": data
+        }
+    return JsonResponse(data, safe=False)
+
+
 def casesfilesupload(request):
     data=[]
     req = request.FILES.get('file')
@@ -46,10 +251,12 @@ def testCasesUpload(request):
         file_path = requestData['fileName']
         versionName=requestData['versionName']
         username = request.session.get('username', False)
+        sql="select first_name from auth_user where username='{}'".format(username)
+        nameList=commonList().getModelData(sql)
+        name=nameList[0]['first_name']
 
 
-
-        import_excel_to_database(file_path,versionName,username)
+        import_excel_to_database(file_path,versionName,name)
         for file in file_path:
             os.remove(file)
         data = {
@@ -105,7 +312,7 @@ def selectCasesData(request):
     requestData = json.loads(request.body)
     tableName=requestData['tableName']
 
-    sql="select * from quality_testcasemanager where versionName='{}'".format(tableName)
+    sql="select * from quality_testcasemanager where versionName='{}' order by  case_id desc ".format(tableName)
     responseData=commonList().getModelData(sql)
 
 

@@ -21,6 +21,17 @@ urlpatterns = [
    url('quality/casesfilesupload/',cases_api.casesfilesupload, name='casesfilesupload'),
    url('quality/testCasesUpload/',cases_api.testCasesUpload, name='testCasesUpload'),
    url('quality/selectCasesData/',cases_api.selectCasesData, name='selectCasesData'),
+   url('quality/selectSingleTest/',cases_api.selectSingleTest, name='selectSingleTest'),
+   url('quality/selectTotalCases/',cases_api.selectTotalCases, name='selectTotalCases'),
+   url('quality/saveTestCase/',cases_api.saveTestCase, name='saveTestCase'),
+   url('quality/detTestCase/',cases_api.detTestCase, name='detTestCase'),
+   url('quality/copyTestCase/',cases_api.copyTestCase, name='copyTestCase'),
+
+
+
+
+
+
 
    url('quality/saveScriptData/',API.saveScriptData, name='saveScriptData'),
    url('quality/deleteScript/',API.deleteScript, name='deleteScript'),

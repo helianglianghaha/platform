@@ -14,5 +14,6 @@ class testcasemanager(models.Model):
     actualResult = models.CharField(max_length=100, verbose_name="实际结果", default=None)
     caseType = models.CharField(max_length=100, verbose_name="用例类型", default=None)
     creater = models.CharField(max_length=100, verbose_name="编写人", default=None)
+    executor = models.CharField(max_length=100, verbose_name="执行人", default=None)
     createrTime = models.CharField(max_length=100, verbose_name="编写时间", default=None)
     versionName=models.CharField(max_length=100, verbose_name="版本名称", default=None)
