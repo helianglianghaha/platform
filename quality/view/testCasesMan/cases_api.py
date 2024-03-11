@@ -17,6 +17,9 @@ from quality.view.testCasesMan.cases_model import testcasemanager
 from pathlib import Path
 log=Log()
 
+def selectTypeTestCaseData(request):
+    '''查询状态列表用例'''
+
 def detTestCase(request):
     '''删除用例'''
     returnData = json.loads(request.body)
@@ -227,10 +230,10 @@ def casesfilesupload(request):
     content = {}
 
     #测试
-    path="/Users/hll/Desktop/git/platform/media/cases"
+    # path="/Users/hll/Desktop/git/platform/media/cases"
 
     #线上
-    # path="/root/platform/media/cases"
+    path="/root/platform/media/cases"
     fileName=os.path.join(path, req.name)
     # 打开特定的文件进行二进制的写操作
     destination = open(fileName, 'wb+')
@@ -288,7 +291,7 @@ def import_excel_to_database(file_paths,versionName,username):
                     result='未执行'
                 else:
                     result=row['实际结果']
-                print('=====row======',row)
+                # print('=====row======',row)
                 instance = testcasemanager(
                     prdName=row.get('需求名称', None),
                     firstModel=row.get('一级模块', None),

@@ -24,6 +24,48 @@ from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
 
+def selectVersionTotalData(request):
+    '''筛选所有版本数据'''
+    requestData = json.loads(request.body)
+    version=requestData['version']
+
+    # 汇总数据
+    sqlTotal = '''
+                SELECT 
+                SUM(CASE WHEN status_alias = '新' THEN 1 ELSE 0 END) AS new,
+                SUM(CASE WHEN status_alias = '解决中' THEN 1 ELSE 0 END) AS pending,
+                SUM(CASE WHEN status_alias = '已解决' THEN 1 ELSE 0 END) AS success,
+                SUM(CASE WHEN status_alias = '已拒绝' THEN 1 ELSE 0 END) AS refues,
+                SUM(CASE WHEN status_alias = '已关闭' THEN 1 ELSE 0 END) AS closed,
+                SUM(CASE WHEN status_alias = '挂起' THEN 1 ELSE 0 END) AS pended,
+                count(short_id is not NULL) AS totalBugNum
+                FROM quality_buganalysis
+        '''
+    totalBugData = commonList().getModelData(sqlTotal)
+
+    versiondata = '''
+                SELECT 
+                COALESCE(SUM(CASE WHEN actualResult = '成功' THEN 1 ELSE 0 END), 0) AS success,
+                COALESCE(SUM(CASE WHEN actualResult = '失败' THEN 1 ELSE 0 END), 0) AS fail,
+                COALESCE(SUM(CASE WHEN actualResult = '未执行' THEN 1 ELSE 0 END), 0) AS unExect,
+                COALESCE(SUM(CASE WHEN actualResult = '阻塞' THEN 1 ELSE 0 END), 0) AS undo_count,
+                COALESCE(COUNT(CASE WHEN case_id IS NOT NULL THEN 1 END), 0) AS totalNum
+                FROM 
+                    quality_testcasemanager 
+                WHERE 
+                    versionName ='{}'
+        '''.format(version)
+    print(versiondata)
+    TestCaseList = commonList().getModelData(versiondata)
+
+
+    data = {
+                "code": 200,
+                "totalBugData": totalBugData,
+                "TestCaseList":TestCaseList
+            }
+    return JsonResponse(data, safe=False)
+
 def selectVersionList(request):
     '''筛选版本名称'''
 
