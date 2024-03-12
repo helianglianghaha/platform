@@ -291,7 +291,10 @@ def import_excel_to_database(file_paths,versionName,username):
                     result='未执行'
                 else:
                     result=row['实际结果']
-                # print('=====row======',row)
+                if len(row['编写人'])==0:
+                    user=username
+                else:
+                    user=row['编写人']
                 instance = testcasemanager(
                     prdName=row.get('需求名称', None),
                     firstModel=row.get('一级模块', None),
@@ -303,12 +306,11 @@ def import_excel_to_database(file_paths,versionName,username):
                     exceptResult=row.get('预期结果', None),
                     actualResult=result,
                     caseType=case_type,
-                    creater=username,
+                    creater=user,
                     createrTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                     versionName=versionName
                 )
                 instance.save()
-
 
 def selectCasesData(request):
     '''查找用例信息'''

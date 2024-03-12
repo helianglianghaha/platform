@@ -13,6 +13,7 @@ from quality.view.bugAnalysis import analysis
 from quality.view.bugAnalysis import timeTask
 from quality.view.documentMan import doc_api
 from quality.view.testCasesMan import  cases_api
+from quality.view.API import apiDetail
 
 urlpatterns = [
    url('admin/',admin.site.urls),
@@ -26,6 +27,12 @@ urlpatterns = [
    url('quality/saveTestCase/',cases_api.saveTestCase, name='saveTestCase'),
    url('quality/detTestCase/',cases_api.detTestCase, name='detTestCase'),
    url('quality/copyTestCase/',cases_api.copyTestCase, name='copyTestCase'),
+
+   # 文件导入
+   url('quality/jsonfilesupload/',apiDetail.jsonfilesupload, name='jsonfilesupload'),
+   url('quality/uploadApi/',apiDetail.uploadApi, name='uploadApi'),
+   url('quality/selectAllApiData/',apiDetail.selectAllApiData, name='selectAllApiData'),
+
 
 
 
