@@ -30,8 +30,10 @@ def uploadApi(request):
     import json
     requestData = json.loads(request.body)
     filePaths=requestData['fileName']
-
-
+    firstFile=requestData['firstFile']
+    secondFile=requestData['secondFile']
+    thirdFile=requestData['thirdFile']
+    project=requestData['project']
 
     db_connection = mysql.connector.connect(
         host="rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com",
@@ -40,7 +42,6 @@ def uploadApi(request):
         database="testplatform"
     )
 
-    # Load OpenAPI spec from JSON file
     for filePath in filePaths:
         with open(filePath) as f:
             openapi_spec = json.load(f)
@@ -55,8 +56,8 @@ def uploadApi(request):
                 responses = json.dumps(details.get('responses', {}))
                 security = json.dumps(details.get('security', []))
 
-                query = "INSERT INTO api_endpoints (path, method, summary,tags, deprecated, description, parameters, responses, security) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s)"
-                values = (path, method, summary,tags, deprecated, description, parameters, responses, security)
+                query = "INSERT INTO api_endpoints (path, method, summary,tags, deprecated, description, parameters, responses, security,firstFile,secondFile,thirdFile,project) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s,%s,%s)"
+                values = (path, method, summary,tags, deprecated, description, parameters, responses, security,firstFile,secondFile,thirdFile,project)
                 db_cursor.execute(query, values)
         db_connection.commit()
         db_connection.close()

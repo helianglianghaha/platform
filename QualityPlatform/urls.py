@@ -27,6 +27,9 @@ urlpatterns = [
    url('quality/saveTestCase/',cases_api.saveTestCase, name='saveTestCase'),
    url('quality/detTestCase/',cases_api.detTestCase, name='detTestCase'),
    url('quality/copyTestCase/',cases_api.copyTestCase, name='copyTestCase'),
+   url('quality/downloadTemFiles/',cases_api.downloadTemFiles, name='downloadTemFiles'),
+
+
 
    # 文件导入
    url('quality/jsonfilesupload/',apiDetail.jsonfilesupload, name='jsonfilesupload'),

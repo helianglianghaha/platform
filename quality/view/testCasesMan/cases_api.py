@@ -7,7 +7,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.http.response import JsonResponse,FileResponse
 from quality.view.documentMan.doc_model import documentMan
-import  json,os,datetime
+import  json,os,os,zipfile,ast
 from quality.common.msg import msgMessage
 from quality.common.logger import Log
 import pandas as pd
@@ -17,8 +17,24 @@ from quality.view.testCasesMan.cases_model import testcasemanager
 from pathlib import Path
 log=Log()
 
-def selectTypeTestCaseData(request):
-    '''查询状态列表用例'''
+def downloadTemFiles(request):
+    '''下载模版文件'''
+
+    zip_file_path = '/root/zip/file.zip'
+
+    # zip_file_path = '/Users/hll/Desktop/git/platform/media/file.zip'
+
+    # 测试环境
+    url = '/root/platform/media/template/测试用例模板.xlsx'
+
+    # url='/Users/hll/Desktop/git/platform/media/template/测试用例模版.xlsx'
+
+    with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
+        zip_file.write(url, '测试用例模板.xlsx')
+
+    response = FileResponse(open(zip_file_path, 'rb'), content_type='application/zip')
+    response['Content-Disposition'] = f'attachment; filename="{os.path.basename(zip_file_path)}"'
+    return response
 
 def detTestCase(request):
     '''删除用例'''
@@ -311,6 +327,7 @@ def import_excel_to_database(file_paths,versionName,username):
                     versionName=versionName
                 )
                 instance.save()
+
 
 def selectCasesData(request):
     '''查找用例信息'''
