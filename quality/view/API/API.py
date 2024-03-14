@@ -1228,10 +1228,13 @@ def executeScript(request):
                         success_cont=content.count(
                             '<failure>false</failure>')
                         true_count = content.count('<failure>true</failure>')
+
+
                         if true_count>0:
                             result="构建失败"
                         else:
                             result="构建成功"
+
                         # 计算占比
                         true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
 
@@ -1240,7 +1243,8 @@ def executeScript(request):
                                                 --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人 : {}\n>执行接口 : {}个 \n>失败接口 : {}个\n>执行成功率 : {:.2f}%\n>构建结果 ：{} \n>查看接口测试报告:http://192.168.8.22:8050{}","mentioned_mobile_list":["{}"]}}'
                                                 --compressed
                                                 '''.format(dingAddress, projectName[0]["modelData"], modelData,
-                                                           username,total_count,true_count,true_percentage,result, reportAddress,
+                                                           username, total_count, true_count, true_percentage, result,
+                                                           reportAddress,
                                                            dingPeople)
 
                         os.system(curlData)

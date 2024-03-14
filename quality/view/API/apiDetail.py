@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 
 from django.http.response import JsonResponse,FileResponse
@@ -42,19 +43,45 @@ def uploadApi(request):
         database="testplatform"
     )
 
+
+
     for filePath in filePaths:
-        with open(filePath) as f:
+        with open(filePath,'r') as f:
             openapi_spec = json.load(f)
+
+
         db_cursor = db_connection.cursor()
         for path, methods in openapi_spec['paths'].items():
             for method, details in methods.items():
                 summary = details.get('summary', '')
                 deprecated = details.get('deprecated', False)
                 description = details.get('description', '')
-                tags=json.dumps(details.get('tags',[]))
+                tagsdata=details.get('tags', [])
+                tags=json.dumps(details.get('tags', []))
                 parameters = json.dumps(details.get('parameters', []))
                 responses = json.dumps(details.get('responses', {}))
                 security = json.dumps(details.get('security', []))
+                print(tags)
+                if len(tagsdata)!=0:
+                    tags_list = tagsdata[0].split('/')
+                    print(tags_list)
+                    if len(tags_list)==1:
+                        firstFile=tags_list[0]
+                    elif len(tags_list) == 2:
+                        firstFile = tags_list[0]
+                        secondFile = tags_list[1]
+                    elif len(tags_list)>2:
+                        firstFile = tags_list[0]
+                        secondFile=tags_list[1]
+                        thirdFile=tags_list[2]
+                    else:
+                        firstFile = ''
+                        secondFile = ''
+                        thirdFile = ''
+                else:
+                    firstFile = project
+                    secondFile = ''
+                    thirdFile = ''
 
                 query = "INSERT INTO api_endpoints (path, method, summary,tags, deprecated, description, parameters, responses, security,firstFile,secondFile,thirdFile,project) VALUES (%s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s,%s,%s)"
                 values = (path, method, summary,tags, deprecated, description, parameters, responses, security,firstFile,secondFile,thirdFile,project)
@@ -79,10 +106,10 @@ def jsonfilesupload(request):
     content = {}
 
     #测试
-    path="/Users/hll/Desktop/git/platform/media/json"
+    # path="/Users/hll/Desktop/git/platform/media/json"
 
     #线上
-    # path="/root/platform/media/json"
+    path="/root/platform/media/json"
     fileName=os.path.join(path, req.name)
     # 打开特定的文件进行二进制的写操作
     destination = open(fileName, 'wb+')

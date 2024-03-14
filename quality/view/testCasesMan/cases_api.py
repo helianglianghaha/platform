@@ -17,20 +17,25 @@ from quality.view.testCasesMan.cases_model import testcasemanager
 from pathlib import Path
 log=Log()
 
+
 def downloadTemFiles(request):
     '''下载模版文件'''
-
     zip_file_path = '/root/zip/file.zip'
 
     # zip_file_path = '/Users/hll/Desktop/git/platform/media/file.zip'
 
     # 测试环境
-    url = '/root/platform/media/template/测试用例模板.xlsx'
+    # url = '/root/platform/media/template/测试用例模板.xlsx'
 
     # url='/Users/hll/Desktop/git/platform/media/template/测试用例模版.xlsx'
+    directory = "/root/platform/media/template/"
+    # zip_file_path = "/path/to/your/zipfile.zip"  # 修改为你想要保存zip文件的路径
 
     with zipfile.ZipFile(zip_file_path, 'w') as zip_file:
-        zip_file.write(url, '测试用例模板.xlsx')
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                file_path = os.path.join(root, file)
+                zip_file.write(file_path, arcname='测试用例模板.xlsx')
 
     response = FileResponse(open(zip_file_path, 'rb'), content_type='application/zip')
     response['Content-Disposition'] = f'attachment; filename="{os.path.basename(zip_file_path)}"'
@@ -204,14 +209,20 @@ def selectSingleTest(request):
     result=requestData['result']
     caseType=requestData['caseType']
     versionName = requestData['versionName']
+    caseName=requestData['caseName']
 
 
     sql = 'SELECT * FROM quality_testcasemanager WHERE '
     conditions = []
 
     if len(owner) > 0:
-        owner_conditions = ["creater LIKE '%{}%'".format(v) for v in owner]
+        owner_conditions = ["creater LIKE '%{}%'".format(s) for s in owner]
         conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(caseName) > 0:
+        case = "caseName LIKE '%" + caseName + "%'"
+        case_conditions = [case]
+        conditions.append("(" + " OR ".join(case_conditions) + ")")
 
     if len(result) > 0:
         development_conditions = ["actualResult LIKE '%{}%'".format(r) for r in result]
@@ -224,10 +235,10 @@ def selectSingleTest(request):
     if conditions:
         sql += " AND ".join(conditions)
 
-    if len(owner) != 0 or len(result) != 0 or len(caseType) != 0:
+    if len(owner) != 0 or len(result) != 0 or len(caseType) != 0 or len(caseName) !=0:
         sql += " and versionName='{}'".format(versionName)
 
-    if len(owner) == 0 and len(result) == 0 and len(caseType) == 0:
+    if len(owner) == 0 and len(result) == 0 and len(caseType) == 0 and len(caseName)==0:
         sql = "SELECT * FROM quality_testcasemanager where versionName='{}' order by case_id desc".format(versionName)
 
     print('=======sql========', sql)
