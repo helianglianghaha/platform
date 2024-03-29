@@ -129,13 +129,13 @@ def update_bug_info():
 
 
 # Schedule updates at 9:00 AM, 11:00 AM, and 6:00 PM on non-Sundays
-scheduler.add_job(update_versioninfo, 'cron', hour=9)
-scheduler.add_job(update_versioninfo, 'cron', hour=12)
-scheduler.add_job(update_versioninfo, 'cron', hour=20)
-
-scheduler.add_job(update_bug_info, 'cron', hour=9)
-scheduler.add_job(update_bug_info, 'cron', hour=12)
-scheduler.add_job(update_bug_info, 'cron', hour=20)
-
-scheduler.start()
-  # Check every minute
+# scheduler.add_job(update_versioninfo, 'cron', hour=9)
+# scheduler.add_job(update_versioninfo, 'cron', hour=12)
+# scheduler.add_job(update_versioninfo, 'cron', hour=20)
+#
+# scheduler.add_job(update_bug_info, 'cron', hour=9)
+# scheduler.add_job(update_bug_info, 'cron', hour=12)
+# scheduler.add_job(update_bug_info, 'cron', hour=20)
+# #
+# scheduler.start()
+# Check every minute

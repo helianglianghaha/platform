@@ -1,31 +1,115 @@
 from django.http.response import JsonResponse
-from quality.view.API.model import Modeldata
-from quality.view.API.model import Modelversion
-from quality.view.API_version.API_model import Testapi
-from quality.view.API_version.API_model import Executinglog
-from quality.view.API_version.API_model import Testvariable, Testcookies,Dingmessage
-
-from django.core import serializers
 from quality.common.logger import Log
-from quality.common.msg import msgMessage, msglogger
-from quality.common.msg import loginRequired
-import copy, re
-
 log = Log()
-
 import json, re, requests, ast, datetime
 from quality.common.commonbase import commonList
-from quality.view.API.APIClass import APITest
-from quality.common.functionlist import FunctionList
-from quality.view.API_version.API_function import requestObject,createDataFinally
-from quality.view.API_version.API_dataList import DataList
-from celery import shared_task
-from datetime import timedelta
-from django.utils import timezone
+import mysql.connector
 from apscheduler.schedulers.background import BackgroundScheduler
 
 #添加定时任务
 scheduler = BackgroundScheduler()
+def compare_and_sync(source_cursor,target_conn, target_cursor, source_table, target_table):
+    '''对比数据'''
+    log.info("compare_and_sync开始执行")
+    target_sql='''SELECT COLUMN_NAME
+        FROM information_schema.columns
+        WHERE table_schema = 'testplatform'
+        AND table_name = '{target_table}'
+    '''.format(target_table=target_table)
+
+    result_rows=commonList().getModelData(target_sql)
+
+    columns = [column['COLUMN_NAME'] for column in result_rows]
+    columns_str = ','.join(columns)
+    source_query=f"SELECT {columns_str} FROM {source_table}".format(columns_str,source_table)
+    import  re
+    if target_table=='zt_bug':
+        source_query=re.sub(r'\b(case|status|lines)\b(?!Version)', r'`\1`', source_query)
+    if target_table=='zt_module':
+        source_query = re.sub(r'\b(name|order|from|owner)\b(?!Version)', r'`\1`', source_query)
+        source_query=source_query+" order by id desc"
+    if target_table == 'zt_product':
+        source_query = re.sub(r'\b(name|code|status|desc|order)\b(?!Version)', r'`\1`', source_query)
+        source_query = source_query + " order by id desc"
+    if target_table == 'zt_build':
+        source_query = re.sub(r'\b(name|date|desc|order)\b(?!Version)', r'`\1`', source_query)
+        source_query = source_query + " order by id desc"
+
+    if target_table=='zt_project':
+        source_query = re.sub(r'\b(name|code|end|firstEnd|realBegan|begin|desc|left|order)\b(?!Version)', r'`\1`', source_query)
+        source_query =source_query+" order by id desc"
+        # print("=====source_query=====",source_query)
+
+    source_rows = commonList().getSignModeldata(source_cursor,source_query)
+
+    # try:
+    if target_table=="zt_bug":
+        number = 1
+        for row in source_rows:
+            # print("当前执行的数据", row)
+            from .sqlData import selectSqlData
+            selectSqlData().insert_or_update_data(target_cursor, target_conn, row,target_table)
+            number += 1
+            if number >= 300:
+                break
+
+    else:
+        for row in source_rows:
+            # print("当前执行的数据", row)
+            from .sqlData import selectSqlData
+            selectSqlData().insert_or_update_data(target_cursor, target_conn, row,target_table)
+
+def sync_tables(request):
+    # 连接源数据库和目标数据库
+    log.info('sync_tables开始执行')
+    source_conn = mysql.connector.connect(
+        host='120.55.13.41',
+        user='zentao',
+        password='X323pjDHsf6K3Fxs',
+        database='zentao'
+    )
+    source_cursor = source_conn.cursor()
+
+    target_conn = mysql.connector.connect(
+        host='rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com',
+        user='tk_db_test',
+        password='UUueBYYs9U4uptj',
+        database='testplatform'
+    )
+    target_cursor = target_conn.cursor()
+
+    # try:
+    # 同步 zt_bug 表
+    # compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_bug', 'zt_bug')
+    #
+    # # 同步 zt_module 表
+    # compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_module', 'zt_module')
+    #
+    # # 同步 zt_product 表
+    # compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_product', 'zt_product')
+
+    # 同步 zt_build 表
+    compare_and_sync(source_cursor, target_conn, target_cursor, 'zt_build', 'zt_build')
+
+    # 同步 zt_project 表
+    # compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_project', 'zt_project')
+
+    # except Exception as e:
+    #     print(f'发生错误：{e}')
+
+    # finally:
+    source_cursor.close()
+    source_conn.close()
+    target_cursor.close()
+    target_conn.close()
+
+    data = {
+        "code": 200,
+        "data": "同步成功"
+    }
+    return JsonResponse(data, safe=False)
+
+
 
 def selectTopBugData(request):
     '''查询首页数据'''
@@ -312,7 +396,7 @@ def BUGAnalysis():
 scheduler.add_job(BUGAnalysis, 'interval', minutes=10)
 
 # 启动调度器
-scheduler.start()
+# scheduler.start()
 
 
 

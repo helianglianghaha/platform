@@ -132,6 +132,7 @@ def saveTestCase(request):
     steps = requestData['steps']
     thirdModel = requestData['thirdModel']
     versionName = requestData['versionName']
+    remark=requestData['remark']
 
     name = request.session.get('username', False)
     sql = "select first_name from auth_user where username='{}'".format(name)
@@ -161,6 +162,7 @@ def saveTestCase(request):
         _testcasemanager.steps = steps
         _testcasemanager.thirdModel = thirdModel
         _testcasemanager.versionName = versionName
+        _testcasemanager.remark = remark
     else:
         _testcasemanager.caseName = caseName
         _testcasemanager.caseType = caseType
@@ -176,6 +178,7 @@ def saveTestCase(request):
         _testcasemanager.steps = steps
         _testcasemanager.thirdModel = thirdModel
         _testcasemanager.versionName = versionName
+        _testcasemanager.remark = remark
     _testcasemanager.save()
     data = {
         "code": 200,
@@ -276,29 +279,29 @@ def casesfilesupload(request):
 
 def testCasesUpload(request):
     '''上传用例'''
-    try:
-        requestData = json.loads(request.body)
-        file_path = requestData['fileName']
-        versionName=requestData['versionName']
-        username = request.session.get('username', False)
-        sql="select first_name from auth_user where username='{}'".format(username)
-        nameList=commonList().getModelData(sql)
-        name=nameList[0]['first_name']
+    # try:
+    requestData = json.loads(request.body)
+    file_path = requestData['fileName']
+    versionName=requestData['versionName']
+    username = request.session.get('username', False)
+    sql="select first_name from auth_user where username='{}'".format(username)
+    nameList=commonList().getModelData(sql)
+    name=nameList[0]['first_name']
 
 
-        import_excel_to_database(file_path,versionName,name)
-        for file in file_path:
-            os.remove(file)
-        data = {
-            "code": 200,
-            "msg": "上传用例成功"
-        }
-        return JsonResponse(data, safe=False)
-    except Exception as e :
-        data = {
-            "code": 500,
-            "msg": "上传用例失败，出错原因如下\n{}".format(e)
-        }
+    import_excel_to_database(file_path,versionName,name)
+    for file in file_path:
+        os.remove(file)
+    data = {
+        "code": 200,
+        "msg": "上传用例成功"
+    }
+    return JsonResponse(data, safe=False)
+    # except Exception as e :
+    data = {
+        "code": 500,
+        "msg": "上传用例失败，出错原因如下\n{}".format(e)
+    }
     return JsonResponse(data, safe=False)
 
 @transaction.atomic
@@ -310,6 +313,7 @@ def import_excel_to_database(file_paths,versionName,username):
             df = pd.read_excel(xls, sheet_name)
             df.fillna('', inplace=True)
             for index, row in df.iterrows():
+                print(row)
                 if len(row['用例类型'])==0:
                     case_type='功能测试'
                 else:

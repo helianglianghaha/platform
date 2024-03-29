@@ -43,6 +43,12 @@ class commonList:
         cursor.execute(varr)
         data=self.dictfetchall(cursor)
         return data
+    def getSignModeldata(self,cursor,varr):
+        '''获取指定数据库数据'''
+        print("==getSignModeldata==获取到的数据",varr)
+        cursor.execute(varr)
+        data = self.dictfetchall(cursor)
+        return data
     def dictParams(self,varr):
         '''序列化Json数据'''
         for i in varr:

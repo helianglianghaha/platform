@@ -13,6 +13,7 @@ from quality.view.bugAnalysis import analysis
 from quality.view.bugAnalysis import timeTask
 from quality.view.documentMan import doc_api
 from quality.view.testCasesMan import  cases_api
+from quality.view.report import  testTeport
 from quality.view.API import apiDetail
 
 urlpatterns = [
@@ -29,7 +30,7 @@ urlpatterns = [
    url('quality/copyTestCase/',cases_api.copyTestCase, name='copyTestCase'),
    url('quality/downloadTemFiles/',cases_api.downloadTemFiles, name='downloadTemFiles'),
 
-
+   url('quality/selectReportTotal/',testTeport.selectReportTotal, name='selectReportTotal'),
 
    # 文件导入
    url('quality/jsonfilesupload/',apiDetail.jsonfilesupload, name='jsonfilesupload'),
@@ -68,6 +69,8 @@ urlpatterns = [
    url('quality/saveSingleVersionManger/',API.saveSingleVersionManger, name='saveSingleVersionManger'),
    url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
+   url('quality/sync_tables/',analysis.sync_tables, name='sync_tables'),
+
    url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
    url('quality/selectTopBugData/',analysis.selectTopBugData, name='selectTopBugData'),
    url('quality/savefileData/',doc_api.savefileData, name='savefileData'),
