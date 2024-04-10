@@ -227,7 +227,7 @@ def selectSingleTest(request):
         case_conditions = [case]
         conditions.append("(" + " OR ".join(case_conditions) + ")")
 
-    if len(result) > 0:
+    if len(result) > 0 and '全部' not in result:
         development_conditions = ["actualResult LIKE '%{}%'".format(r) for r in result]
         conditions.append("(" + " OR ".join(development_conditions) + ")")
 
@@ -241,7 +241,7 @@ def selectSingleTest(request):
     if len(owner) != 0 or len(result) != 0 or len(caseType) != 0 or len(caseName) !=0:
         sql += " and versionName='{}'".format(versionName)
 
-    if len(owner) == 0 and len(result) == 0 and len(caseType) == 0 and len(caseName)==0:
+    if len(owner) == 0 and (len(result) == 0 or '全部' in result) and len(caseType) == 0 and len(caseName)==0:
         sql = "SELECT * FROM quality_testcasemanager where versionName='{}' order by case_id desc".format(versionName)
 
     print('=======sql========', sql)

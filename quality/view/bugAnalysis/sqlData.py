@@ -34,7 +34,7 @@ class selectSqlData:
                     if target_table == 'zt_product':
                         update_query = re.sub(r'\b(name|code|status|desc|order)\b(?!Version)', r'`\1`', update_query)
                     if target_table == 'zt_project':
-                        update_query = re.sub(r'\b(name|code|end|begin|desc|left|order)\b(?!Version)', r'`\1`',update_query)
+                        update_query = re.sub(r'\b(name|code|end|parallel|realBeganbegin|desc|left|order)\b(?!Version)', r'`\1`',update_query)
                     if target_table == 'zt_build':
                         update_query = re.sub(r'\b(name|date|desc|order)\b(?!Version)', r'`\1`', update_query)
                         update_query = update_query + " order by id desc"
@@ -61,7 +61,7 @@ class selectSqlData:
             if target_table == 'zt_product':
                 insert_query = re.sub(r'\b(name|code|status|desc|order)\b(?!Version)', r'`\1`', insert_query)
             if target_table == 'zt_project':
-                insert_query = re.sub(r'\b(name|code|begin|end|desc|left|order)\b(?!Version)', r'`\1`', insert_query)
+                insert_query = re.sub(r'\b(name|code|begin|parallel|realBegan|end|desc|left|order)\b(?!Version)', r'`\1`', insert_query)
             if target_table == 'zt_build':
                 insert_query = re.sub(r'\b(name|date|desc)\b(?!Version)', r'`\1`', insert_query)
             print('insert_query', insert_query)

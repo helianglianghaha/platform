@@ -18,3 +18,9 @@ class testcasemanager(models.Model):
     createrTime = models.CharField(max_length=100, verbose_name="编写时间", default=None)
     versionName=models.CharField(max_length=100, verbose_name="版本名称", default=None)
     remark = models.CharField(max_length=200, verbose_name="备注", default=None)
+
+class testresult(models.Model):
+    result_id=models.AutoField(verbose_name="测试报告ID", primary_key=True)
+    versionName=models.CharField(max_length=100, verbose_name="版本名称", default=None)
+    BUGList = models.CharField(max_length=200, verbose_name="遗留BUGID", default=None)
+    result = models.CharField(max_length=500, verbose_name="测试结论", default=None)

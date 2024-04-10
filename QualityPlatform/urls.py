@@ -70,6 +70,10 @@ urlpatterns = [
    url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
    url('quality/sync_tables/',analysis.sync_tables, name='sync_tables'),
+   url('quality/saveTestResults/',analysis.saveTestResults, name='saveTestResults'),
+   url('quality/selectReportBugList/',analysis.selectReportBugList, name='selectReportBugList'),
+
+
 
    url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
    url('quality/selectTopBugData/',analysis.selectTopBugData, name='selectTopBugData'),

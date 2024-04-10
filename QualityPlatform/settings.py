@@ -102,9 +102,9 @@ DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
         'NAME':'testplatform',
-        'USER':'tk_db_test',
+        'USER':'store',
         'PASSWORD':'UUueBYYs9U4uptj',
-        'HOST':'rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com',
+        'HOST':'118.178.255.171',
         'PORT':'3306',
     }
 }
@@ -172,7 +172,7 @@ X_FRAME_OPTIONS = 'ALLOWALL'
 CRONJOBS = [
     #('*/1 * * * *', '你的app名.定时函数所在的py文件名.定时函数名'),
     # ('0   0 1 * *', '你的app名.定时函数所在的py文件名.定时函数名', '> 输出文件路径和名称'),
-    ('*/2 * * * *','quality.view.bugAnalysis.analysis.BUGAnalysis','>logs/bugAnalysis.log')
+    ('*/3 * * * *','quality.view.bugAnalysis.analysis.sync_tables','>logs/sync_tables.log')
 ]
 STATIC_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 

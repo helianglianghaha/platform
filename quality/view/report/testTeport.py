@@ -39,66 +39,114 @@ def selectReportTotal(request):
                 where versionName=\'{}\'
         '''.format(versionName)
 
-    # 获取需求的版本
-    versionSql="SELECT DISTINCT(version) from quality_versionmanager WHERE tableID=\'{}\'".format(versionName)
-    versionList=commonList().getModelData(versionSql)
+    # bug每天的解决情况
+    resolve_bugs_sql='''
+    SELECT DATE(closedDate) AS event_date, 
+    COUNT(*) AS bug_count,
+    SUM(CASE WHEN `status` = 'active' THEN 1 ELSE 0 END) AS active_bug_count,
+    SUM(CASE WHEN `status` = 'resolved' THEN 1 ELSE 0 END) AS resolved_bug_count,
+    SUM(CASE WHEN `status` = 'closed' THEN 1 ELSE 0 END) AS closed_bug_count
+    FROM (
+        SELECT DISTINCT b.id AS m, b.title, b.`status`, b.closedDate
+        FROM zt_bug b
+        LEFT JOIN zt_project a ON a.id = b.execution 
+            AND a.project = 2 
+            AND a.type = 'stage' 
+            AND a.name LIKE '%v%'
+        LEFT JOIN quality_versionmanager c ON c.version = a.name 
+            AND c.tableID=\'{}\'
+            WHERE c.version is not NULL and b.`status`='closed'
+    ) AS zt_bug
+    GROUP BY DATE(closedDate)
+    ORDER BY event_date
+    '''.format(versionName)
+    print('resolve_bugs_sql',resolve_bugs_sql)
+    resolve_bugs_list=commonList().getModelData(resolve_bugs_sql)
 
-    print(versionList)
-    for version in versionList:
-        bug_id_sql="select * from zt_build where name=\'{}\'".format(version['version'])
-        bug_id_list=commonList().getModelData(bug_id_sql)
-        if bug_id_list:
-            bugs_sql="select bugs from zt_build"
-            bugs_sql_list=commonList().getModelData(bugs_sql)
-            print('bugs_sql_list',bugs_sql_list)
-            for bug_info in bugs_sql_list:
-                if bug_info['bugs']!='':
-                    print('bug_info',bug_info['bugs'])
-                    bug_list=bug_info['bugs'].split(",")
-                    bug_tuple = tuple(int(num) for num in bug_list)
 
-                    # bug解决情况
-                    resolve_bugs_sql='''
-                    SELECT 
-                    COALESCE(SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END), 0) AS active_bug_count,
-                    COALESCE(SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END), 0) AS resolved_bug_count,
-                    COALESCE(SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END), 0) AS closed_bug_count,
-                    count(id) as total_bugs_count
-                    FROM zt_bug
-                    WHERE  id IN {}
-                    '''.format(bug_tuple)
-                    print('resolve_bugs_sql',resolve_bugs_sql)
-                    resolve_bugs_list=commonList().getModelData(resolve_bugs_sql)
+    # 获取该版本周期内每天新增的BUG数
+    numbers_bugs_sql = '''
+    SELECT DATE(openedDate) AS event_date, COUNT(*) AS bug_count
+    FROM (SELECT DISTINCT b.id m,b.title, b.`status`,b.openedDate
+    FROM zt_bug b
+    LEFT JOIN zt_project a ON a.id = b.execution AND a.project = 2 AND a.type = 'stage' AND a.name LIKE '%v%'
+    LEFT JOIN quality_versionmanager c ON c.version = a.name and c.tableID=\'{}\' WHERE c.version is not NULL) as zt_bug
+    GROUP BY DATE(openedDate)
+    ORDER BY event_date'''.format(versionName)
+    numbers_bugs_everydata = commonList().getModelData(numbers_bugs_sql)
 
-                    # 获取该版本周期内每天的BUG数
-                    numbers_bugs_sql = '''
-                    SELECT openedBy, COUNT(*) AS bug_count
-                    FROM zt_bug
-                    where id in {}
-                    GROUP BY openedBy
-                    ORDER BY bug_count DESC
-                                '''.format(bug_tuple)
-                    numbers_bugs_data = commonList().getModelData(numbers_bugs_sql)
 
-                    # 获取该版本周期内每天的解决BUG数
-                    bugs_count_sql='''
-                    SELECT DATE(resolvedDate) AS resolved_date, COUNT(*) AS resolved_bug_count
-                    FROM zt_bug
-                    WHERE status = 'resolved' AND resolvedDate IS NOT NULL and id in {}
-                    GROUP BY resolved_date
-                    ORDER BY resolved_date
-                    '''.format(bug_tuple)
-                    status_sql_list=commonList().getModelData(bugs_count_sql)
-                else:
-                    resolve_bugs_list=[]
-                    status_sql_list=[]
-                    numbers_bugs_data=[]
-                    log.info("no bugs found")
-        else:
-            resolve_bugs_list = []
-            status_sql_list = []
-            numbers_bugs_data = []
-            log.info("版本没有关联BUGID，为空")
+    # 获取该版本周期内BUG总体解决情况
+    bugs_count_sql='''
+        SELECT 
+        COUNT(*) AS bug_count,
+        SUM(CASE WHEN `status` = 'active' THEN 1 ELSE 0 END) AS active_bug_count,
+        SUM(CASE WHEN `status` = 'resolved' THEN 1 ELSE 0 END) AS resolved_bug_count,
+        SUM(CASE WHEN `status` = 'closed' THEN 1 ELSE 0 END) AS closed_bug_count
+        FROM (
+            SELECT DISTINCT b.id AS m, b.title, b.`status`, b.openedDate,c.version
+            FROM zt_bug b
+            LEFT JOIN zt_project a ON a.id = b.execution 
+                AND a.project = 2 
+                AND a.type = 'stage' 
+                AND a.name LIKE '%v%'
+            LEFT JOIN quality_versionmanager c ON c.version = a.name 
+                AND c.tableID=\'{}\'
+                WHERE c.version is not NULL
+        ) AS zt_bug
+    '''.format(versionName)
+
+    # 获取每个人提的BUG
+    everyOwnerSql='''
+    SELECT
+        j.first_name AS name,
+        COUNT(*) AS value
+    FROM
+        (
+            SELECT
+                DISTINCT b.id m,
+                b.title,
+                b.`status`,
+                b.openedDate,
+                j.first_name,
+                b.openedBy
+            FROM
+                zt_bug b
+                LEFT JOIN zt_project a ON a.id = b.execution
+                AND a.project = 2
+                AND a.type = 'stage'
+                AND a.NAME LIKE '%v%'
+                LEFT JOIN quality_versionmanager c ON c.version = a.NAME
+                LEFT JOIN auth_user j ON j.username = b.openedBy
+                AND c.tableID = \'{}\'
+            WHERE
+                c.version IS NOT NULL
+                AND j.username IS NOT NULL
+        ) AS j 
+    GROUP BY
+        j.first_name
+    '''.format(versionName)
+    everyOwnerDataList=commonList().getModelData(everyOwnerSql)
+
+
+    # 获取负责人
+    ownerSql='''
+        select owner,development from quality_versionmanager  where tableID=\'{}\'
+    '''.format(versionName)
+    ownerTotalData=commonList().getModelData(ownerSql)
+
+    all_owners = [eval(item['owner'])[0] for item in ownerTotalData if item['owner'] != '[]']
+    all_developments = [eval(item['development'])[0] for item in ownerTotalData if item['development'] != '[]']
+
+    unique_owners = list(set(all_owners))
+    unique_developments = list(set(all_developments))
+    owner_string=', '.join(unique_owners)
+    development_string=', '.join(unique_developments)
+    print(unique_owners)
+    print(unique_developments)
+
+
+    status_sql_list=commonList().getModelData(bugs_count_sql)
     versionListData=commonList().getModelData(versiondata)
     testCaseList = commonList().getModelData(testCasesData)
 
@@ -106,9 +154,13 @@ def selectReportTotal(request):
         "code":200,
         "version":versionListData, #版本信息
         "testCasefInfo":testCaseList, #用例执行信息
-        "bugList":resolve_bugs_list,  #该版本所有BUG解决状态
-        "solvedBugList":status_sql_list, #每日已解决BUG数
-        "bugNumList":numbers_bugs_data #每日新增BUG数
+        "resolve_bugList":resolve_bugs_list,  #该版本每天所有BUG解决情况
+        "totalBugList":status_sql_list, #该版本所有BUG解决情况
+        "addBugNumList":numbers_bugs_everydata, #每日新增BUG数
+        "ownerList":owner_string, #获取负责人
+        "developmentList":development_string,#获取研发人员
+        "everyOwnerList":everyOwnerDataList #获取每个人提的BUG
+        #     获取产品
     }
 
     return  JsonResponse(data, safe=False)

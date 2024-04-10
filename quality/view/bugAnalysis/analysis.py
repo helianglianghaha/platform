@@ -5,9 +5,74 @@ import json, re, requests, ast, datetime
 from quality.common.commonbase import commonList
 import mysql.connector
 from apscheduler.schedulers.background import BackgroundScheduler
+from quality.view.testCasesMan.cases_model import testresult
 
 #添加定时任务
 scheduler = BackgroundScheduler()
+def selectReportBugList(request):
+    '''查询测试报告中遗留BUG'''
+    requestData = json.loads(request.body)
+    versionName = requestData['versionName']
+
+    sql="select * from quality_testresult where versionName=\'{}\'".format(versionName)
+    response=commonList().getModelData(sql)
+    BUGList=response[0]['BUGList'].replace("None", "''").replace("'", '"')
+    print(response)
+
+    data={
+        "code":200,
+        "yiliuBugList":json.loads(BUGList),
+        "testResult":response[0]["result"]
+    }
+    return JsonResponse(data,safe=False)
+
+
+def saveTestResults(request):
+    '''保存测试结论'''
+    requestData = json.loads(request.body)
+    versionName=requestData['versionName']
+    print(requestData)
+    if 'BUGidList' in requestData.keys():
+        BUGidList = requestData['BUGidList']
+        print(BUGidList)
+    if 'testResult' in requestData.keys():
+        testResult = requestData['testResult']
+    type = requestData['type']
+    from django.core.exceptions import ObjectDoesNotExist
+    if versionName=='':
+        return JsonResponse("版本名称不能为空")
+    if type=='addBUG':
+        try:
+            _testresult = testresult.objects.get(versionName=versionName)
+            _testresult.versionName = versionName
+            _testresult.BUGList = BUGidList
+            _testresult.save()
+            return JsonResponse("BUG列表编辑成功", safe=False)
+        except ObjectDoesNotExist:
+            _testresult = testresult()
+            _testresult.versionName = versionName
+            _testresult.BUGList = BUGidList
+            _testresult.save()
+            return JsonResponse("BUG列表保存成功", safe=False)
+    else:
+        try:
+            _testresult = testresult.objects.get(versionName=versionName)
+            _testresult.versionName = versionName
+            _testresult.result = testResult
+            _testresult.save()
+            return JsonResponse("测试结论编辑成功", safe=False)
+        except ObjectDoesNotExist:
+            _testresult = testresult()
+            _testresult.versionName = versionName
+            _testresult.result = testResult
+            _testresult.save()
+            return JsonResponse("测试结论保存成功", safe=False)
+
+
+
+
+
+
 def compare_and_sync(source_cursor,target_conn, target_cursor, source_table, target_table):
     '''对比数据'''
     log.info("compare_and_sync开始执行")
@@ -25,6 +90,7 @@ def compare_and_sync(source_cursor,target_conn, target_cursor, source_table, tar
     import  re
     if target_table=='zt_bug':
         source_query=re.sub(r'\b(case|status|lines)\b(?!Version)', r'`\1`', source_query)
+        source_query = source_query + " order by id desc"
     if target_table=='zt_module':
         source_query = re.sub(r'\b(name|order|from|owner)\b(?!Version)', r'`\1`', source_query)
         source_query=source_query+" order by id desc"
@@ -36,9 +102,9 @@ def compare_and_sync(source_cursor,target_conn, target_cursor, source_table, tar
         source_query = source_query + " order by id desc"
 
     if target_table=='zt_project':
-        source_query = re.sub(r'\b(name|code|end|firstEnd|realBegan|begin|desc|left|order)\b(?!Version)', r'`\1`', source_query)
-        source_query =source_query+" order by id desc"
-        # print("=====source_query=====",source_query)
+        source_query = re.sub(r'\b(name|code|end|firstEnd|parallel|realBegan|begin|desc|left|order)\b(?!Version)', r'`\1`', source_query)
+        # source_query =source_query+" order by id desc"
+        print("=====source_query=====",source_query)
 
     source_rows = commonList().getSignModeldata(source_cursor,source_query)
 
@@ -50,7 +116,7 @@ def compare_and_sync(source_cursor,target_conn, target_cursor, source_table, tar
             from .sqlData import selectSqlData
             selectSqlData().insert_or_update_data(target_cursor, target_conn, row,target_table)
             number += 1
-            if number >= 300:
+            if number >= 400:
                 break
 
     else:
@@ -71,8 +137,8 @@ def sync_tables(request):
     source_cursor = source_conn.cursor()
 
     target_conn = mysql.connector.connect(
-        host='rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com',
-        user='tk_db_test',
+        host='118.178.255.171',
+        user='store',
         password='UUueBYYs9U4uptj',
         database='testplatform'
     )
@@ -80,19 +146,19 @@ def sync_tables(request):
 
     # try:
     # 同步 zt_bug 表
-    # compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_bug', 'zt_bug')
-    #
-    # # 同步 zt_module 表
-    # compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_module', 'zt_module')
-    #
-    # # 同步 zt_product 表
-    # compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_product', 'zt_product')
+    compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_bug', 'zt_bug')
+
+    # 同步 zt_module 表
+    compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_module', 'zt_module')
+
+    # 同步 zt_product 表
+    compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_product', 'zt_product')
 
     # 同步 zt_build 表
     compare_and_sync(source_cursor, target_conn, target_cursor, 'zt_build', 'zt_build')
 
     # 同步 zt_project 表
-    # compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_project', 'zt_project')
+    compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_project', 'zt_project')
 
     # except Exception as e:
     #     print(f'发生错误：{e}')
@@ -172,34 +238,43 @@ def selectSigleVersionBugData(request):
     '''bug条件查询'''
     requestData = json.loads(request.body)
     title = requestData['title']
-    version_report = requestData['version_report']
-    reporter = requestData['reporter']
+    openedBy = requestData['reporter']
     severity = requestData['severity']
-    status_alias = requestData['status']
-    priority = requestData['priority']
+    status = requestData['status']
+    pri = requestData['priority']
     created = requestData['createdTime']
+    tableID=requestData['tableID']
 
-    sql = 'SELECT * FROM quality_bugAnalysis WHERE '
+    sql='''
+    SELECT DISTINCT b.id AS id, b.title, b.`status`, b.closedDate,c.version,b.pri,b.severity,j.first_name,b.closedBy,b.openedDate,b.assignedTo
+        FROM zt_bug b
+        LEFT JOIN zt_project a ON a.id = b.execution 
+            AND a.project = 2 
+            AND a.type = 'stage' 
+            AND a.name LIKE '%v%'
+        LEFT JOIN quality_versionmanager c ON c.version = a.name 
+            AND c.tableID=\'{}\'
+            LEFT JOIN auth_user j ON j.username = b.openedBy
+            WHERE c.version is not NULL AND j.username IS NOT NULL
+        and 
+    '''.format(tableID)
+
     conditions = []
 
-    if len(version_report) > 0:
-        version_conditions = ["version_report = '{}'".format(v) for v in version_report]
-        conditions.append("(" + " OR ".join(version_conditions) + ")")
-
-    if len(reporter) > 0:
-        reporter_conditions = ["reporter = '{}'".format(r) for r in reporter]
+    if len(openedBy) > 0:
+        reporter_conditions = ["b.openedBy = '{}'".format(r) for r in openedBy]
         conditions.append("(" + " OR ".join(reporter_conditions) + ")")
 
     if len(severity) > 0:
-        severity_conditions = ["severity = '{}'".format(s) for s in severity]
+        severity_conditions = ["b.severity = '{}'".format(s) for s in severity]
         conditions.append("(" + " OR ".join(severity_conditions) + ")")
 
-    if len(status_alias) > 0:
-        status_conditions = ["status_alias = '{}'".format(s) for s in status_alias]
+    if len(status) > 0 and "all" not in status:
+        status_conditions = ["b.status = '{}'".format(s) for s in status]
         conditions.append("(" + " OR ".join(status_conditions) + ")")
 
-    if len(priority) > 0:
-        priority_conditions = ["priority = '{}'".format(p) for p in priority]
+    if len(pri) > 0:
+        priority_conditions = ["b.pri = '{}'".format(p) for p in pri]
         conditions.append("(" + " OR ".join(priority_conditions) + ")")
 
     if len(created) == 2:
@@ -207,23 +282,39 @@ def selectSigleVersionBugData(request):
         start_time = datetime.datetime.fromisoformat(start_time)
         end_time = datetime.datetime.fromisoformat(end_time)
 
+        start_time += datetime.timedelta(days=1)
+        end_time += datetime.timedelta(days=1)
 
-        # Format timestamps as "年-月-日 时-分-秒"
+
         start_time_formatted = start_time.strftime("%Y-%m-%d %H:%M:%S")
         end_time_formatted = end_time.strftime("%Y-%m-%d %H:%M:%S")
 
-        conditions.append("created BETWEEN '{}' AND '{}'".format(start_time_formatted, end_time_formatted))
+        conditions.append("b.openedDate BETWEEN '{}' AND '{}'".format(start_time_formatted, end_time_formatted))
 
     if len(title) > 0:
-        conditions.append("title = '{}'".format(title))
+        conditions.append("b.title = '{}'".format(title))
 
-    if conditions:
+    print(conditions)
+
+    if conditions :
+        print("conditions执行")
         sql += " AND ".join(conditions)
 
-    if len(version_report)==0 and len(reporter)==0 and len(severity)==0 and len(status_alias)==0 and len(priority)==0 and len(created)==0:
-        sql='SELECT * FROM quality_bugAnalysis'
+    if  len(openedBy)==0 and len(severity)==0 and (len(status)==0 or 'all' in status) and len(pri)==0 and len(created)==0 :
+        sql='''
+        SELECT DISTINCT b.id AS id, b.title, b.`status`, b.closedDate,c.version,b.pri,b.severity,j.first_name,b.closedBy,b.openedDate,b.assignedTo
+        FROM zt_bug b
+        LEFT JOIN zt_project a ON a.id = b.execution 
+            AND a.project = 2 
+            AND a.type = 'stage' 
+            AND a.name LIKE '%v%'
+        LEFT JOIN quality_versionmanager c ON c.version = a.name 
+            AND c.tableID=\'{}\'
+            LEFT JOIN auth_user j ON j.username = b.openedBy
+            WHERE c.version is not NULL AND j.username IS NOT NULL
+        '''.format(tableID)
 
-    sql += " ORDER BY  created DESC"
+    sql += " ORDER BY  b.openedDate DESC"
 
     print('=======sql========', sql)
     data = commonList().getModelData(sql)
