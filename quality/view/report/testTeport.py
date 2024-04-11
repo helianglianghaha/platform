@@ -160,6 +160,7 @@ def selectReportTotal(request):
         "ownerList":owner_string, #获取负责人
         "developmentList":development_string,#获取研发人员
         "everyOwnerList":everyOwnerDataList #获取每个人提的BUG
+
         #     获取产品
     }
 
