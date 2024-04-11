@@ -6,6 +6,7 @@ from quality.common.commonbase import commonList
 import mysql.connector
 from apscheduler.schedulers.background import BackgroundScheduler
 from quality.view.testCasesMan.cases_model import testresult
+from django.core.exceptions import ObjectDoesNotExist
 
 #添加定时任务
 scheduler = BackgroundScheduler()
@@ -16,16 +17,44 @@ def selectReportBugList(request):
 
     sql="select * from quality_testresult where versionName=\'{}\'".format(versionName)
     response=commonList().getModelData(sql)
-    BUGList=response[0]['BUGList'].replace("None", "''").replace("'", '"')
+    if len(response)!=0:
+        if len(response[0]['BUGList'])!=0:
+            BUGList=response[0]['BUGList'].replace("None", "''").replace("'", '"')
+            BUGList=json.loads(BUGList)
+        else:
+            BUGList=[]
+        result=response[0]["result"]
+    else:
+        BUGList=[]
+        result=[]
     print(response)
 
     data={
         "code":200,
-        "yiliuBugList":json.loads(BUGList),
-        "testResult":response[0]["result"]
+        "yiliuBugList":BUGList,
+        "testResult":result
     }
     return JsonResponse(data,safe=False)
-
+def clearTestBugs(request):
+    '''删除版本对应BUG'''
+    requestData = json.loads(request.body)
+    versionName = requestData['versionName']
+    try:
+        _testresult = testresult.objects.get(versionName=versionName)
+        _testresult.versionName = versionName
+        _testresult.BUGList = ''
+        _testresult.save()
+        data = {
+            "code": 200,
+            "msg": "清除成功"
+        }
+        return JsonResponse(data, safe=False)
+    except ObjectDoesNotExist:
+        data = {
+            "code": 200,
+            "msg": "没有找到对应记录，不用删除"
+        }
+        return JsonResponse(data, safe=False)
 
 def saveTestResults(request):
     '''保存测试结论'''
@@ -38,7 +67,7 @@ def saveTestResults(request):
     if 'testResult' in requestData.keys():
         testResult = requestData['testResult']
     type = requestData['type']
-    from django.core.exceptions import ObjectDoesNotExist
+
     if versionName=='':
         return JsonResponse("版本名称不能为空")
     if type=='addBUG':
@@ -47,26 +76,43 @@ def saveTestResults(request):
             _testresult.versionName = versionName
             _testresult.BUGList = BUGidList
             _testresult.save()
-            return JsonResponse("BUG列表编辑成功", safe=False)
+            data={
+                "code":200,
+                "msg":"BUG列表编辑成功"
+            }
+            return JsonResponse(data, safe=False)
         except ObjectDoesNotExist:
             _testresult = testresult()
             _testresult.versionName = versionName
             _testresult.BUGList = BUGidList
             _testresult.save()
-            return JsonResponse("BUG列表保存成功", safe=False)
+            data = {
+                "code": 200,
+                "msg": "BUG列表保存成功"
+            }
+            return JsonResponse(data, safe=False)
     else:
         try:
             _testresult = testresult.objects.get(versionName=versionName)
             _testresult.versionName = versionName
             _testresult.result = testResult
             _testresult.save()
-            return JsonResponse("测试结论编辑成功", safe=False)
+
+            data = {
+                "code": 200,
+                "msg": "测试结论编辑成功"
+            }
+            return JsonResponse(data, safe=False)
         except ObjectDoesNotExist:
             _testresult = testresult()
             _testresult.versionName = versionName
             _testresult.result = testResult
             _testresult.save()
-            return JsonResponse("测试结论保存成功", safe=False)
+            data = {
+                "code": 200,
+                "msg": "测试结论保存成功"
+            }
+            return JsonResponse(data, safe=False)
 
 
 
@@ -284,7 +330,6 @@ def selectSigleVersionBugData(request):
 
         start_time += datetime.timedelta(days=1)
         end_time += datetime.timedelta(days=1)
-
 
         start_time_formatted = start_time.strftime("%Y-%m-%d %H:%M:%S")
         end_time_formatted = end_time.strftime("%Y-%m-%d %H:%M:%S")

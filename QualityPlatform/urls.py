@@ -71,6 +71,7 @@ urlpatterns = [
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
    url('quality/sync_tables/',analysis.sync_tables, name='sync_tables'),
    url('quality/saveTestResults/',analysis.saveTestResults, name='saveTestResults'),
+   url('quality/clearTestBugs/',analysis.clearTestBugs, name='clearTestBugs'),
    url('quality/selectReportBugList/',analysis.selectReportBugList, name='selectReportBugList'),
 
 

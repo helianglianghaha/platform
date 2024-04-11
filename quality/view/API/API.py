@@ -86,7 +86,7 @@ def selectVersionList(request):
         development_conditions = ["development LIKE '%{}%'".format(r) for r in development]
         conditions.append("(" + " OR ".join(development_conditions) + ")")
 
-    if len(status) > 0:
+    if len(status) > 0 and '全部' not in status:
         status_conditions = ["status LIKE '%{}%'".format(s) for s in status]
         conditions.append("(" + " OR ".join(status_conditions) + ")")
 
@@ -96,7 +96,7 @@ def selectVersionList(request):
     if len(owner) != 0 or len(development) != 0 or len(status) != 0:
         sql += " and tableID='{}'".format(tableID)
 
-    if len(owner) == 0 and len(development) == 0 and len(status) == 0:
+    if len(owner) == 0 and len(development) == 0 and (len(status) == 0 or '全部' in status):
         sql = "SELECT * FROM quality_versionmanager where tableID='{}'".format(tableID)
 
 
