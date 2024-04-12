@@ -75,7 +75,6 @@ def selectReportTotal(request):
     ORDER BY event_date'''.format(versionName)
     numbers_bugs_everydata = commonList().getModelData(numbers_bugs_sql)
 
-
     # 获取该版本周期内BUG总体解决情况
     bugs_count_sql='''
         SELECT 
@@ -134,9 +133,11 @@ def selectReportTotal(request):
         select owner,development from quality_versionmanager  where tableID=\'{}\'
     '''.format(versionName)
     ownerTotalData=commonList().getModelData(ownerSql)
+    print('ownerTotalData',ownerTotalData)
 
-    all_owners = [eval(item['owner'])[0] for item in ownerTotalData if item['owner'] != '[]']
-    all_developments = [eval(item['development'])[0] for item in ownerTotalData if item['development'] != '[]']
+    all_owners = [eval(item['owner'])[0] for item in ownerTotalData if item['owner'] and item['owner'] != '[]']
+
+    all_developments = [eval(item['development'])[0] for item in ownerTotalData if item['development'] and item['development'] != '[]']
 
     unique_owners = list(set(all_owners))
     unique_developments = list(set(all_developments))

@@ -117,107 +117,7 @@ def saveTestResults(request):
 
 
 
-def compare_and_sync(source_cursor,target_conn, target_cursor, source_table, target_table):
-    '''对比数据'''
-    log.info("compare_and_sync开始执行")
-    target_sql='''SELECT COLUMN_NAME
-        FROM information_schema.columns
-        WHERE table_schema = 'testplatform'
-        AND table_name = '{target_table}'
-    '''.format(target_table=target_table)
 
-    result_rows=commonList().getModelData(target_sql)
-
-    columns = [column['COLUMN_NAME'] for column in result_rows]
-    columns_str = ','.join(columns)
-    source_query=f"SELECT {columns_str} FROM {source_table}".format(columns_str,source_table)
-    import  re
-    if target_table=='zt_bug':
-        source_query=re.sub(r'\b(case|status|lines)\b(?!Version)', r'`\1`', source_query)
-        source_query = source_query + " order by id desc"
-    if target_table=='zt_module':
-        source_query = re.sub(r'\b(name|order|from|owner)\b(?!Version)', r'`\1`', source_query)
-        source_query=source_query+" order by id desc"
-    if target_table == 'zt_product':
-        source_query = re.sub(r'\b(name|code|status|desc|order)\b(?!Version)', r'`\1`', source_query)
-        source_query = source_query + " order by id desc"
-    if target_table == 'zt_build':
-        source_query = re.sub(r'\b(name|date|desc|order)\b(?!Version)', r'`\1`', source_query)
-        source_query = source_query + " order by id desc"
-
-    if target_table=='zt_project':
-        source_query = re.sub(r'\b(name|code|end|firstEnd|parallel|realBegan|begin|desc|left|order)\b(?!Version)', r'`\1`', source_query)
-        # source_query =source_query+" order by id desc"
-        print("=====source_query=====",source_query)
-
-    source_rows = commonList().getSignModeldata(source_cursor,source_query)
-
-    # try:
-    if target_table=="zt_bug":
-        number = 1
-        for row in source_rows:
-            # print("当前执行的数据", row)
-            from .sqlData import selectSqlData
-            selectSqlData().insert_or_update_data(target_cursor, target_conn, row,target_table)
-            number += 1
-            if number >= 400:
-                break
-
-    else:
-        for row in source_rows:
-            # print("当前执行的数据", row)
-            from .sqlData import selectSqlData
-            selectSqlData().insert_or_update_data(target_cursor, target_conn, row,target_table)
-
-def sync_tables(request):
-    # 连接源数据库和目标数据库
-    log.info('sync_tables开始执行')
-    source_conn = mysql.connector.connect(
-        host='120.55.13.41',
-        user='zentao',
-        password='X323pjDHsf6K3Fxs',
-        database='zentao'
-    )
-    source_cursor = source_conn.cursor()
-
-    target_conn = mysql.connector.connect(
-        host='118.178.255.171',
-        user='store',
-        password='UUueBYYs9U4uptj',
-        database='testplatform'
-    )
-    target_cursor = target_conn.cursor()
-
-    # try:
-    # 同步 zt_bug 表
-    compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_bug', 'zt_bug')
-
-    # 同步 zt_module 表
-    compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_module', 'zt_module')
-
-    # 同步 zt_product 表
-    compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_product', 'zt_product')
-
-    # 同步 zt_build 表
-    compare_and_sync(source_cursor, target_conn, target_cursor, 'zt_build', 'zt_build')
-
-    # 同步 zt_project 表
-    compare_and_sync(source_cursor,target_conn, target_cursor, 'zt_project', 'zt_project')
-
-    # except Exception as e:
-    #     print(f'发生错误：{e}')
-
-    # finally:
-    source_cursor.close()
-    source_conn.close()
-    target_cursor.close()
-    target_conn.close()
-
-    data = {
-        "code": 200,
-        "data": "同步成功"
-    }
-    return JsonResponse(data, safe=False)
 
 
 
@@ -396,35 +296,35 @@ def selectSigleVersionBugData(request):
 
 def selectBugDataList(request):
     '''查询BUG数据'''
-    sql='select *  from quality_buganalysis ORDER BY created DESC '
+    sql='select *  from zt_bug ORDER BY openedDate DESC '
     bugList=commonList().getModelData(sql)
     # 获取版本信息
-    reportSql = 'SELECT DISTINCT version_report  FROM quality_buganalysis where version_report IS NOT NULL ORDER BY version_report  desc'
+    reportSql = 'select  DISTINCT b.name from zt_bug a,zt_project b WHERE a.execution =b.id'
     reportListData = commonList().getModelData(reportSql)
     reportList=[]
     for report in reportListData:
         reportdict={}
-        reportdict['label']=report['version_report']
-        reportdict['value']=report['version_report']
+        reportdict['label']=report['name']
+        reportdict['value']=report['name']
         reportList.append(reportdict)
 
 
-    # 获取处理人信息
-    current_ownersql = 'SELECT DISTINCT current_owner FROM quality_buganalysis;'
-    current_ownerListData = commonList().getModelData(current_ownersql)
-    current_ownerList=[]
-    for current_owner in current_ownerListData:
-        current_ownerdict={}
-        current_ownerdict['label']=current_owner['current_owner']
-        current_ownerdict['value'] = current_owner['current_owner']
-        current_ownerList.append(current_ownerdict)
+    # # 获取处理人信息
+    # current_ownersql = 'SELECT DISTINCT current_owner FROM ;'
+    # current_ownerListData = commonList().getModelData(current_ownersql)
+    # current_ownerList=[]
+    # for current_owner in current_ownerListData:
+    #     current_ownerdict={}
+    #     current_ownerdict['label']=current_owner['current_owner']
+    #     current_ownerdict['value'] = current_owner['current_owner']
+    #     current_ownerList.append(current_ownerdict)
 
     # 获取未解决BUG
-    unsolvesql='select count(*) as number from quality_buganalysis where status_alias=\'新\''
+    unsolvesql='select count(*) as number from zt_bug where status=\'active\''
     unsolveData = commonList().getModelData(unsolvesql)
 
     # 每日新增BUG
-    todayBug='select  count(*) as number from quality_buganalysis where Date(created)=CURRENT_DATE'
+    todayBug='select  count(*) as number from zt_bug where Date(openedDate)=CURRENT_DATE'
     todayBugData=commonList().getModelData(todayBug)
 
     # 获取每日新增BUG
@@ -432,7 +332,7 @@ def selectBugDataList(request):
         "code": 200,
         "data": bugList,
         "reportList":reportList,
-        "current_ownerList":current_ownerList,
+        # "current_ownerList":current_ownerList,
         "unSolveBug":unsolveData,
         "todyBugNumber":todayBugData
     }

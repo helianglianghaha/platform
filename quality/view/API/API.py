@@ -32,14 +32,11 @@ def selectVersionTotalData(request):
     # 汇总数据
     sqlTotal = '''
                 SELECT 
-                SUM(CASE WHEN status_alias = '新' THEN 1 ELSE 0 END) AS new,
-                SUM(CASE WHEN status_alias = '解决中' THEN 1 ELSE 0 END) AS pending,
-                SUM(CASE WHEN status_alias = '已解决' THEN 1 ELSE 0 END) AS success,
-                SUM(CASE WHEN status_alias = '已拒绝' THEN 1 ELSE 0 END) AS refues,
-                SUM(CASE WHEN status_alias = '已关闭' THEN 1 ELSE 0 END) AS closed,
-                SUM(CASE WHEN status_alias = '挂起' THEN 1 ELSE 0 END) AS pended,
-                count(short_id is not NULL) AS totalBugNum
-                FROM quality_buganalysis
+                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) AS active,
+                SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) AS closed,
+                SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END) AS resolved,
+                count(id is not NULL) AS totalBugNum
+                FROM zt_bug
         '''
     totalBugData = commonList().getModelData(sqlTotal)
 
@@ -325,6 +322,7 @@ def saveVersionManger(request):
     '''保存版本管理'''
     requestData = json.loads(request.body)
     print(requestData)
+    versionStart = '> 版本信息更新如下：'
     for versionManer in requestData:
         print(versionManer)
         autoTableID=versionManer['autoTableID']
@@ -348,6 +346,15 @@ def saveVersionManger(request):
         juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
         liveTime=versionManer['liveTime']
         editable = versionManer['editable']
+
+        username = request.session.get('username', False)
+        selectUserNameSql = "select first_name from auth_user where username=\'{}\'".format(username)
+        returnUserNamedata = commonList().getModelData(selectUserNameSql)
+        if returnUserNamedata:
+            username = returnUserNamedata[0]['first_name']
+        else:
+            username = "猜猜我是谁，一个来自外太空M78星云的陌生人"
+
 
         _Versionmanager = Versionmanager()
         if autoTableID:
@@ -395,11 +402,36 @@ def saveVersionManger(request):
             _Versionmanager.editable = 0
         _Versionmanager.save()
 
+        if len(testCases) == 0:
+            testCases = 0
+        if len(testCaseReview) == 0:
+            testCaseReview = 0
+        if len(firstRoundTest) == 0:
+            firstRoundTest = 0
+        if len(secondRoundTest) == 0:
+            secondRoundTest = 0
+        if len(thirdRoundTest) == 0:
+            thirdRoundTest = 0
+
+        versionInfo = '''\n>更新人 : {}，\n>版本 : {} \n>需求 : {}\n>负责人 : {}\n>开发者 : {}\n>需求状态 ：{} \n>编写测试用例 ：{}%\n>测试用例评审 ：{}%\n>一轮测试进度 ：{}%\n>二轮测试进度 ：{}%\n>三轮测试进度 ：{}%\n>版本备注 ：{}
+                                '''.format(username,version, description, owner, development, status, testCases, testCaseReview,
+                                           firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+        versionStart = versionStart + versionInfo + '\n'
+
+    totalCurl = '''curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=cb28dc5d-9ebc-4928-9fa0-bf0648934fba' \
+                                -H 'Content-Type: application/json' \
+                                --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "{content}"，"mentioned_mobile_list":[""]}}'
+                                --compressed
+                                '''.format(content=versionStart)
+    import os
+    os.system(totalCurl)
+
     data = {
         "code": 200,
         "msg": "保存版本管理信息成功"
     }
     return JsonResponse(data, safe=False)
+
 
 
 
@@ -1199,6 +1231,12 @@ def executeScript(request):
     dingMessageSql = 'select ding_address,ding_version,ding_message,ding_people  from quality_dingmessage'
     dingMessageLIst = (commonList().getModelData(dingMessageSql))
     username = request.session.get('username', False)
+    selectUserNameSql="select first_name from auth_user where username=\'{}\'".format(username)
+    returnUserNamedata=commonList().getModelData(selectUserNameSql)
+    if returnUserNamedata:
+        username=returnUserNamedata[0]['first_name']
+    else:
+        username="猜猜我是谁，一个来自外太空M78星云的陌生人"
     if len(dingMessageLIst)==0:
         log.info("====企信通知地址配置为空======")
     else:
@@ -1237,21 +1275,22 @@ def executeScript(request):
 
                         # 计算占比
                         true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
+                        true_percentage = round(true_percentage, 2)
 
                         curlData = '''curl '{}' \
                                                 -H 'Content-Type: application/json' \
-                                                --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人 : {}\n>执行接口 : {}个 \n>失败接口 : {}个\n>执行成功率 : {:.2f}%\n>构建结果 ：{} \n>查看接口测试报告:http://192.168.8.22:8050{}","mentioned_mobile_list":["{}"]}}'
+                                                --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人 : {}\n>执行接口 : {}个 \n>失败接口 : {}个\n>执行成功率 : {}%\n>构建结果 ：{} \n>[查看接口测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
                                                 --compressed
                                                 '''.format(dingAddress, projectName[0]["modelData"], modelData,
-                                                           username, total_count, true_count, true_percentage, result,
-                                                           reportAddress,
-                                                           dingPeople)
-
+                                                           username, total_count, true_count, true_percentage, result,reportAddress,dingPeople)
                         os.system(curlData)
+
+                        # sendQiXinMessgae(dingAddress,projectName[0]["modelData"],modelData,username,total_count,true_count,true_percentage,result,reportAddress)
+
                     elif executeType==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
                         curlData = '''curl '{}' \
                         -H 'Content-Type: application/json' \
-                        --data-raw '{{"msgtype": "text", "text": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人: {}\n>构建结果 ：Success \n>查看：[性能测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
+                        --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人: {}\n>构建结果 ：Success \n>查看：[性能测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
                         --compressed
                         '''.format(dingAddress, projectName[0]["modelData"], modelData, username, performanceReport,
                                    dingPeople)
@@ -1269,6 +1308,28 @@ def executeScript(request):
         }
 
     return JsonResponse(data, safe=False)
+def sendQiXinMessgae(dingAddress,projectName,versionName,username,total_count,true_count,true_percentage,result,reportAddress):
+    '''执行企信通知'''
+    try:
+        import requests
+        headers={
+            'Content-Type: application/json'
+        }
+
+        payload=json.dumps({
+              "msgtype": "markdown",
+              "markdown": {
+                "content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【"+projectName+"】-【"+versionName+"】项目构建信息\n>负责人 : "+username+"\n>执行接口 : "+total_count+"个 \n>失败接口 : "+
+               true_count+"个\n>执行成功率 : "+true_percentage+"%\n>构建结果 ："+result+" \n>[测试结果=>查看接口测试报告](http://192.168.8.22:8050"+reportAddress+")","mentioned_mobile_list":[]+"\""
+              }
+            })
+        requests.request("POST", dingAddress,headers=headers, data=payload)
+
+        print(response.text)
+    except Exception as e:
+        log.info("企信通知报错:{}".format(e))
+
+
 @msgMessage
 def readHtmlReport(request):
     '''读取html报告'''
@@ -1646,7 +1707,7 @@ def getVersionListNew(request):
         projectId = request.POST.get('project_id_id')
         project1 = Project.objects.filter(parent_project_id=0).first()
         if project1:
-            if projectId is '':
+            if projectId == '':
                 projectId = project1.project_id
             if projectId is None:
                 projectId = project1.project_id
