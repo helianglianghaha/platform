@@ -1,4 +1,5 @@
-import datetime
+# import datetime
+from datetime import datetime
 
 from django.http.response import JsonResponse,FileResponse
 # from quality.models import Version
@@ -16,6 +17,7 @@ from quality.common.msg import msgMessage, msglogger
 from quality.common.msg import loginRequired
 from quality.common.logger import Log
 from pathlib import Path
+from datetime import datetime
 import  os,shutil
 log=Log()
 
@@ -110,6 +112,11 @@ def selectVersionList(request):
             item['development'] = eval(item['development'])
         else:
             item['development']=[]
+
+        if item['product']:
+            item['product'] = eval(item['product'])
+        else:
+            item['product']=[]
         return item
 
     # Apply the conversion to each dictionary in the list
@@ -158,7 +165,7 @@ def selectTagsManger(request):
     '''页面初始化查询'''
     sqldata='SELECT tableID FROM quality_versionmanager GROUP BY tableID ORDER BY MAX(autoTableID) desc '
     data = commonList().getModelData(sqldata)
-    print("====data====",data)
+    # print("====data====",data)
     # for i in data:
     #     print(i)
     #     data[i]['owner']=json.loads(i['owner'])
@@ -173,7 +180,7 @@ def selectVersionManger(request):
     sql='select * from  quality_versionmanager where tableID ='+"\'"+tableName+"\'"
     # print("sql====", sql)
     data=commonList().getModelData(sql)
-    print("data====", data)
+    # print("data====", data)
 
     def convert_lists(item):
         if item['owner']:
@@ -184,6 +191,10 @@ def selectVersionManger(request):
             item['development'] = eval(item['development'])
         else:
             item['development']=[]
+        if item['product']:
+            item['product'] = eval(item['product'])
+        else:
+            item['product']=[]
         return item
 
     # Apply the conversion to each dictionary in the list
@@ -283,6 +294,8 @@ def copyVersionManger(request):
         secondRoundTest = versionManer['secondRoundTest']
         thirdRoundTest = versionManer['thirdRoundTest']
         remarks = versionManer['remarks']
+        testingTime = versionManer['testingTime']
+        product = versionManer['product']
         yueLinProgress = versionManer['yueLinProgress']
         yueLinRemarks = versionManer['yueLinRemarks']
         juHaoMaiProgress = versionManer['juHaoMaiProgress']
@@ -305,6 +318,8 @@ def copyVersionManger(request):
         _Versionmanager.thirdRoundTest = thirdRoundTest
         _Versionmanager.remarks = remarks
         _Versionmanager.liveTime = liveTime
+        _Versionmanager.testingTime = testingTime
+        _Versionmanager.product = product
         _Versionmanager.yueLinProgress = yueLinProgress
         _Versionmanager.yueLinRemarks = yueLinRemarks
         _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
@@ -322,9 +337,10 @@ def saveVersionManger(request):
     '''保存版本管理'''
     requestData = json.loads(request.body)
     print(requestData)
-    versionStart = '> 版本信息更新如下：'
+
     for versionManer in requestData:
         print(versionManer)
+        versionStart = '> 版本信息更新：'
         autoTableID=versionManer['autoTableID']
         tableName=versionManer['tableName']
         tableID=versionManer['tableID']
@@ -335,15 +351,19 @@ def saveVersionManger(request):
         development = versionManer['development']
         status = versionManer['status']
         testCases = versionManer['testCases']
+
         testCaseReview = versionManer['testCaseReview']
         firstRoundTest = versionManer['firstRoundTest']
         secondRoundTest = versionManer['secondRoundTest']
         thirdRoundTest = versionManer['thirdRoundTest']
+
         remarks = versionManer['remarks']
         yueLinProgress = versionManer['yueLinProgress']
         yueLinRemarks = versionManer['yueLinRemarks']
         juHaoMaiProgress = versionManer['juHaoMaiProgress']
         juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
+        testingTime = versionManer['testingTime']
+        product=versionManer['product']
         liveTime=versionManer['liveTime']
         editable = versionManer['editable']
 
@@ -354,9 +374,8 @@ def saveVersionManger(request):
             username = returnUserNamedata[0]['first_name']
         else:
             username = "猜猜我是谁，一个来自外太空M78星云的陌生人"
-
-
         _Versionmanager = Versionmanager()
+
         if autoTableID:
             _Versionmanager.autoTableID=autoTableID
             _Versionmanager.tableID = tableID
@@ -373,12 +392,56 @@ def saveVersionManger(request):
             _Versionmanager.secondRoundTest = secondRoundTest
             _Versionmanager.thirdRoundTest = thirdRoundTest
             _Versionmanager.liveTime=liveTime
+            _Versionmanager.testingTime = testingTime
+            _Versionmanager.product=product
             _Versionmanager.remarks = remarks
             _Versionmanager.yueLinProgress = yueLinProgress
             _Versionmanager.yueLinRemarks = yueLinRemarks
             _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
             _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
             _Versionmanager.editable = 0
+            _Versionmanager.save()
+
+            if len(testCases) == 0:
+                testCases = 0
+            if len(testCaseReview) == 0:
+                testCaseReview = 0
+            if len(firstRoundTest) == 0:
+                firstRoundTest = 0
+            if len(secondRoundTest) == 0:
+                secondRoundTest = 0
+            if len(thirdRoundTest) == 0:
+                thirdRoundTest = 0
+
+            from datetime import  datetime,timedelta
+
+
+            if len(liveTime)>0:
+                liveTime=liveTime[:10]
+                date_obj = datetime.strptime(liveTime, "%Y-%m-%d")
+                next_day = date_obj + timedelta(days=1)
+                liveTime = next_day.strftime("%Y-%m-%d")
+
+            if len(testingTime)>0:
+                testingTime=testingTime[:10]
+                testing_date_obj = datetime.strptime(testingTime, "%Y-%m-%d")
+                testing_next_day = testing_date_obj + timedelta(days=1)
+                testingTime = testing_next_day.strftime("%Y-%m-%d")
+
+
+        
+            print(versionStart)
+
+            dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,version,description,owner,development,product, status,
+                                                   testingTime, liveTime, testCases, testCaseReview,
+                                                   firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+
+
+            # totalCurl = '''curl --location 'https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2' \
+            #                                 --header 'Content-Type: application/json' \
+            #                                 --data '{"msgtype": "markdown", "markdown": {"title":"版本信息更新","text": "{content}","at":{"isAtAll":true}}}'
+            #                                 '''.format(content=versionStart)
+
         else:
             _Versionmanager.tableID = tableID
             _Versionmanager.version = version
@@ -394,37 +457,20 @@ def saveVersionManger(request):
             _Versionmanager.secondRoundTest = secondRoundTest
             _Versionmanager.thirdRoundTest = thirdRoundTest
             _Versionmanager.remarks = remarks
+            _Versionmanager.testingTime = testingTime
+            _Versionmanager.product = product
             _Versionmanager.liveTime = liveTime
             _Versionmanager.yueLinProgress = yueLinProgress
             _Versionmanager.yueLinRemarks = yueLinRemarks
             _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
             _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
             _Versionmanager.editable = 0
-        _Versionmanager.save()
-
-        if len(testCases) == 0:
-            testCases = 0
-        if len(testCaseReview) == 0:
-            testCaseReview = 0
-        if len(firstRoundTest) == 0:
-            firstRoundTest = 0
-        if len(secondRoundTest) == 0:
-            secondRoundTest = 0
-        if len(thirdRoundTest) == 0:
-            thirdRoundTest = 0
-
-        versionInfo = '''\n>更新人 : {}，\n>版本 : {} \n>需求 : {}\n>负责人 : {}\n>开发者 : {}\n>需求状态 ：{} \n>编写测试用例 ：{}%\n>测试用例评审 ：{}%\n>一轮测试进度 ：{}%\n>二轮测试进度 ：{}%\n>三轮测试进度 ：{}%\n>版本备注 ：{}
-                                '''.format(username,version, description, owner, development, status, testCases, testCaseReview,
-                                           firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
-        versionStart = versionStart + versionInfo + '\n'
-
-    totalCurl = '''curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=cb28dc5d-9ebc-4928-9fa0-bf0648934fba' \
-                                -H 'Content-Type: application/json' \
-                                --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "{content}"，"mentioned_mobile_list":[""]}}'
-                                --compressed
-                                '''.format(content=versionStart)
-    import os
-    os.system(totalCurl)
+            _Versionmanager.save()
+    # try:
+    #     import os
+    #     os.system(totalCurl)
+    # except Exception as e:
+    #     pass
 
     data = {
         "code": 200,
@@ -432,17 +478,55 @@ def saveVersionManger(request):
     }
     return JsonResponse(data, safe=False)
 
+def dingMessage(url,versionStart,username,version,description,owner,development,product, status,
+                        testingTime, liveTime, testCases, testCaseReview,
+                        firstRoundTest, secondRoundTest, thirdRoundTest, remarks):
+    '''叮叮消息通知'''
+    import requests
+    import json
 
+    versionInfo = '''
+                \n\n > 更新人: <font color=#303133>{}</font>  
+                \n\n > 版本 : <font color=#303133>{}</font> 
+                \n\n > 需求 : <font color=#303133>{}</font>  
+                \n\n > 负责人 : <font color=#303133>{}</font>  
+                \n\n > 开发者 : <font color=#303133>{}</font>  
+                \n\n > 产品 : <font color=#303133>{}</font>  
+                \n\n > 需求状态 ：<font color=#303133>{}</font>  
+                \n\n > 提测时间 ：<font color=#303133>{}</font>  
+                \n\n > 上线时间 ：<font color=#303133>{}</font>  
+                \n\n > 编写测试用例 ：<font color=#303133>{}%</font>  
+                \n\n > 测试用例评审 ：<font color=#303133>{}%</font>  
+                \n\n > 一轮测试进度 ：<font color=#303133>{}%</font>  
+                \n\n > 二轮测试进度 ：<font color=#303133>{}%</font>  
+                \n\n > 三轮测试进度 ：<font color=#303133>{}%</font>
+                \n\n > 版本备注：<font color=#303133>{}</font>
+                '''.format(
+                    username, version, description, owner, development, product, status,
+                    testingTime, liveTime, testCases, testCaseReview,
+                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks
+                )
+    versionStart = versionStart + versionInfo + '\n'
 
+    url = url
 
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "版本信息更新",
+        "text": versionStart,
+        "at": {
+        "isAtAll": True
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
 
+    response = requests.request("POST", url, headers=headers, data=payload)
 
-
-
-
-
-
-
+    # print(response.text)
 
 
 
@@ -797,7 +881,7 @@ def createScriptFile(request):
         _scriptProject.performanceReport = performanceReport
         _scriptProject.creater = creater
         _scriptProject.status = status
-        time = datetime.datetime.now()
+        time = datetime.now()
         _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
         _scriptProject.save()
         data = {
@@ -943,7 +1027,7 @@ def saveScriptFile(request):
             _scriptProject.performanceData = performanceData
             _scriptProject.performanceReport = performanceReport
             _scriptProject.creater=creater
-            time = datetime.datetime.now()
+            time = datetime.now()
             _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
             _scriptProject.status=status
             _scriptProject.save()
@@ -964,7 +1048,7 @@ def saveScriptFile(request):
             _scriptProject.performanceReport = performanceReport
             _scriptProject.creater = creater
             _scriptProject.status = status
-            time = datetime.datetime.now()
+            time = datetime.now()
             _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
             _scriptProject.save()
             data = {
@@ -1058,256 +1142,326 @@ def getReportFileData(request):
 @msgMessage
 def executeScript(request):
     '''执行脚本'''
-    # try:
-    requestData = json.loads(request.body)
-    executeType=requestData["executeType"]
-    buildAddress=requestData["buildAddress"]
-    performanceData=requestData["performanceData"]
-    scriptName=requestData["scriptName"]
-    sceiptProject_id=requestData['sceiptProject_id']
+    try:
+        requestData = json.loads(request.body)
+        executeType=requestData["executeType"]
+        buildAddress=requestData["buildAddress"]
+        performanceData=requestData["performanceData"]
+        scriptName=requestData["scriptName"]
+        sceiptProject_id=requestData['sceiptProject_id']
 
-    # 获取项目地址
-    projectName_id = requestData['projectName']
-    sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
-    projectName = (commonList().getModelData(sql))
+        # 获取项目地址
+        projectName_id = requestData['projectName']
+        sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
+        projectName = (commonList().getModelData(sql))
 
-    # 获取版本地址
-    modelDataId = requestData['versionName']
-    modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
-    modelDataLIst = (commonList().getModelData(modelDataSql))
-    modelData = modelDataLIst[0]["modelData"]
-    log.info("获取到的项目名称{},版本名称{}".format(projectName,modelData))
+        # 获取版本地址
+        modelDataId = requestData['versionName']
+        modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
+        modelDataLIst = (commonList().getModelData(modelDataSql))
+        modelData = modelDataLIst[0]["modelData"]
+        log.info("获取到的项目名称{},版本名称{}".format(projectName,modelData))
 
-    #判断是否有删除文件
-    def check_and_delete_files(folder_path, files_to_check):
-        all_files = os.listdir(folder_path)
+        #判断是否有删除文件
+        def check_and_delete_files(folder_path, files_to_check):
+            all_files = os.listdir(folder_path)
 
-        for file_name in all_files:
-            # 构建文件的完整路径
-            file_path = os.path.join(folder_path, file_name)
-            # 检查文件是否存在于文件名列表中
-            matching_files = [file for file in files_to_check if file["name"] == file_name and os.path.isfile(file_path)]
-            # 如果没有找到匹配的文件，删除文件
-            if not matching_files:
-                os.remove(file_path)
-                log.info("没有匹配上文件,开始删除文件{}".format(file_path))
-    substrings_to_check=scriptName
-    if executeType == '0' or executeType == False:#接口
-        directory_path='/root/jmeter/apache-jmeter-5.4.1/script/'+projectName[0]["modelData"] + "/" + modelData + "/"
-    else:
-        directory_path='/root/jmeter/apache-jmeter-5.4.1/ProScript/'+projectName[0]["modelData"] + "/" + modelData + "/"
+            for file_name in all_files:
+                # 构建文件的完整路径
+                file_path = os.path.join(folder_path, file_name)
+                # 检查文件是否存在于文件名列表中
+                matching_files = [file for file in files_to_check if file["name"] == file_name and os.path.isfile(file_path)]
+                # 如果没有找到匹配的文件，删除文件
+                if not matching_files:
+                    os.remove(file_path)
+                    log.info("没有匹配上文件,开始删除文件{}".format(file_path))
+        substrings_to_check=scriptName
+        if executeType == '0' or executeType == False:#接口
+            directory_path='/root/jmeter/apache-jmeter-5.4.1/script/'+projectName[0]["modelData"] + "/" + modelData + "/"
+        else:
+            directory_path='/root/jmeter/apache-jmeter-5.4.1/ProScript/'+projectName[0]["modelData"] + "/" + modelData + "/"
 
-    #删除已经删除的脚本
-    check_and_delete_files(directory_path,substrings_to_check)
+        #删除已经删除的脚本
+        check_and_delete_files(directory_path,substrings_to_check)
 
-    #创建build文件目录
-    ant_build="/root/ant/apache-ant-1.9.16/build/"
-    if not os.path.exists(ant_build+projectName[0]["modelData"]+"/"+modelData):
-        os.makedirs(ant_build+projectName[0]["modelData"]+"/"+modelData)
+        #创建build文件目录
+        ant_build="/root/ant/apache-ant-1.9.16/build/"
+        if not os.path.exists(ant_build+projectName[0]["modelData"]+"/"+modelData):
+            os.makedirs(ant_build+projectName[0]["modelData"]+"/"+modelData)
 
-    #创建测试报告文件夹
-    testReportAddress='/root/platform/static/'
-    if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData):
-        os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/")
-        os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/")
-    #
-    # #创建日志文件
-    log_path="/root/platform/logs/"
-    if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData):
-        os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/")
-        os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
-        os.mknod(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text")
-        os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
+        #创建测试报告文件夹
+        testReportAddress='/root/platform/static/'
+        if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData):
+            os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/")
+            os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/")
+        #
+        # #创建日志文件
+        log_path="/root/platform/logs/"
+        if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData):
+            os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/")
+            os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
+            os.mknod(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text")
+            os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
 
-    #创建脚本目录
-    #接口脚本
-    apiScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/script/'
+        #创建脚本目录
+        #接口脚本
+        apiScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/script/'
 
-    #性能接口脚本
-    performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
+        #性能接口脚本
+        performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
 
-    if not os.path.exists(apiScriptFilePath+projectName[0]["modelData"] + "/" + modelData):
-        os.makedirs(apiScriptFilePath+projectName[0]["modelData"] + "/" + modelData)
-    if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
-        os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+        if not os.path.exists(apiScriptFilePath+projectName[0]["modelData"] + "/" + modelData):
+            os.makedirs(apiScriptFilePath+projectName[0]["modelData"] + "/" + modelData)
+        if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+            os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
 
-    #复制脚本到对应的文件夹
-    fileUrlList=[i["url"] for i in scriptName]
+        #复制脚本到对应的文件夹
+        fileUrlList=[i["url"] for i in scriptName]
 
-    if executeType == '0' or executeType == False:#接口
-        for fileUrl in fileUrlList:
-            fileName = os.path.split(fileUrl)[1]  # 读取文件名
-            fullFilePath = apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData + "/" + fileName
-            if os.path.exists(fullFilePath):
-                pass
-            else:
-                log.info("=========================复制接口脚本=======================")
-                sourceFilePath='/root/platform/media/'+fileName
-                shutil.copyfile(sourceFilePath,fullFilePath)
-                log.info("复制接口脚本成功{}".format(fullFilePath))
-
-    else:#性能
-        for fileUrl in fileUrlList:
-            fileName = os.path.split(fileUrl)[1]  # 读取文件名
-            fullFilePath = performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData + "/" + fileName
-            if os.path.exists(fullFilePath):
-                pass
-            else:
-                log.info("========================复制性能脚本=================")
-                sourceFilePath = '/root/platform/media/' + fileName
-                shutil.copyfile(sourceFilePath, fullFilePath)
-                log.info("复制接口脚本成功{}".format(fullFilePath))
-
-    testReportAddress = '/root/platform/static/'
-    buildSourceFilePath = '/root/ant/apache-ant-1.9.16/build/build.xml'
-
-    # 执行脚本前清除报告数据
-    performanceReportPath = testReportAddress + projectName[0]["modelData"] + '/' + modelData + '/PerformanceReport/*'
-    apiReportPatb = testReportAddress + projectName[0]["modelData"] + '/' + modelData + '/ApiReport/*'
-
-    #执行脚本前清理日志文件-jmeter执行日志文件-ant执行日志文件
-    #Jmeter执行文件地址
-    jmeterAPiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
-    jmeterPerforLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
-
-    #Ant执行日志文件
-    antApiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
-    antPerForLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
-
-    if executeType=='0' or executeType==False :
-        os.system("rm -rf " + jmeterAPiLogPath)
-        os.system("rm -rf " + antApiLogPath)
-    if executeType == '1' or executeType == True:
-        os.system("rm -rf " + jmeterPerforLogPath)
-        os.system("rm -rf " + antPerForLogPath)
-
-    os.system("rm -rf " + '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml")
-    log.info("=====删除日志和报告文件=====")
-    # 复制build文件
-
-    destFilePath = '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml"
-    shutil.copyfile(buildSourceFilePath, destFilePath)
-    log.info("=======复制build文件{}======".format(destFilePath))
-
-    # 修改build文件内容
-    buildJtlData = "sed -i 's|<property name=\"jmeter.result.jtl.dir\" value=\"/root/ant/report/jtl\" />|<property name=\"jmeter.result.jtl.dir\" value="+"\"" + testReportAddress + \
-    projectName[0]["modelData"] + '/' + modelData + "/ApiReport/jtl\" />|' " + destFilePath
-
-    buildHtmlData = "sed -i 's|<property name=\"jmeter.result.html.dir\" value=\"/root/ant/report/html\" />|<property name=\"jmeter.result.html.dir\" value=" + "\"" + testReportAddress + \
-                projectName[0]["modelData"] + '/' + modelData + "/ApiReport/html\" />|' " + destFilePath
-
-    buildScriptData = "xmlstarlet ed --inplace -u '//testplans/@dir' -v '/root/jmeter/apache-jmeter-5.4.1/script/"+projectName[0]["modelData"] + '/' + modelData +"' " + destFilePath
-
-    log.info("====buildJtlData====={}".format(buildJtlData))
-    log.info("====buildHtmlData====={}".format(buildHtmlData))
-    log.info("====buildScriptData====={}".format(buildScriptData))
-
-    os.system(buildJtlData)
-    os.system(buildHtmlData)
-    os.system(buildScriptData)
-
-
-    log.info("=====修改build文件内容=========")
-
-
-
-    #执行前更新项目状态
-    sql = 'update quality_scriptproject set runstatus=1 where sceiptProject_id='+str(sceiptProject_id)
-    commonList().getModelData(sql)
-
-    if executeType=='0' or executeType==False :
-        os.system("rm -rf " + apiReportPatb)
-        shellData='ant -file '+buildAddress+" run  >>"+log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
-        log.info('shellData:{}'.format(shellData))
-
-    if executeType=='1' or executeType==True:
-        os.system("rm -rf " + performanceReportPath)
-        shellData=performanceData+" >> "+log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
-        log.info('shellData:{}'.format(shellData))
-
-    os.system(shellData)
-
-    #获取企信消息通知-开启状态-企信地址
-    dingMessageSql = 'select ding_address,ding_version,ding_message,ding_people  from quality_dingmessage'
-    dingMessageLIst = (commonList().getModelData(dingMessageSql))
-    username = request.session.get('username', False)
-    selectUserNameSql="select first_name from auth_user where username=\'{}\'".format(username)
-    returnUserNamedata=commonList().getModelData(selectUserNameSql)
-    if returnUserNamedata:
-        username=returnUserNamedata[0]['first_name']
-    else:
-        username="猜猜我是谁，一个来自外太空M78星云的陌生人"
-    if len(dingMessageLIst)==0:
-        log.info("====企信通知地址配置为空======")
-    else:
-        for dingmessage in dingMessageLIst:
-            log.info("dingMessageLIst==={}".format(dingMessageLIst))
-            modelDataList=json.loads(dingmessage['ding_version'])
-            openDingMessAge=dingmessage["ding_message"]
-            dingAddress=dingmessage['ding_address']
-            dingPeople=dingmessage['ding_people']
-            if len(modelDataList)==0:
-                log.info("====版本配置为空=====")
-            else:
-                if int(modelDataId) in  modelDataList:
-                    reportAddress = requestData['reportAddress']
-                    performanceReport = requestData['performanceReport']
-                    # 根据测试报告是否生成,巡检状态,开启群通知
-                    if executeType==0 and os.path.exists('/root/platform'+reportAddress) and openDingMessAge=="True" :
-                        testReportAddress = '/root/platform/static/'
-                        performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
-
-                        with open(performanceJtlAddress, 'r') as file:
-                            content = file.read()
-                        # 统计总数
-                        total_count = content.count('<failure>true</failure>') + content.count(
-                            '<failure>false</failure>')
-                        # 统计 <failure>true</failure> 的数量
-                        success_cont=content.count(
-                            '<failure>false</failure>')
-                        true_count = content.count('<failure>true</failure>')
-
-
-                        if true_count>0:
-                            result="构建失败"
-                        else:
-                            result="构建成功"
-
-                        # 计算占比
-                        true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
-                        true_percentage = round(true_percentage, 2)
-
-                        curlData = '''curl '{}' \
-                                                -H 'Content-Type: application/json' \
-                                                --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人 : {}\n>执行接口 : {}个 \n>失败接口 : {}个\n>执行成功率 : {}%\n>构建结果 ：{} \n>[查看接口测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
-                                                --compressed
-                                                '''.format(dingAddress, projectName[0]["modelData"], modelData,
-                                                           username, total_count, true_count, true_percentage, result,reportAddress,dingPeople)
-                        os.system(curlData)
-
-                        # sendQiXinMessgae(dingAddress,projectName[0]["modelData"],modelData,username,total_count,true_count,true_percentage,result,reportAddress)
-
-                    elif executeType==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
-                        curlData = '''curl '{}' \
-                        -H 'Content-Type: application/json' \
-                        --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>负责人: {}\n>构建结果 ：Success \n>查看：[性能测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
-                        --compressed
-                        '''.format(dingAddress, projectName[0]["modelData"], modelData, username, performanceReport,
-                                   dingPeople)
-                        os.system(curlData)
-                    else:
-                        log.info("=====不满足企信推送条件=====")
+        if executeType == '0' or executeType == False:#接口
+            for fileUrl in fileUrlList:
+                fileName = os.path.split(fileUrl)[1]  # 读取文件名
+                fullFilePath = apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData + "/" + fileName
+                if os.path.exists(fullFilePath):
+                    pass
                 else:
-                    log.info("=====没有配置该项目企信通知=======")
+                    log.info("=========================复制接口脚本=======================")
+                    sourceFilePath='/root/platform/media/'+fileName
+                    shutil.copyfile(sourceFilePath,fullFilePath)
+                    log.info("复制接口脚本成功{}".format(fullFilePath))
+
+        else:#性能
+            for fileUrl in fileUrlList:
+                fileName = os.path.split(fileUrl)[1]  # 读取文件名
+                fullFilePath = performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData + "/" + fileName
+                if os.path.exists(fullFilePath):
+                    pass
+                else:
+                    log.info("========================复制性能脚本=================")
+                    sourceFilePath = '/root/platform/media/' + fileName
+                    shutil.copyfile(sourceFilePath, fullFilePath)
+                    log.info("复制接口脚本成功{}".format(fullFilePath))
+
+        testReportAddress = '/root/platform/static/'
+        buildSourceFilePath = '/root/ant/apache-ant-1.9.16/build/build.xml'
+
+        # 执行脚本前清除报告数据
+        performanceReportPath = testReportAddress + projectName[0]["modelData"] + '/' + modelData + '/PerformanceReport/*'
+        apiReportPatb = testReportAddress + projectName[0]["modelData"] + '/' + modelData + '/ApiReport/*'
+
+        #执行脚本前清理日志文件-jmeter执行日志文件-ant执行日志文件
+        #Jmeter执行文件地址
+        jmeterAPiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
+        jmeterPerforLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
+
+        #Ant执行日志文件
+        antApiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
+        antPerForLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
+
+        if executeType=='0' or executeType==False :
+            os.system("rm -rf " + jmeterAPiLogPath)
+            os.system("rm -rf " + antApiLogPath)
+        if executeType == '1' or executeType == True:
+            os.system("rm -rf " + jmeterPerforLogPath)
+            os.system("rm -rf " + antPerForLogPath)
+
+        os.system("rm -rf " + '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml")
+        log.info("=====删除日志和报告文件=====")
+        # 复制build文件
+
+        destFilePath = '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml"
+        shutil.copyfile(buildSourceFilePath, destFilePath)
+        log.info("=======复制build文件{}======".format(destFilePath))
+
+        # 修改build文件内容
+        buildJtlData = "sed -i 's|<property name=\"jmeter.result.jtl.dir\" value=\"/root/ant/report/jtl\" />|<property name=\"jmeter.result.jtl.dir\" value="+"\"" + testReportAddress + \
+        projectName[0]["modelData"] + '/' + modelData + "/ApiReport/jtl\" />|' " + destFilePath
+
+        buildHtmlData = "sed -i 's|<property name=\"jmeter.result.html.dir\" value=\"/root/ant/report/html\" />|<property name=\"jmeter.result.html.dir\" value=" + "\"" + testReportAddress + \
+                    projectName[0]["modelData"] + '/' + modelData + "/ApiReport/html\" />|' " + destFilePath
+
+        buildScriptData = "xmlstarlet ed --inplace -u '//testplans/@dir' -v '/root/jmeter/apache-jmeter-5.4.1/script/"+projectName[0]["modelData"] + '/' + modelData +"' " + destFilePath
+
+        # log.info("====buildJtlData====={}".format(buildJtlData))
+        # log.info("====buildHtmlData====={}".format(buildHtmlData))
+        # log.info("====buildScriptData====={}".format(buildScriptData))
+
+        os.system(buildJtlData)
+        os.system(buildHtmlData)
+        os.system(buildScriptData)
+
+
+        log.info("=====修改build文件内容=========")
 
 
 
-    data = {
-        "code": 200,
-        "msg": "脚本开始执行，请查看日志及测试报告"
+        #执行前更新项目状态
+        sql = 'update quality_scriptproject set runstatus=1 where sceiptProject_id='+str(sceiptProject_id)
+        commonList().getModelData(sql)
+
+        if executeType=='0' or executeType==False :
+            os.system("rm -rf " + apiReportPatb)
+            shellData='ant -file '+buildAddress+" run  >>"+log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
+            log.info('shellData:{}'.format(shellData))
+
+        if executeType=='1' or executeType==True:
+            os.system("rm -rf " + performanceReportPath)
+            shellData=performanceData+" >> "+log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
+            log.info('shellData:{}'.format(shellData))
+
+        os.system(shellData)
+
+        #获取企信消息通知-开启状态-企信地址
+        dingMessageSql = 'select ding_address,ding_version,ding_message,ding_people  from quality_dingmessage'
+        dingMessageLIst = (commonList().getModelData(dingMessageSql))
+        username = request.session.get('username', False)
+        selectUserNameSql="select first_name from auth_user where username=\'{}\'".format(username)
+        returnUserNamedata=commonList().getModelData(selectUserNameSql)
+        if returnUserNamedata:
+            username=returnUserNamedata[0]['first_name']
+        else:
+            username="猜猜我是谁，一个来自外太空M78星云的陌生人"
+        if len(dingMessageLIst)==0:
+            log.info("====企信通知地址配置为空======")
+        else:
+            for dingmessage in dingMessageLIst:
+                log.info("dingMessageLIst==={}".format(dingMessageLIst))
+                modelDataList=json.loads(dingmessage['ding_version'])
+                openDingMessAge=dingmessage["ding_message"]
+                dingAddress=dingmessage['ding_address']
+                dingPeople=dingmessage['ding_people']
+                if len(modelDataList)==0:
+                    log.info("====版本配置为空=====")
+                else:
+                    if int(modelDataId) in  modelDataList:
+                        reportAddress = requestData['reportAddress']
+                        performanceReport = requestData['performanceReport']
+                        # 根据测试报告是否生成,巡检状态,开启群通知
+                        if executeType==0 and os.path.exists('/root/platform'+reportAddress) and openDingMessAge=="True" :
+                            testReportAddress = '/root/platform/static/'
+                            performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
+
+                            with open(performanceJtlAddress, 'r') as file:
+                                content = file.read()
+                            # 统计总数
+                            total_count = content.count('<failure>true</failure>') + content.count(
+                                '<failure>false</failure>')
+                            # 统计 <failure>true</failure> 的数量
+                            success_cont=content.count(
+                                '<failure>false</failure>')
+                            true_count = content.count('<failure>true</failure>')
+
+                            # 统计测试中所有的URL地址
+                            # pattern = r'<java\.net\.URL>https?://[^/]+(/[^?]+).*?</java\.net\.URL>'
+                            # urls = re.findall(pattern, content)
+                            #
+                            # unique_urls = list(set(urls))
+                            # log.info(urls)
+                            # log.info(type(urls))
+                            #
+                            # # 查询所有的URL
+                            # selectUrlList='''
+                            #         select path from api_endpoints
+                            # '''
+                            #
+                            # pathList=commonList().getModelData(selectUrlList)
+                            # pathValueList=list(set(pathList))
+
+                            # log.info(pathList)
+                            # log.info(type(pathList))
+                            #
+                            # selectPrecent=countElement(unique_urls,pathValueList)
+
+                            if true_count>0:
+                                result="构建失败"
+                            else:
+                                result="构建成功"
+
+                            # 计算占比
+                            true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
+                            true_percentage = round(true_percentage, 2)
+
+                            # curlData = '''curl '{}' \
+                            #                         --header 'Content-Type: application/json' \
+                            #                         --data '{"msgtype": "markdown", "markdown": {"title":"接口自动化脚本执行","text": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>执行人 : {}\n>执行接口 : {}个 \n>失败接口 : {}个\n>执行成功率 : {}%\n>构建结果 ：{} \n>[查看接口测试报告](http://192.168.8.22:8050{})","at": {"isAtAll": true}}}'
+                            #                         '''.format(dingAddress, projectName[0]["modelData"], modelData,
+                            #                                    username, total_count, true_count, true_percentage, result,reportAddress,dingPeople)
+                            # os.system(curlData)
+
+                            dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress)
+
+                        elif executeType==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
+                            curlData = '''curl '{}' \
+                            -H 'Content-Type: application/json' \
+                            --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>执行人: {}\n>构建结果 ：Success \n>查看：[性能测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
+                            --compressed
+                            '''.format(dingAddress, projectName[0]["modelData"], modelData, username, performanceReport,
+                                       dingPeople)
+                            os.system(curlData)
+                        else:
+                            log.info("=====不满足企信推送条件=====")
+                    else:
+                        log.info("=====没有配置该项目企信通知=======")
+        data = {
+            "code": 200,
+            "msg": "脚本开始执行，请查看日志及测试报告"
         }
-
+    except Exception as e:
+        curlData = '''curl '{}' \
+                    -H 'Content-Type: application/json' \
+                    --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "{}","mentioned_mobile_list":[]}}'
+                    --compressed
+                    '''.format('https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=d543363b-8fa5-4e66-9274-8dc0cf99afd6',e)
+        os.system(curlData)
+        data = {
+            "code": 200,
+            "msg": "脚本执行报错：{}".format(e)
+        }
     return JsonResponse(data, safe=False)
+
+def countElement(sourceList,targetList):
+    '''统计占用比例'''
+    number=0
+    for source in sourceList:
+        if source in targetList:
+            number+=1
+    precent=round(number/len(targetList)*100,2)
+    return precent
+def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress):
+    '''叮叮消息通知'''
+    import requests
+    import json
+
+    content='''
+            \n\n><font color=#303133>本消息由系统自动发出，无需回复！</font> 
+            \n\n>各位同事，大家好，以下为【<font color=#E6A23C>{}</font>】-【<font color=#E6A23C>{}</font>】项目构建信息
+            \n\n>执行人 : <font color=#E6A23C>{}</font>
+            \n\n>执行接口 : <font color=#409EFF>{}</font>个 
+            \n\n>失败接口 : <font color=#F56C6C>{}</font>个
+            \n\n>执行成功率 : <font color=#67C23A>{}</font>%
+            \n\n>构建结果 : <font color=#E6A23C>{}</font>
+            \n\n>[查看接口测试报告](http://192.168.8.22:8050{})
+            '''.format(projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress)
+    url = dingAddress
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "接口自动化",
+        "text": content,
+        "at": {
+        "isAtAll": True
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    requests.request("POST", url, headers=headers, data=payload)
+
+    # print(response.text)
+
 def sendQiXinMessgae(dingAddress,projectName,versionName,username,total_count,true_count,true_percentage,result,reportAddress):
     '''执行企信通知'''
     try:

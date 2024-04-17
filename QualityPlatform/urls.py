@@ -142,6 +142,9 @@ urlpatterns = [
    url('quality/selectColumns/',API_data.selectColumns, name='selectColumns'),
    url('quality/selectDianWei/',API_data.selectDianWei, name='selectDianWei'),
    url('quality/saveVersionManger/',API.saveVersionManger, name='saveVersionManger'),
+   url('quality/sync_tables/',timeTask.sync_tables, name='sync_tables'),
+
+
 
 
    url('quality/readLog/',UI_data.readLog, name='readLog'),
