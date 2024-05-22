@@ -7,13 +7,14 @@ from datetime import timedelta
 from django.utils import timezone
 from django.http.response import JsonResponse,FileResponse
 from quality.view.documentMan.doc_model import documentMan
-import  json,os,os,zipfile,ast
+import  json,os,os,zipfile,ast,xmindparser
 from quality.common.msg import msgMessage
 from quality.common.logger import Log
 import pandas as pd
 from datetime import datetime
 from django.db import transaction
 from quality.view.testCasesMan.cases_model import testcasemanager
+from quality.view.testCasesMan.cases_model import xmind_data
 from pathlib import Path
 log=Log()
 
@@ -40,6 +41,22 @@ def downloadTemFiles(request):
     response = FileResponse(open(zip_file_path, 'rb'), content_type='application/zip')
     response['Content-Disposition'] = f'attachment; filename="{os.path.basename(zip_file_path)}"'
     return response
+def delXmindCase(request):
+    '''删除测试点'''
+    returnData = json.loads(request.body)
+    print(returnData)
+    requestData = returnData['value']
+    id = requestData['id']
+    _xmind_data = xmind_data()
+    _xmind_data = xmind_data.objects.get(id=id)
+    _xmind_data.delete()
+
+    data = {
+        "code": 200,
+        "data": "删除成功"
+    }
+
+    return JsonResponse(data, safe=False)
 
 def detTestCase(request):
     '''删除用例'''
@@ -109,6 +126,54 @@ def copyTestCase(request):
         "code": 200,
         "data": "复制用例成功"
     }
+
+    return JsonResponse(data, safe=False)
+def saveXmindCase(request):
+    '''保存单条测试点'''
+    returnData = json.loads(request.body)
+    print(returnData)
+    id=returnData['data']['id']
+    topic=returnData['data']['topic']
+    case=returnData['data']['case']
+    result = returnData['data']['result']
+    creater=returnData['data']['creater']
+    caseType=returnData['data']['caseType']
+
+    name = request.session.get('username', False)
+    sql = "select first_name from auth_user where username='{}'".format(name)
+    nameList = commonList().getModelData(sql)
+    print(nameList)
+    username = nameList[0]['first_name']
+    if not creater:
+        creater=username
+
+    _xmind_data=xmind_data()
+    if id:
+        _xmind_data = xmind_data.objects.get(id=id)
+        _xmind_data.topic=topic
+        _xmind_data.case = case
+        _xmind_data.result = result
+        _xmind_data.creater = creater
+        _xmind_data.caseType=caseType
+        _xmind_data.save()
+        data = {
+            "code": 200,
+            "data": "编辑测试点成功"
+        }
+
+       
+    else:
+        _xmind_data.topic=topic
+        _xmind_data.case = case
+        _xmind_data.result = result
+        _xmind_data.creater = creater
+        _xmind_data.caseType=caseType
+        _xmind_data.save()
+    
+        data = {
+            "code": 200,
+            "data": "新增测试点成功"
+        }
 
     return JsonResponse(data, safe=False)
 
@@ -187,7 +252,19 @@ def saveTestCase(request):
 
     return JsonResponse(data, safe=False)
 
+def selectTotalXmindCases(request):
+    '''查询所有测试点'''
+    requestData = json.loads(request.body)
+    versionName=requestData['versionName']
+    sql="select * from quality_xmind_data where version='{}' order by id desc".format(versionName)
+    responseData=commonList().getModelData(sql)
 
+    data = {
+        "code": 200,
+        "data": responseData
+    }
+
+    return JsonResponse(data, safe=False)
 
 
 def selectTotalCases(request):
@@ -202,6 +279,53 @@ def selectTotalCases(request):
         "data": responseData
     }
 
+    return JsonResponse(data, safe=False)
+def selectXminData(request):
+    '''测试点查询'''
+    requestData = json.loads(request.body)
+    creater=requestData['owner']
+    result=requestData['result']
+    caseType=requestData['caseType']
+    case=requestData['caseName']
+    version=requestData['versionName']
+
+
+    sql = 'SELECT * FROM quality_xmind_data WHERE '
+    conditions = []
+
+    if len(creater) > 0:
+        owner_conditions = ["creater LIKE '%{}%'".format(s) for s in creater]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(case) > 0:
+        case = " `case` LIKE '%" + case + "%'"
+        case_conditions = [case]
+        conditions.append("(" + " OR ".join(case_conditions) + ")")
+
+    if len(result) > 0 and '全部' not in result:
+        development_conditions = ["result LIKE '%{}%'".format(r) for r in result]
+        conditions.append("(" + " OR ".join(development_conditions) + ")")
+
+    if len(caseType) > 0:
+        status_conditions = ["caseType LIKE '%{}%'".format(s) for s in caseType]
+        conditions.append("(" + " OR ".join(status_conditions) + ")")
+
+    if conditions:
+        sql += " AND ".join(conditions)
+
+    if len(creater) != 0 or len(result) != 0 or len(caseType) != 0 or len(case) !=0:
+        sql += " and version='{}'".format(version)
+
+    if len(creater) == 0 and (len(result) == 0 or '全部' in result) and len(caseType) == 0 and len(case)==0:
+        sql = "SELECT * FROM quality_xmind_data where version='{}' order by id desc".format(version)
+
+    print('=======sql========', sql)
+    data = commonList().getModelData(sql)
+
+    data = {
+            "code": 200,
+            "data": data
+        }
     return JsonResponse(data, safe=False)
 
 
@@ -253,6 +377,29 @@ def selectSingleTest(request):
         }
     return JsonResponse(data, safe=False)
 
+def ximdfilesupload(request):
+    '''xmind文件上传'''
+    data=[]
+    req = request.FILES.get('file')
+    content = {}
+
+    #测试
+    # path="/Users/hll/Desktop/git/platform/media/xmind"
+
+    #线上
+    path="/root/platform/media/xmind"
+    fileName=os.path.join(path, req.name)
+    # 打开特定的文件进行二进制的写操作
+    destination = open(fileName, 'wb+')
+    for chunk in req.chunks():  # 分块写入文件
+        destination.write(chunk)
+    destination.close()
+    content["name"]=req.name
+    content["url"]=fileName
+
+    #返回状态信息
+    data.append(content)
+    return JsonResponse(data, safe=False)
 
 def casesfilesupload(request):
     data=[]
@@ -276,6 +423,113 @@ def casesfilesupload(request):
     #返回状态信息
     data.append(content)
     return JsonResponse(data, safe=False)
+def parse_xmind(file_path):
+    data = xmindparser.xmind_to_dict(file_path)
+    print(data)
+
+    def extract_table_data(xmind_data):
+        table_data = []
+
+        def traverse(node, parent_titles=[]):
+            # 如果有子节点，则继续递归遍历，只处理最后一个节点
+            if node.get('topics'):
+                for child in node['topics']:
+                    traverse(child, parent_titles + [node['title']])
+            else:
+                # 如果是末端节点，则将其添加到表格数据中
+                node_data = {
+                    'title': node.get('title', ''),
+                    'parent_titles': ' > '.join(parent_titles),
+                    'result':'未执行',
+                    'caseType':'功能测试'
+                }
+                table_data.append(node_data)
+
+        for sheet in xmind_data:
+            traverse(sheet['topic'])
+
+        return table_data
+        
+    data=extract_table_data(data)
+        
+    return data
+def testXmindCasesUpload(request):
+    '''上传xmind文件'''
+    # try:
+    requestData = json.loads(request.body)
+    print(requestData)
+
+    file_paths = requestData.get('fileName', [])
+    if not file_paths:
+        data = {
+            "code": 200,
+            "msg": "上传的文件为空"
+        }
+        return JsonResponse(data, safe=False)
+
+    file_path = file_paths[0] if isinstance(file_paths, list) and file_paths else None
+    if not file_path:
+        data = {
+            "code": 400,
+            "msg": "无效的文件路径"
+        }
+        return JsonResponse(data, safe=False)
+
+    print(file_path)
+    versionName = requestData['versionName']
+    if not versionName:
+        data = {
+            "code": 400,
+            "msg": "版本不能为空"
+        }
+        return JsonResponse(data, safe=False)
+    username = request.session.get('username', None)
+    
+    if not username:
+        data = {
+            "code": 401,
+            "msg": "用户未登录"
+        }
+        return JsonResponse(data, safe=False)
+
+    sql="select first_name from auth_user where username='{}'".format(username)
+    nameList=commonList().getModelData(sql)
+    
+    
+    if not nameList:
+        data = {
+            "code": 404,
+            "msg": "用户未找到"
+        }
+        return JsonResponse(data, safe=False)
+    name=nameList[0]['first_name']
+
+    content = parse_xmind(file_path)
+    
+
+    for xmindData in content:
+        _xmind=xmind_data()
+        _xmind.case=xmindData['title']
+        _xmind.topic=xmindData['parent_titles']
+        _xmind.result=xmindData['result']
+        _xmind.version=versionName
+        _xmind.caseType=xmindData['caseType']
+        _xmind.creater=name
+        _xmind.save()
+
+    data = {
+        "code": 200,
+        "msg": "文件上传成功"
+    }
+    return JsonResponse(data, safe=False)
+
+    # except Exception as e:
+    #     data = {
+    #         "code": 500,
+    #         "msg": str(e)
+    #     }
+    #     return JsonResponse(data, safe=False)
+
 
 def testCasesUpload(request):
     '''上传用例'''
@@ -342,7 +596,19 @@ def import_excel_to_database(file_paths,versionName,username):
                     versionName=versionName
                 )
                 instance.save()
+def selectXmindData(request):
+    '''查询所有xmind数据'''
+    requestData = json.loads(request.body)
+    versionName=requestData['versionName']
+    sql="select * from quality_xmind_data where version='{}' ".format(versionName)
+    responseData=commonList().getModelData(sql)
 
+    data = {
+        "code": 200,
+        "data": responseData
+    }
+
+    return JsonResponse(data, safe=False)
 
 def selectCasesData(request):
     '''查找用例信息'''
@@ -352,10 +618,14 @@ def selectCasesData(request):
     sql="select * from quality_testcasemanager where versionName='{}' order by  case_id desc ".format(tableName)
     responseData=commonList().getModelData(sql)
 
+    tree_sql="select * from quality_xmind_data where version='{}' ".format(tableName)
+    responseTreeData=commonList().getModelData(tree_sql)
 
+        
     data = {
         "code": 200,
-        "data":responseData
+        "data":responseData,
+        "treeData":responseTreeData
     }
     return JsonResponse(data, safe=False)
 

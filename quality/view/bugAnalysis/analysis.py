@@ -18,11 +18,11 @@ def selectReportBugList(request):
     sql="select * from quality_testresult where versionName=\'{}\'".format(versionName)
     response=commonList().getModelData(sql)
     if len(response)!=0:
-        if isinstance(response[0]['BUGList'],list):
-            BUGList=response[0]['BUGList'].replace("None", "''").replace("'", '"')
-            BUGList=json.loads(BUGList)
-        else:
-            BUGList=[]
+        # if isinstance(response[0]['BUGList'],list):
+        BUGList=response[0]['BUGList'].replace("None", "''").replace("'", '"')
+        BUGList=json.loads(BUGList)
+        # else:
+        #     BUGList=[]
         result=response[0]["result"]
     else:
         BUGList=[]

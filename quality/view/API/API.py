@@ -337,140 +337,219 @@ def saveVersionManger(request):
     '''保存版本管理'''
     requestData = json.loads(request.body)
     print(requestData)
+    if len(requestData)>5: #超过5个内容更新不通知企信
+        for versionManer in requestData:
+            print(versionManer)
+            versionStart = '> 版本信息更新：'
+            autoTableID=versionManer['autoTableID']
+            tableName=versionManer['tableName']
+            tableID=versionManer['tableID']
+            version = versionManer['version']
+            description = versionManer['description']
+            priority = versionManer['priority']
+            owner = versionManer['owner']
+            development = versionManer['development']
+            status = versionManer['status']
+            testCases = versionManer['testCases']
 
-    for versionManer in requestData:
-        print(versionManer)
-        versionStart = '> 版本信息更新：'
-        autoTableID=versionManer['autoTableID']
-        tableName=versionManer['tableName']
-        tableID=versionManer['tableID']
-        version = versionManer['version']
-        description = versionManer['description']
-        priority = versionManer['priority']
-        owner = versionManer['owner']
-        development = versionManer['development']
-        status = versionManer['status']
-        testCases = versionManer['testCases']
+            testCaseReview = versionManer['testCaseReview']
+            firstRoundTest = versionManer['firstRoundTest']
+            secondRoundTest = versionManer['secondRoundTest']
+            thirdRoundTest = versionManer['thirdRoundTest']
 
-        testCaseReview = versionManer['testCaseReview']
-        firstRoundTest = versionManer['firstRoundTest']
-        secondRoundTest = versionManer['secondRoundTest']
-        thirdRoundTest = versionManer['thirdRoundTest']
+            remarks = versionManer['remarks']
+            yueLinProgress = versionManer['yueLinProgress']
+            yueLinRemarks = versionManer['yueLinRemarks']
+            juHaoMaiProgress = versionManer['juHaoMaiProgress']
+            juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
+            testingTime = versionManer['testingTime']
+            product=versionManer['product']
+            liveTime=versionManer['liveTime']
+            editable = versionManer['editable']
 
-        remarks = versionManer['remarks']
-        yueLinProgress = versionManer['yueLinProgress']
-        yueLinRemarks = versionManer['yueLinRemarks']
-        juHaoMaiProgress = versionManer['juHaoMaiProgress']
-        juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
-        testingTime = versionManer['testingTime']
-        product=versionManer['product']
-        liveTime=versionManer['liveTime']
-        editable = versionManer['editable']
+            username = request.session.get('username', False)
+            selectUserNameSql = "select first_name from auth_user where username=\'{}\'".format(username)
+            returnUserNamedata = commonList().getModelData(selectUserNameSql)
+            if returnUserNamedata:
+                username = returnUserNamedata[0]['first_name']
+            else:
+                username = "猜猜我是谁，一个来自外太空M78星云的陌生人"
+            _Versionmanager = Versionmanager()
 
-        username = request.session.get('username', False)
-        selectUserNameSql = "select first_name from auth_user where username=\'{}\'".format(username)
-        returnUserNamedata = commonList().getModelData(selectUserNameSql)
-        if returnUserNamedata:
-            username = returnUserNamedata[0]['first_name']
-        else:
-            username = "猜猜我是谁，一个来自外太空M78星云的陌生人"
-        _Versionmanager = Versionmanager()
+            if autoTableID:
+                _Versionmanager.autoTableID=autoTableID
+                _Versionmanager.tableID = tableID
+                _Versionmanager.tableName=tableName
+                _Versionmanager.version = version
+                _Versionmanager.description = description
+                _Versionmanager.priority = priority
+                _Versionmanager.owner = owner
+                _Versionmanager.development = development
+                _Versionmanager.status = status
+                _Versionmanager.testCases = testCases
+                _Versionmanager.testCaseReview = testCaseReview
+                _Versionmanager.firstRoundTest = firstRoundTest
+                _Versionmanager.secondRoundTest = secondRoundTest
+                _Versionmanager.thirdRoundTest = thirdRoundTest
+                _Versionmanager.liveTime=liveTime
+                _Versionmanager.testingTime = testingTime
+                _Versionmanager.product=product
+                _Versionmanager.remarks = remarks
+                _Versionmanager.yueLinProgress = yueLinProgress
+                _Versionmanager.yueLinRemarks = yueLinRemarks
+                _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+                _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+                _Versionmanager.editable = 0
+                _Versionmanager.save()
 
-        if autoTableID:
-            _Versionmanager.autoTableID=autoTableID
-            _Versionmanager.tableID = tableID
-            _Versionmanager.tableName=tableName
-            _Versionmanager.version = version
-            _Versionmanager.description = description
-            _Versionmanager.priority = priority
-            _Versionmanager.owner = owner
-            _Versionmanager.development = development
-            _Versionmanager.status = status
-            _Versionmanager.testCases = testCases
-            _Versionmanager.testCaseReview = testCaseReview
-            _Versionmanager.firstRoundTest = firstRoundTest
-            _Versionmanager.secondRoundTest = secondRoundTest
-            _Versionmanager.thirdRoundTest = thirdRoundTest
-            _Versionmanager.liveTime=liveTime
-            _Versionmanager.testingTime = testingTime
-            _Versionmanager.product=product
-            _Versionmanager.remarks = remarks
-            _Versionmanager.yueLinProgress = yueLinProgress
-            _Versionmanager.yueLinRemarks = yueLinRemarks
-            _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
-            _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
-            _Versionmanager.editable = 0
-            _Versionmanager.save()
-
-            if len(testCases) == 0:
-                testCases = 0
-            if len(testCaseReview) == 0:
-                testCaseReview = 0
-            if len(firstRoundTest) == 0:
-                firstRoundTest = 0
-            if len(secondRoundTest) == 0:
-                secondRoundTest = 0
-            if len(thirdRoundTest) == 0:
-                thirdRoundTest = 0
-
-            from datetime import  datetime,timedelta
-
-
-            if len(liveTime)>0:
-                liveTime=liveTime[:10]
-                date_obj = datetime.strptime(liveTime, "%Y-%m-%d")
-                next_day = date_obj + timedelta(days=1)
-                liveTime = next_day.strftime("%Y-%m-%d")
-
-            if len(testingTime)>0:
-                testingTime=testingTime[:10]
-                testing_date_obj = datetime.strptime(testingTime, "%Y-%m-%d")
-                testing_next_day = testing_date_obj + timedelta(days=1)
-                testingTime = testing_next_day.strftime("%Y-%m-%d")
-
-
+            else:
+                _Versionmanager.tableID = tableID
+                _Versionmanager.version = version
+                _Versionmanager.tableName = tableName
+                _Versionmanager.description = description
+                _Versionmanager.priority = priority
+                _Versionmanager.owner = owner
+                _Versionmanager.development = development
+                _Versionmanager.status = status
+                _Versionmanager.testCases = testCases
+                _Versionmanager.testCaseReview = testCaseReview
+                _Versionmanager.firstRoundTest = firstRoundTest
+                _Versionmanager.secondRoundTest = secondRoundTest
+                _Versionmanager.thirdRoundTest = thirdRoundTest
+                _Versionmanager.remarks = remarks
+                _Versionmanager.testingTime = testingTime
+                _Versionmanager.product = product
+                _Versionmanager.liveTime = liveTime
+                _Versionmanager.yueLinProgress = yueLinProgress
+                _Versionmanager.yueLinRemarks = yueLinRemarks
+                _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+                _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+                _Versionmanager.editable = 0
+                _Versionmanager.save()
         
-            print(versionStart)
+    else:    
+        for versionManer in requestData:
+            print(versionManer)
+            versionStart = '> 版本信息更新：'
+            autoTableID=versionManer['autoTableID']
+            tableName=versionManer['tableName']
+            tableID=versionManer['tableID']
+            version = versionManer['version']
+            description = versionManer['description']
+            priority = versionManer['priority']
+            owner = versionManer['owner']
+            development = versionManer['development']
+            status = versionManer['status']
+            testCases = versionManer['testCases']
 
-            dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,version,description,owner,development,product, status,
-                                                   testingTime, liveTime, testCases, testCaseReview,
-                                                   firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+            testCaseReview = versionManer['testCaseReview']
+            firstRoundTest = versionManer['firstRoundTest']
+            secondRoundTest = versionManer['secondRoundTest']
+            thirdRoundTest = versionManer['thirdRoundTest']
+
+            remarks = versionManer['remarks']
+            yueLinProgress = versionManer['yueLinProgress']
+            yueLinRemarks = versionManer['yueLinRemarks']
+            juHaoMaiProgress = versionManer['juHaoMaiProgress']
+            juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
+            testingTime = versionManer['testingTime']
+            product=versionManer['product']
+            liveTime=versionManer['liveTime']
+            editable = versionManer['editable']
+
+            username = request.session.get('username', False)
+            selectUserNameSql = "select first_name from auth_user where username=\'{}\'".format(username)
+            returnUserNamedata = commonList().getModelData(selectUserNameSql)
+            if returnUserNamedata:
+                username = returnUserNamedata[0]['first_name']
+            else:
+                username = "猜猜我是谁，一个来自外太空M78星云的陌生人"
+            _Versionmanager = Versionmanager()
+
+            if autoTableID:
+                _Versionmanager.autoTableID=autoTableID
+                _Versionmanager.tableID = tableID
+                _Versionmanager.tableName=tableName
+                _Versionmanager.version = version
+                _Versionmanager.description = description
+                _Versionmanager.priority = priority
+                _Versionmanager.owner = owner
+                _Versionmanager.development = development
+                _Versionmanager.status = status
+                _Versionmanager.testCases = testCases
+                _Versionmanager.testCaseReview = testCaseReview
+                _Versionmanager.firstRoundTest = firstRoundTest
+                _Versionmanager.secondRoundTest = secondRoundTest
+                _Versionmanager.thirdRoundTest = thirdRoundTest
+                _Versionmanager.liveTime=liveTime
+                _Versionmanager.testingTime = testingTime
+                _Versionmanager.product=product
+                _Versionmanager.remarks = remarks
+                _Versionmanager.yueLinProgress = yueLinProgress
+                _Versionmanager.yueLinRemarks = yueLinRemarks
+                _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+                _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+                _Versionmanager.editable = 0
+                _Versionmanager.save()
+
+                if len(testCases) == 0:
+                    testCases = 0
+                if len(testCaseReview) == 0:
+                    testCaseReview = 0
+                if len(firstRoundTest) == 0:
+                    firstRoundTest = 0
+                if len(secondRoundTest) == 0:
+                    secondRoundTest = 0
+                if len(thirdRoundTest) == 0:
+                    thirdRoundTest = 0
+
+                from datetime import  datetime,timedelta
 
 
-            # totalCurl = '''curl --location 'https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2' \
-            #                                 --header 'Content-Type: application/json' \
-            #                                 --data '{"msgtype": "markdown", "markdown": {"title":"版本信息更新","text": "{content}","at":{"isAtAll":true}}}'
-            #                                 '''.format(content=versionStart)
+                if liveTime:
+                    liveTime=liveTime[:10]
+                    date_obj = datetime.strptime(liveTime, "%Y-%m-%d")
+                    next_day = date_obj + timedelta(days=1)
+                    liveTime = next_day.strftime("%Y-%m-%d")
+                else:
+                    liveTime=''
 
-        else:
-            _Versionmanager.tableID = tableID
-            _Versionmanager.version = version
-            _Versionmanager.tableName = tableName
-            _Versionmanager.description = description
-            _Versionmanager.priority = priority
-            _Versionmanager.owner = owner
-            _Versionmanager.development = development
-            _Versionmanager.status = status
-            _Versionmanager.testCases = testCases
-            _Versionmanager.testCaseReview = testCaseReview
-            _Versionmanager.firstRoundTest = firstRoundTest
-            _Versionmanager.secondRoundTest = secondRoundTest
-            _Versionmanager.thirdRoundTest = thirdRoundTest
-            _Versionmanager.remarks = remarks
-            _Versionmanager.testingTime = testingTime
-            _Versionmanager.product = product
-            _Versionmanager.liveTime = liveTime
-            _Versionmanager.yueLinProgress = yueLinProgress
-            _Versionmanager.yueLinRemarks = yueLinRemarks
-            _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
-            _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
-            _Versionmanager.editable = 0
-            _Versionmanager.save()
-    # try:
-    #     import os
-    #     os.system(totalCurl)
-    # except Exception as e:
-    #     pass
+                if testingTime:
+                    testingTime=testingTime[:10]
+                    testing_date_obj = datetime.strptime(testingTime, "%Y-%m-%d")
+                    testing_next_day = testing_date_obj + timedelta(days=1)
+                    testingTime = testing_next_day.strftime("%Y-%m-%d")
+                else:
+                    testingTime=''
+        
+                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,version,description,owner,development,product, status,
+                                                    testingTime, liveTime, testCases, testCaseReview,
+                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+
+            else:
+                _Versionmanager.tableID = tableID
+                _Versionmanager.version = version
+                _Versionmanager.tableName = tableName
+                _Versionmanager.description = description
+                _Versionmanager.priority = priority
+                _Versionmanager.owner = owner
+                _Versionmanager.development = development
+                _Versionmanager.status = status
+                _Versionmanager.testCases = testCases
+                _Versionmanager.testCaseReview = testCaseReview
+                _Versionmanager.firstRoundTest = firstRoundTest
+                _Versionmanager.secondRoundTest = secondRoundTest
+                _Versionmanager.thirdRoundTest = thirdRoundTest
+                _Versionmanager.remarks = remarks
+                _Versionmanager.testingTime = testingTime
+                _Versionmanager.product = product
+                _Versionmanager.liveTime = liveTime
+                _Versionmanager.yueLinProgress = yueLinProgress
+                _Versionmanager.yueLinRemarks = yueLinRemarks
+                _Versionmanager.juHaoMaiProgress = juHaoMaiProgress
+                _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
+                _Versionmanager.editable = 0
+                _Versionmanager.save()
 
     data = {
         "code": 200,

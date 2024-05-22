@@ -24,3 +24,13 @@ class testresult(models.Model):
     versionName=models.CharField(max_length=100, verbose_name="版本名称", default=None)
     BUGList = models.CharField(max_length=200, verbose_name="遗留BUGID", default=None)
     result = models.CharField(max_length=500, verbose_name="测试结论", default=None)
+
+class xmind_data(models.Model):
+    id=models.AutoField(verbose_name="xmind", primary_key=True)
+    case=models.CharField(max_length=10000, verbose_name="测试点", default=None)
+    topic=models.CharField(max_length=10000, verbose_name="节点", default=None)
+    creater = models.CharField(max_length=200, verbose_name="创建人", default=None)
+    version = models.CharField(max_length=500, verbose_name="版本名称", default=None)
+    result = models.CharField(max_length=500, verbose_name="执行结果", default=None)
+    caseType = models.CharField(max_length=500, verbose_name="测试点类型", default=None)
+    remark=models.CharField(max_length=500, verbose_name="备注", default=None)

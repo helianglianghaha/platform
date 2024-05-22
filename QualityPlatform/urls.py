@@ -21,16 +21,29 @@ urlpatterns = [
    path('',TemplateView.as_view(template_name='index.html')),
 
    url('quality/casesfilesupload/',cases_api.casesfilesupload, name='casesfilesupload'),
+   url('quality/selectXmindData/',cases_api.selectXmindData, name='selectXmindData'),
+   
+   url('quality/ximdfilesupload/',cases_api.ximdfilesupload, name='ximdfilesupload'),
+   url('quality/testXmindCasesUpload/',cases_api.testXmindCasesUpload, name='testXmindCasesUpload'),
    url('quality/testCasesUpload/',cases_api.testCasesUpload, name='testCasesUpload'),
    url('quality/selectCasesData/',cases_api.selectCasesData, name='selectCasesData'),
    url('quality/selectSingleTest/',cases_api.selectSingleTest, name='selectSingleTest'),
+
+   url('quality/selectTotalXmindCases/',cases_api.selectTotalXmindCases, name='selectTotalXmindCases'),
+   url('quality/selectXminData/',cases_api.selectXminData, name='selectXminData'),
+   url('quality/saveXmindCase/',cases_api.saveXmindCase, name='saveXmindCase'),
+   
    url('quality/selectTotalCases/',cases_api.selectTotalCases, name='selectTotalCases'),
    url('quality/saveTestCase/',cases_api.saveTestCase, name='saveTestCase'),
    url('quality/detTestCase/',cases_api.detTestCase, name='detTestCase'),
+
+   url('quality/delXmindCase/',cases_api.delXmindCase, name='delXmindCase'),
+
    url('quality/copyTestCase/',cases_api.copyTestCase, name='copyTestCase'),
    url('quality/downloadTemFiles/',cases_api.downloadTemFiles, name='downloadTemFiles'),
-
    url('quality/selectReportTotal/',testTeport.selectReportTotal, name='selectReportTotal'),
+
+
 
    # 文件导入
    url('quality/jsonfilesupload/',apiDetail.jsonfilesupload, name='jsonfilesupload'),
@@ -69,7 +82,7 @@ urlpatterns = [
    url('quality/saveSingleVersionManger/',API.saveSingleVersionManger, name='saveSingleVersionManger'),
    url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
-   # url('quality/sync_tables/',analysis.sync_tables, name='sync_tables'),
+   url('quality/sync_tables/',timeTask.sync_tables, name='sync_tables'),
    url('quality/saveTestResults/',analysis.saveTestResults, name='saveTestResults'),
    url('quality/clearTestBugs/',analysis.clearTestBugs, name='clearTestBugs'),
    url('quality/selectReportBugList/',analysis.selectReportBugList, name='selectReportBugList'),
