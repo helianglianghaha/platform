@@ -138,11 +138,14 @@ def saveXmindCase(request):
     result = returnData['data']['result']
     creater=returnData['data']['creater']
     caseType=returnData['data']['caseType']
+    remark=returnData['data']['remark']
+    version=returnData['data']['version']
 
     name = request.session.get('username', False)
     sql = "select first_name from auth_user where username='{}'".format(name)
     nameList = commonList().getModelData(sql)
     print(nameList)
+    xmindStart = '> 测试点执行失败通知：'
     username = nameList[0]['first_name']
     if not creater:
         creater=username
@@ -155,6 +158,7 @@ def saveXmindCase(request):
         _xmind_data.result = result
         _xmind_data.creater = creater
         _xmind_data.caseType=caseType
+        _xmind_data.remark=remark
         _xmind_data.save()
         data = {
             "code": 200,
@@ -168,14 +172,57 @@ def saveXmindCase(request):
         _xmind_data.result = result
         _xmind_data.creater = creater
         _xmind_data.caseType=caseType
+        _xmind_data.remark=remark
         _xmind_data.save()
     
         data = {
             "code": 200,
             "data": "新增测试点成功"
         }
-
+    if result in ['失败','阻塞']:#执行失败发送企信通知
+        url='https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2'
+        dingXmindMessage(url,xmindStart,username,version, topic, case, caseType, result,remark)
+        
     return JsonResponse(data, safe=False)
+    
+
+# 发送企信通知
+def dingXmindMessage(url,versionStart,username,version, topic, case, caseType, result,remark):
+    '''叮叮消息通知'''
+    import requests
+    import json
+
+    versionInfo = '''
+                \n\n > 更新人: <font color=#409EFF>{}</font>
+                \n\n > 版本: <font color=#E6A23C>{}</font>
+                \n\n > 执行路径 : <font color=#409EFF>{}</font> 
+                \n\n > 测试点 : <font color=#409EFF>{}</font>  
+                \n\n > 类型 : <font color=#303133>{}</font>  
+                \n\n > 执行结果 : <font color=#E6A23C>{}</font>  
+                \n\n > 备注 : <font color=#303133>{}</font>
+                '''.format(
+                    username, version, topic, case, caseType,result, remark)
+    versionStart = versionStart + versionInfo + '\n'
+
+    url = url
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "执行失败测试点通知",
+        "text": versionStart,
+        "at": {
+        "isAtAll": True
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    
 
 def saveTestCase(request):
     '''保存单条用例'''
@@ -441,7 +488,9 @@ def parse_xmind(file_path):
                     'title': node.get('title', ''),
                     'parent_titles': ' > '.join(parent_titles),
                     'result':'未执行',
-                    'caseType':'功能测试'
+                    'caseType':'功能测试',
+                    'remark':''
+                    
                 }
                 table_data.append(node_data)
 
