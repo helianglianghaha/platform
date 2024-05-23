@@ -146,7 +146,10 @@ def saveXmindCase(request):
     nameList = commonList().getModelData(sql)
     print(nameList)
     xmindStart = '> 测试点执行失败通知：'
-    username = nameList[0]['first_name']
+    if len(nameList)==0:
+        username='去吧，皮卡丘'
+    else:
+        username = nameList[0]['first_name']
     if not creater:
         creater=username
 
