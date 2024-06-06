@@ -44,15 +44,15 @@ def selectVersionTotalData(request):
 
     versiondata = '''
                 SELECT 
-                COALESCE(SUM(CASE WHEN actualResult = '成功' THEN 1 ELSE 0 END), 0) AS success,
-                COALESCE(SUM(CASE WHEN actualResult = '失败' THEN 1 ELSE 0 END), 0) AS fail,
-                COALESCE(SUM(CASE WHEN actualResult = '未执行' THEN 1 ELSE 0 END), 0) AS unExect,
-                COALESCE(SUM(CASE WHEN actualResult = '阻塞' THEN 1 ELSE 0 END), 0) AS undo_count,
-                COALESCE(COUNT(CASE WHEN case_id IS NOT NULL THEN 1 END), 0) AS totalNum
+                COALESCE(SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END), 0) AS success,
+                COALESCE(SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END), 0) AS fail,
+                COALESCE(SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END), 0) AS unExect,
+                COALESCE(SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END), 0) AS undo_count,
+                COALESCE(COUNT(CASE WHEN id IS NOT NULL THEN 1 END), 0) AS totalNum
                 FROM 
-                    quality_testcasemanager 
+                    quality_xmind_data
                 WHERE 
-                    versionName ='{}'
+                    version ='{}'
         '''.format(version)
     print(versiondata)
     TestCaseList = commonList().getModelData(versiondata)
@@ -1150,8 +1150,28 @@ def deleteScriptFile(request):
 #查询接口脚本信息
 def selectScriptFile(request):
     '''查询测试脚本信息'''
+    response = json.loads(request.body)
+    versionName=response['versionName']
     import ast
-    sql="select * from quality_scriptproject a,quality_modeldata b,auth_user C where a.versionName=b.modeldata_id AND a.creater=c.username and a.environment='1' order by a.createtime DESC "
+    sql='''SELECT
+            a.*, 
+            b.*, 
+            c.*, 
+            d.modeldata
+        FROM
+            quality_scriptproject a
+        JOIN
+            quality_modeldata b ON a.versionName = b.modeldata_id
+        JOIN
+            auth_user c ON a.creater = c.username
+        JOIN
+            quality_modeldata d ON b.subModelData = d.modeldata_id
+        WHERE
+            a.environment = '1'
+            and d.modelData=\'{}\'
+        ORDER BY
+            a.createtime DESC'''.format(versionName)
+    # print(sql)
     data = commonList().getModelData(sql)
     # print(data)
     for projectData in data:
@@ -1687,6 +1707,7 @@ def addModelVersion(request):
 #查询版本信息
 @msgMessage
 def selectModelVersion(request):
+
     sql='select modeldata_id as value,modelData as label from quality_modeldata where subModelData!=0'
     data=commonList().getModelData(sql)
     return JsonResponse(data,safe=False)

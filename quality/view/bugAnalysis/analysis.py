@@ -7,6 +7,7 @@ import mysql.connector
 from apscheduler.schedulers.background import BackgroundScheduler
 from quality.view.testCasesMan.cases_model import testresult
 from django.core.exceptions import ObjectDoesNotExist
+from quality.view.bugAnalysis.Bug_model import versionUpdate
 
 #添加定时任务
 scheduler = BackgroundScheduler()
@@ -33,6 +34,27 @@ def selectReportBugList(request):
         "testResult":result
     }
     return JsonResponse(data,safe=False)
+def updateVersion(request):
+    '''更新版本信息'''
+    requestData = json.loads(request.body)
+    print(requestData)
+    versionTpye=requestData['versionType']
+    result=0
+
+    _versionUpdate=versionUpdate()
+    _versionUpdate.versionType=versionTpye
+    _versionUpdate.result=result
+    from datetime import datetime
+    time = datetime.now()
+    _versionUpdate.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
+    _versionUpdate.save()
+
+    data={
+        "code":200,
+        "msg":"版本更新成功"
+    }
+    return JsonResponse(data, safe=False)
+
 def clearTestBugs(request):
     '''删除版本对应BUG'''
     requestData = json.loads(request.body)
@@ -125,19 +147,28 @@ def selectTopBugData(request):
     '''查询首页数据'''
     sql = '''
             SELECT 
-            version_report,
-            SUM(CASE WHEN severity = 'suggestion' THEN 1 ELSE 0 END) AS suggestion_count,
-            SUM(CASE WHEN severity = 'prompt' THEN 1 ELSE 0 END) AS prompt_count,
-            SUM(CASE WHEN severity = 'normal' THEN 1 ELSE 0 END) AS normal_count,
-            SUM(CASE WHEN severity = 'serious' THEN 1 ELSE 0 END) AS serious_count,
-            SUM(CASE WHEN severity = 'critical' THEN 1 ELSE 0 END) AS critical_count,
-            SUM(CASE WHEN status_alias = '新' THEN 1 ELSE 0 END) AS open_count,
-            SUM(CASE WHEN status_alias = '已解决' THEN 1 ELSE 0 END) AS close_count,
-            SUM(CASE WHEN status_alias = '已关闭' THEN 1 ELSE 0 END) AS closed_count,
-            count(version_report is not NULL) AS total_count
-            FROM quality_buganalysis
-            GROUP BY version_report
-            ORDER BY MAX(created) DESC
+                tableID,
+                COUNT(*) AS bug_count,
+                SUM(CASE WHEN `status` = 'active' THEN 1 ELSE 0 END) AS active_bug_count,
+                SUM(CASE WHEN `status` = 'resolved' THEN 1 ELSE 0 END) AS resolved_bug_count,
+                SUM(CASE WHEN `status` = 'closed' THEN 1 ELSE 0 END) AS closed_bug_count
+            FROM (
+                SELECT DISTINCT 
+                    b.id AS m, 
+                    b.title, 
+                    b.`status`, 
+                    b.closedDate,
+                    c.tableID
+                FROM zt_bug b
+                LEFT JOIN zt_project a ON a.id = b.execution 
+                    AND a.project = 2 
+                    AND a.type = 'stage' 
+                    AND a.name LIKE '%v%'
+                LEFT JOIN quality_versionmanager c ON c.version = a.name 
+                WHERE c.version IS NOT NULL
+            ) AS zt_bug_subquery
+            GROUP BY tableID
+            ORDER BY tableID
         '''
     print(sql)
     bugData = commonList().getModelData(sql)
@@ -145,11 +176,11 @@ def selectTopBugData(request):
     # 汇总数据
     sqlTotal='''
             SELECT 
-            SUM(CASE WHEN status_alias = '新' THEN 1 ELSE 0 END) AS open_count,
-            SUM(CASE WHEN status_alias = '已解决' THEN 1 ELSE 0 END) AS close_count,
-            SUM(CASE WHEN status_alias = '已关闭' THEN 1 ELSE 0 END) AS closed_count,
-            count(version_report is not NULL) AS total_count
-            FROM quality_buganalysis
+            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) AS open_count,
+            SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END) AS close_count,
+            SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) AS closed_count,
+            count(id is not NULL) AS total_count
+            FROM zt_bug
     '''
     totalBugData=commonList().getModelData(sqlTotal)
 

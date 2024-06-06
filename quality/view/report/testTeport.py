@@ -63,6 +63,22 @@ def selectReportTotal(request):
     print('resolve_bugs_sql',resolve_bugs_sql)
     resolve_bugs_list=commonList().getModelData(resolve_bugs_sql)
 
+    #获取测试点的信息
+    xmindCasesSql='''
+        SELECT
+            COUNT(id) AS total_num,
+            SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS success_count,
+            SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undo_count,
+            SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS pending_count,
+            SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS failed_count
+        FROM
+            quality_xmind_data 
+        WHERE
+            version = \'{}\'
+        '''.format(versionName)
+    ximdData=commonList().getModelData(xmindCasesSql)
+
+
 
     # 获取该版本周期内每天新增的BUG数
     numbers_bugs_sql = '''
@@ -94,6 +110,64 @@ def selectReportTotal(request):
                 WHERE c.version is not NULL
         ) AS zt_bug
     '''.format(versionName)
+
+    #获取最近五个版本的测试点执行情况
+    versionXmindSql='''
+        SELECT
+        version,
+        COUNT(*) as total_num,
+        SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS success_count,
+        SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undo_count,
+        SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS pending_count,
+        SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS failed_count
+        FROM
+            quality_xmind_data
+        GROUP BY
+            version
+        ORDER BY
+            version DESC
+        LIMIT 5
+        '''
+    versionXmindList=commonList().getModelData(versionXmindSql)
+
+    versionNameList=[]
+    total_num_list=[]
+    success_count_list=[]
+    undo_count_list=[]
+    pending_count_list=[]
+    failed_count_list=[]
+    BUG_Cases_Rate=[]
+
+    #分类处理版本数据
+    if len(versionXmindList)!=0:
+        for versionInfo in versionXmindList:
+            versionNameList.append(versionInfo['version'])
+            total_num_list.append(versionInfo['total_num'])
+            success_count_list.append(versionInfo['success_count'])
+            undo_count_list.append(versionInfo['undo_count'])
+            pending_count_list.append(versionInfo['pending_count'])
+            failed_count_list.append(versionInfo['failed_count'])
+            totalBugNumList='''
+                        SELECT 
+                        COUNT(*) AS bug_count,
+                        SUM(CASE WHEN `status` = 'active' THEN 1 ELSE 0 END) AS active_bug_count
+                        FROM (
+                            SELECT DISTINCT b.id AS m, b.title, b.`status`, b.openedDate,c.version
+                            FROM zt_bug b
+                            LEFT JOIN zt_project a ON a.id = b.execution 
+                                AND a.project = 2 
+                                AND a.type = 'stage' 
+                                AND a.name LIKE '%v%'
+                            LEFT JOIN quality_versionmanager c ON c.version = a.name 
+                                AND c.tableID=\'{}\'
+                                WHERE c.version is not NULL
+                        ) AS zt_bug
+                    '''.format(versionInfo['version'])
+            everyOwnerDataList=commonList().getModelData(totalBugNumList)
+            BugTotalNum=everyOwnerDataList[0]['bug_count']
+            BugCasesRate=round((BugTotalNum/versionInfo['total_num'])*100,2)
+            BUG_Cases_Rate.append(BugCasesRate)
+
 
     # 获取每个人提的BUG
     everyOwnerSql='''
@@ -130,7 +204,7 @@ def selectReportTotal(request):
 
     # 获取负责人
     ownerSql='''
-        select owner,development from quality_versionmanager  where tableID=\'{}\'
+        select owner,development,product from quality_versionmanager  where tableID=\'{}\'
     '''.format(versionName)
     ownerTotalData=commonList().getModelData(ownerSql)
     print('ownerTotalData',ownerTotalData)
@@ -139,10 +213,16 @@ def selectReportTotal(request):
 
     all_developments = [eval(item['development'])[0] for item in ownerTotalData if item['development'] and item['development'] != '[]']
 
+    all_prd=[eval(item['product'])[0] for item in ownerTotalData if item['product'] and item['product'] != '[]']
+
+
+
     unique_owners = list(set(all_owners))
     unique_developments = list(set(all_developments))
+    unique_prd=list(set(all_prd))
     owner_string=', '.join(unique_owners)
     development_string=', '.join(unique_developments)
+    prd_string=', '.join(unique_prd)
     print(unique_owners)
     print(unique_developments)
 
@@ -155,14 +235,21 @@ def selectReportTotal(request):
         "code":200,
         "version":versionListData, #版本信息
         "testCasefInfo":testCaseList, #用例执行信息
+        "ximdDataInfo":ximdData,
         "resolve_bugList":resolve_bugs_list,  #该版本每天所有BUG解决情况
         "totalBugList":status_sql_list, #该版本所有BUG解决情况
         "addBugNumList":numbers_bugs_everydata, #每日新增BUG数
         "ownerList":owner_string, #获取负责人
         "developmentList":development_string,#获取研发人员
-        "everyOwnerList":everyOwnerDataList #获取每个人提的BUG
-
-        #     获取产品
+        "product":prd_string,
+        "everyOwnerList":everyOwnerDataList, #获取每个人提的BUG
+        "versionList":versionNameList,
+        "totalNumList":total_num_list,
+        "successNumList":success_count_list,
+        "undoNumList":undo_count_list,
+        "pendingNumList":pending_count_list,
+        "failedNumList":failed_count_list,
+        "BugCasesRate":BUG_Cases_Rate
     }
 
     return  JsonResponse(data, safe=False)

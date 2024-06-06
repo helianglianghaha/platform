@@ -78,6 +78,14 @@ class buganalysis(models.Model):
     status_alias = models.CharField(max_length=50, verbose_name="解决状态", default=None)
     short_id = models.CharField(max_length=50, verbose_name="解决状态", default=None)
 
+class versionUpdate(models.Model):
+    '''版本更新'''
+    id=models.AutoField(verbose_name="版本更新ID",primary_key=True)
+    versionType = models.CharField(max_length=50, verbose_name="版本类型", default=None)
+    result=models.CharField(max_length=50, verbose_name="版本更新后，接口是否执行", default=None)
+    createtime=models.DateTimeField()
+
+
 
 
 

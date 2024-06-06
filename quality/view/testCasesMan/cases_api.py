@@ -187,7 +187,32 @@ def saveXmindCase(request):
         dingXmindMessage(url,xmindStart,username,version, topic, case, caseType, result,remark)
         
     return JsonResponse(data, safe=False)
+def delXmindDataList(request):
+    '''批量删除测试点'''
+    returnData = json.loads(request.body)
+    print(returnData)
+    xindIdList=returnData['value']
+    if len(xindIdList)==0:
+        data = {
+            "code": 200,
+            "data": "请选择测试点"
+        }
+        return  JsonResponse(data, safe=False)
+    for xindID  in xindIdList:
+        _testcasemanager = xmind_data()
+        _testcasemanager = xmind_data.objects.get(id=xindID)
+        _testcasemanager.delete()
+
+    data = {
+            "code": 200,
+            "data": "新增测试点成功"
+        }
     
+    return JsonResponse(data, safe=False)
+
+    
+
+
 
 # 发送企信通知
 def dingXmindMessage(url,versionStart,username,version, topic, case, caseType, result,remark):

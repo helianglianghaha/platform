@@ -29,6 +29,10 @@ urlpatterns = [
    url('quality/selectCasesData/',cases_api.selectCasesData, name='selectCasesData'),
    url('quality/selectSingleTest/',cases_api.selectSingleTest, name='selectSingleTest'),
 
+   url('quality/delXmindDataList/',cases_api.delXmindDataList, name='delXmindDataList'),
+
+   
+
    url('quality/selectTotalXmindCases/',cases_api.selectTotalXmindCases, name='selectTotalXmindCases'),
    url('quality/selectXminData/',cases_api.selectXminData, name='selectXminData'),
    url('quality/saveXmindCase/',cases_api.saveXmindCase, name='saveXmindCase'),
@@ -82,6 +86,9 @@ urlpatterns = [
    url('quality/saveSingleVersionManger/',API.saveSingleVersionManger, name='saveSingleVersionManger'),
    url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
+   url('quality/updateVersion/',analysis.updateVersion, name='updateVersion'),
+
+   
    url('quality/sync_tables/',timeTask.sync_tables, name='sync_tables'),
    url('quality/saveTestResults/',analysis.saveTestResults, name='saveTestResults'),
    url('quality/clearTestBugs/',analysis.clearTestBugs, name='clearTestBugs'),
