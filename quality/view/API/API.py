@@ -11,6 +11,7 @@ from quality.view.API.model import Modeldata
 from quality.view.API.model import Modelversion
 from quality.view.API.model import  Scriptproject
 from quality.view.API.model import Versionmanager
+from quality.view.API.model import taskmanager
 from django.core import serializers
 from quality.common.logger import Log
 from quality.common.msg import msgMessage, msglogger
@@ -25,6 +26,192 @@ import json,re,os,zipfile
 from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
+def delTaskInfo(request):
+    '''删除任务信息'''
+    requestData = json.loads(request.body)
+    taskInfo=requestData['value']
+    print(taskInfo)
+
+    id=taskInfo['id']
+    _taskmanager=taskmanager.objects.get(id=id)
+    _taskmanager.delete()
+
+    data = {
+            "code": 200,
+            "data": "删除成功"
+            }
+    return JsonResponse(data, safe=False)
+
+
+
+
+def selectTaskInfo(request):
+    '''查询任务信息'''
+    requestData = json.loads(request.body)
+    taskInfo=requestData['value']
+    # print(type(taskInfo))
+
+
+    sql = 'SELECT * FROM quality_taskmanager WHERE '
+    conditions = []
+
+    if len(taskInfo) > 0:
+        owner_conditions = ["owner LIKE '%{}%'".format(v) for v in taskInfo]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(taskInfo) == 0:
+        sql = "SELECT * FROM quality_taskmanager ORDER BY updateTime desc "
+
+    if conditions:
+        sql += " AND ".join(conditions)+"ORDER BY updateTime desc"
+
+    data = commonList().getModelData(sql)
+    print(sql)
+
+
+    def convert_lists(item):
+        if item['owner']:
+            item['owner'] = eval(item['owner'])
+        else:
+            item['owner']=[]
+        
+        return item
+
+    modified_list = [convert_lists(item) for item in data]
+    # print(modified_list)
+
+    data = {
+                "code": 200,
+                "data": modified_list
+            }
+    return JsonResponse(data, safe=False)
+
+def saveTaskInfo(request):
+    '''保存任务信息'''
+    requestData = json.loads(request.body)
+    print(requestData)
+    taskInfo=requestData['value']
+    id=taskInfo['id']
+    taskType=taskInfo['taskType']
+    owner=taskInfo['owner']
+    taskName=taskInfo['taskName']
+    remark=taskInfo['remark']
+    beginTime=taskInfo['beginTime']
+    endTime=taskInfo['endTime']
+    createTime=taskInfo['createTime']
+    from dateutil import parser
+    
+
+    def to_datetime(time_str):
+    # 解析时间字符串为 datetime 对象
+        if not time_str:
+            return None
+        try:
+            time_obj = parser.isoparse(time_str)
+        # 如果包含时区信息，将其转换为没有时区信息的本地时间
+            if time_obj.tzinfo is not None:
+                time_obj = time_obj.astimezone(tz=None).replace(tzinfo=None)
+            return time_obj
+        except ValueError:
+            return None
+    if taskInfo['beginTime']:
+    
+        beginTime_dt = to_datetime(taskInfo['beginTime'])
+    else:
+        beginTime_dt=None
+
+    if taskInfo['endTime']:
+        endTime_dt = to_datetime(taskInfo['endTime'])
+    else:
+        endTime_dt=None
+
+    if taskInfo['createTime']:
+        createTime_dt = to_datetime(taskInfo['createTime'])
+    else:
+        createTime_dt =datetime.now()
+
+    updateTime=datetime.now()
+
+    username = request.session.get('username', False)
+    selectUserNameSql = "select first_name from auth_user where username=\'{}\'".format(username)
+    returnUserNamedata = commonList().getModelData(selectUserNameSql)
+    if returnUserNamedata:
+        username = returnUserNamedata[0]['first_name']
+    else:
+        username = "万里悲秋常作客更新了任务"
+
+    url='https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2'
+
+    taskStart='> 任务信息更新：'
+
+    _taskmanger=taskmanager()
+    if id:
+        _taskmanger.id=id
+        _taskmanger.status=taskType
+        _taskmanger.owner=owner
+        _taskmanger.taskName=taskName
+        _taskmanger.remark=remark
+        _taskmanger.beginTime=beginTime_dt
+        _taskmanger.endTime=endTime_dt
+        _taskmanger.updateTime=updateTime
+        _taskmanger.createTime=createTime_dt
+        _taskmanger.save()
+        taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
+    else:
+        _taskmanger.status=taskType
+        _taskmanger.owner=owner
+        _taskmanger.taskName=taskName
+        _taskmanger.remark=remark
+        _taskmanger.beginTime=beginTime_dt
+        _taskmanger.endTime=endTime_dt
+        _taskmanger.createTime=createTime_dt
+
+        # taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
+
+        _taskmanger.save()
+
+    data = {
+                "code": 200,
+                "msg": "保存成功",
+            }
+    return JsonResponse(data, safe=False)
+
+def taskDingMessage(url,taskStart,username,task,owner,status,beginTime,endTime,remark):
+    '''叮叮消息通知'''
+    import requests
+    import json
+
+
+    taskInfo = '''
+                \n\n > 更新人: <font color=#303133>{}</font>  
+                \n\n > 任务 : <font color=#303133>{}</font> 
+                \n\n > 负责人 : <font color=#303133>{}</font>  
+                \n\n > 任务状态 : <font color=#303133>{}</font>  
+                \n\n > 开始时间 : <font color=#303133>{}</font>  
+                \n\n > 结束时间 ：<font color=#303133>{}</font>  
+                \n\n > 备注 ：<font color=#303133>{}</font>  
+                '''.format(username,task,owner,status,beginTime,endTime,remark)
+    taskStart = taskStart + taskInfo + '\n'
+
+    url = url
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "任务信息更新",
+        "text": taskStart,
+        "at": {
+        "isAtAll": True
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+
 
 def selectVersionTotalData(request):
     '''筛选所有版本数据'''

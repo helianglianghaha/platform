@@ -137,16 +137,17 @@ def selectReportTotal(request):
     pending_count_list=[]
     failed_count_list=[]
     BUG_Cases_Rate=[]
+    BUG_number_list=[]
 
     #分类处理版本数据
     if len(versionXmindList)!=0:
         for versionInfo in versionXmindList:
             versionNameList.append(versionInfo['version'])
-            total_num_list.append(versionInfo['total_num'])
-            success_count_list.append(versionInfo['success_count'])
-            undo_count_list.append(versionInfo['undo_count'])
-            pending_count_list.append(versionInfo['pending_count'])
-            failed_count_list.append(versionInfo['failed_count'])
+            total_num_list.append(int(versionInfo['total_num']))
+            success_count_list.append(int(versionInfo['success_count']))
+            undo_count_list.append(int(versionInfo['undo_count']))
+            pending_count_list.append(int(versionInfo['pending_count']))
+            failed_count_list.append(int(versionInfo['failed_count']))
             totalBugNumList='''
                         SELECT 
                         COUNT(*) AS bug_count,
@@ -165,7 +166,12 @@ def selectReportTotal(request):
                     '''.format(versionInfo['version'])
             everyOwnerDataList=commonList().getModelData(totalBugNumList)
             BugTotalNum=everyOwnerDataList[0]['bug_count']
-            BugCasesRate=round((BugTotalNum/versionInfo['total_num'])*100,2)
+            BUG_number_list.append(BugTotalNum)
+            total_count=int(versionInfo['success_count'])+int(versionInfo['pending_count'])+int(versionInfo['failed_count'])
+            if total_count!=0:
+                BugCasesRate=round((BugTotalNum/total_count)*100,2)
+            else:
+                BugCasesRate=0
             BUG_Cases_Rate.append(BugCasesRate)
 
 
@@ -249,7 +255,8 @@ def selectReportTotal(request):
         "undoNumList":undo_count_list,
         "pendingNumList":pending_count_list,
         "failedNumList":failed_count_list,
-        "BugCasesRate":BUG_Cases_Rate
+        "BugCasesRate":BUG_Cases_Rate,
+        "BugNumList":BUG_number_list
     }
 
     return  JsonResponse(data, safe=False)

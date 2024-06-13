@@ -115,3 +115,15 @@ class Versionmanager(models.Model):
     juHaoMaiRemarks = models.CharField(max_length=50, verbose_name="备注")
     editable = models.BooleanField(max_length=50, verbose_name="项目名称")
     tableName=models.CharField(max_length=50, verbose_name="周计划名称")
+#新增任务信息管理
+class taskmanager(models.Model):
+    id=models.AutoField(verbose_name="任务管理ID", primary_key=True)
+    taskName=models.CharField(max_length=50, verbose_name="任务名称")
+    status=models.CharField(max_length=50, verbose_name="任务状态")
+    owner=models.CharField(max_length=50, verbose_name="任务负责人")
+    remark=models.CharField(max_length=50, verbose_name="备注")
+    beginTime=models.DateTimeField()
+    endTime=models.DateTimeField()
+    updateTime=models.DateTimeField()
+    createTime=models.DateTimeField()
+

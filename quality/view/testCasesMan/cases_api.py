@@ -402,6 +402,52 @@ def selectXminData(request):
             "data": data
         }
     return JsonResponse(data, safe=False)
+def selectSingleXmindCase(request):
+    '''测试点查询'''
+    requestData = json.loads(request.body)
+    owner=requestData['owner']
+    result=requestData['result']
+    caseType=requestData['caseType']
+    versionName = requestData['versionName']
+    caseName=requestData['caseName']
+    sql = 'SELECT * FROM quality_xind_data WHERE '
+    conditions = []
+
+    if len(owner) > 0:
+        owner_conditions = ["creater LIKE '%{}%'".format(s) for s in owner]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(caseName) > 0:
+        case = "caseName LIKE '%" + caseName + "%'"
+        case_conditions = [case]
+        conditions.append("(" + " OR ".join(case_conditions) + ")")
+
+    if len(result) > 0 and '全部' not in result:
+        development_conditions = ["actualResult LIKE '%{}%'".format(r) for r in result]
+        conditions.append("(" + " OR ".join(development_conditions) + ")")
+
+    if len(caseType) > 0:
+        status_conditions = ["caseType LIKE '%{}%'".format(s) for s in caseType]
+        conditions.append("(" + " OR ".join(status_conditions) + ")")
+
+    if conditions:
+        sql += " AND ".join(conditions)
+
+    if len(owner) != 0 or len(result) != 0 or len(caseType) != 0 or len(caseName) !=0:
+        sql += " and versionName='{}'".format(versionName)
+
+    if len(owner) == 0 and (len(result) == 0 or '全部' in result) and len(caseType) == 0 and len(caseName)==0:
+        sql = "SELECT * FROM quality_testcasemanager where versionName='{}' order by case_id desc".format(versionName)
+
+    print('=======sql========', sql)
+    data = commonList().getModelData(sql)
+
+    data = {
+            "code": 200,
+            "data": data
+        }
+    return JsonResponse(data, safe=False)
+
 
 
 def selectSingleTest(request):

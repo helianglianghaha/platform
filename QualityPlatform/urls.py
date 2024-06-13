@@ -68,11 +68,18 @@ urlpatterns = [
    url('quality/deleteScriptFile/',API.deleteScriptFile, name='deleteScriptFile'),
    url('quality/selectScriptFile/',API.selectScriptFile, name='selectScriptFile'),
    url('quality/executeScript/',API.executeScript, name='executeScript'),
+   url('quality/saveTaskInfo/',API.saveTaskInfo, name='saveTaskInfo'),#保存任务信息
+   url('quality/delTaskInfo/',API.delTaskInfo, name='delTaskInfo'),
+   
+
+   
    url('quality/readScriptLog/',API.readScriptLog, name='readScriptLog'),
    url('quality/readHtmlReport/',API.readHtmlReport, name='readHtmlReport'),
    url('quality/deleteApiScript/',API.deleteApiScript, name='deleteApiScript'),
    url('quality/getReportFileData/',API.getReportFileData, name='getReportFile'),
    url('quality/download_files/',API.download_files, name='download_files'),
+
+   url('quality/selectTaskInfo/',API.selectTaskInfo, name='selectTaskInfo'),
    url('quality/selectVersionTotalData/',API.selectVersionTotalData, name='selectVersionTotalData'),
 
    url('quality/sqlcat/',API.sqlcat, name='sqlcat'),

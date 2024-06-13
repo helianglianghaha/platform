@@ -37,7 +37,6 @@ SESSION_COOKIE_DOMAIN = None          # Session的cookie保存的域名（默认
 SESSION_COOKIE_AGE = 3600*24
 # SESSION_COOKIE_SECURE = False         #是否Https传输cookie（默认）
 
-
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
