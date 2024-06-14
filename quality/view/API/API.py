@@ -709,7 +709,7 @@ def saveVersionManger(request):
                 else:
                     testingTime=''
         
-                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,version,description,owner,development,product, status,
+                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,autoTableID,version,description,owner,development,product, status,
                                                     testingTime, liveTime, testCases, testCaseReview,
                                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
@@ -744,7 +744,7 @@ def saveVersionManger(request):
     }
     return JsonResponse(data, safe=False)
 
-def dingMessage(url,versionStart,username,version,description,owner,development,product, status,
+def dingMessage(url,versionStart,username,autoTableID,version,description,owner,development,product, status,
                         testingTime, liveTime, testCases, testCaseReview,
                         firstRoundTest, secondRoundTest, thirdRoundTest, remarks):
     '''叮叮消息通知'''
@@ -753,6 +753,7 @@ def dingMessage(url,versionStart,username,version,description,owner,development,
 
     versionInfo = '''
                 \n\n > 更新人: <font color=#303133>{}</font>  
+                \n\n > 迭代: <font color=#303133>{}</font> 
                 \n\n > 版本 : <font color=#303133>{}</font> 
                 \n\n > 需求 : <font color=#303133>{}</font>  
                 \n\n > 负责人 : <font color=#303133>{}</font>  
@@ -768,7 +769,7 @@ def dingMessage(url,versionStart,username,version,description,owner,development,
                 \n\n > 三轮测试进度 ：<font color=#303133>{}%</font>
                 \n\n > 版本备注：<font color=#303133>{}</font>
                 '''.format(
-                    username, version, description, owner, development, product, status,
+                    username,autoTableID, version, description, owner, development, product, status,
                     testingTime, liveTime, testCases, testCaseReview,
                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks
                 )

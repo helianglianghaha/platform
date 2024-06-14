@@ -155,6 +155,7 @@ def update_versioninfo(request):
             secondRoundTest = versioninfo['secondRoundTest']
             thirdRoundTest=versioninfo['thirdRoundTest']
             remarks = versioninfo['remarks']
+            tableID=versionInfo['tableID']
 
             if len(testCases)==0:
                 testCases=0
@@ -168,6 +169,7 @@ def update_versioninfo(request):
                 thirdRoundTest=0
 
             versionInfo='''
+                \n\n > 迭代 : <font color=#303133>{}</font> 
                 \n\n > 版本 : <font color=#303133>{}</font> 
                 \n\n > 需求 : <font color=#303133>{}</font>  
                 \n\n > 负责人 : <font color=#303133>{}</font>  
@@ -182,7 +184,7 @@ def update_versioninfo(request):
                 \n\n > 二轮测试进度 ：<font color=#303133>{}%</font>  
                 \n\n > 三轮测试进度 ：<font color=#303133>{}%</font>
                 \n\n > 版本备注：<font color=#303133>{}</font>
-                        '''.format(version, description, owner,development,product,status,testingTime,liveTime,testCases,testCaseReview,firstRoundTest, secondRoundTest,thirdRoundTest,remarks)
+                        '''.format(tableID,version, description, owner,development,product,status,testingTime,liveTime,testCases,testCaseReview,firstRoundTest, secondRoundTest,thirdRoundTest,remarks)
             versionStart=versionStart+versionInfo+'\n'
             # print('=====versionInfo======', versionInfo)
 
