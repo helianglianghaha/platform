@@ -80,9 +80,16 @@ class Scriptproject(models.Model):
     buildAddress = models.CharField(max_length=100, verbose_name="build文件地址")
     reportAddress = models.CharField(max_length=100, verbose_name="报告地址")
     scriptName = models.CharField(max_length=1000, verbose_name="脚本文件地址")
-    executeType=models.BooleanField(verbose_name="切换性能和接口数据类型", default=False, blank=True)
+    executeType=models.CharField(max_length=50, verbose_name="执行类型")
     performanceData=models.CharField(max_length=1000, verbose_name="性能测试命令")
     performanceReport=models.CharField(max_length=100, verbose_name="性能测试报告")
+
+    UIdata=models.CharField(max_length=1000, verbose_name="UI测试命令")
+    UIExcReport=models.CharField(max_length=1000, verbose_name="UI测试报告生成命令")
+    UIReport=models.CharField(max_length=1000, verbose_name="UI测试报告地址")
+    UIScript=models.CharField(max_length=1000, verbose_name="UI测试脚本地址")
+
+
     creater=models.CharField(max_length=100, verbose_name="创建人")
     environment = models.CharField(max_length=10, verbose_name="执行环境")
     status=models.CharField(max_length=100, verbose_name="项目状态")

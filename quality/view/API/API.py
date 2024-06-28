@@ -709,7 +709,7 @@ def saveVersionManger(request):
                 else:
                     testingTime=''
         
-                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,autoTableID,version,description,owner,development,product, status,
+                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development,product, status,
                                                     testingTime, liveTime, testCases, testCaseReview,
                                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
@@ -744,7 +744,7 @@ def saveVersionManger(request):
     }
     return JsonResponse(data, safe=False)
 
-def dingMessage(url,versionStart,username,autoTableID,version,description,owner,development,product, status,
+def dingMessage(url,versionStart,username,tableID,version,description,owner,development,product, status,
                         testingTime, liveTime, testCases, testCaseReview,
                         firstRoundTest, secondRoundTest, thirdRoundTest, remarks):
     '''叮叮消息通知'''
@@ -769,7 +769,7 @@ def dingMessage(url,versionStart,username,autoTableID,version,description,owner,
                 \n\n > 三轮测试进度 ：<font color=#303133>{}%</font>
                 \n\n > 版本备注：<font color=#303133>{}</font>
                 '''.format(
-                    username,autoTableID, version, description, owner, development, product, status,
+                    username,tableID, version, description, owner, development, product, status,
                     testingTime, liveTime, testCases, testCaseReview,
                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks
                 )
@@ -1015,6 +1015,8 @@ def deleteApiScript(request):
 def createScriptFile(request):
     '''新建脚本文件'''
     dataList = request.POST
+    print()
+
     for i in dataList.keys():
         dataDictList = json.loads(i)
         # 获取执行人姓名
@@ -1161,168 +1163,199 @@ def createScriptFile(request):
 @msgMessage
 def saveScriptFile(request):
     '''保存脚本文件地址'''
-    # print(request.POST)
-    dataList=request.POST
-    for i in  dataList.keys():
-        dataDictList=json.loads(i)
-        # 获取执行人姓名
-        username = request.session.get('username', False)
+    dataDictList = json.loads(request.body)
+    # 获取执行人姓名
+    username = request.session.get('username', False)
 
-        # 获取项目地址
-        projectName_id =dataDictList['projectName']
-        sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
-        projectName = (commonList().getModelData(sql))
+    # 获取项目地址
+    projectName_id =dataDictList['projectName']
+    sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
+    projectName = (commonList().getModelData(sql))
 
-        # 获取版本地址
-        modelDataId = dataDictList['versionName']
-        modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
-        modelDataLIst=(commonList().getModelData(modelDataSql))
-        modelData=modelDataLIst[0]["modelData"]
+    # 获取版本地址
+    modelDataId = dataDictList['versionName']
+    modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
+    modelDataLIst=(commonList().getModelData(modelDataSql))
+    modelData=modelDataLIst[0]["modelData"]
 
 
-        # 创建build文件目录
-        ant_build = "/root/ant/apache-ant-1.9.16/build/"
-        # if not os.path.exists(ant_build + projectName[0]["modelData"] + "/" + modelData):
-        #     os.makedirs(ant_build + projectName[0]["modelData"] + "/" + modelData)
+    # 创建build文件目录
+    ant_build = "/root/ant/apache-ant-1.9.16/build/"
+    # if not os.path.exists(ant_build + projectName[0]["modelData"] + "/" + modelData):
+    #     os.makedirs(ant_build + projectName[0]["modelData"] + "/" + modelData)
 
-        #ant build文件地址
-        antBuildAddress=ant_build + projectName[0]["modelData"] + "/" + modelData+"/build.xml"
+    #ant build文件地址
+    antBuildAddress=ant_build + projectName[0]["modelData"] + "/" + modelData+"/build.xml"
 
-        # 创建测试报告文件夹
-        testReportAddress = '/root/platform/static/'
+    # 创建测试报告文件夹
+    testReportAddress = '/root/platform/static/'
 
-        # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/"):
-        #
-        #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/")
-        # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/"):
-        #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/")
-        #
-        # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/"):
-        #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/")
-        #
-        # folder_path = os.path.join(testReportAddress, projectName[0]["modelData"], modelData, "PerformanceReport","jtl")
-        # if not os.path.exists(folder_path):
-        #     os.makedirs(folder_path)
+    # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/"):
+    #
+    #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/")
+    # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/"):
+    #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/")
+    #
+    # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/"):
+    #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/")
+    #
+    # folder_path = os.path.join(testReportAddress, projectName[0]["modelData"], modelData, "PerformanceReport","jtl")
+    # if not os.path.exists(folder_path):
+    #     os.makedirs(folder_path)
 
-        performanceJtlAddress=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/jtl/"
+    performanceJtlAddress=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/jtl/"
 
-        #接口报告文件夹
-        apiReportAdd = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"
+    #接口报告文件夹
+    apiReportAdd = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"
 
-        #性能测试报告文件夹
-        perFormanceReportAdd=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"
+    #性能测试报告文件夹
+    perFormanceReportAdd=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"
 
-        #接口报告
-        apiReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"+"html/TestReport.html"
+    testUIReportAddress="/root/platform/playwright/UI_test_framework/testcase/"
 
-        #性能测试报告
-        perFormanceReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"+"html/index.html"
+    #UI测试报告文件夹
+    UIPormanceReportAdd=testReportAddress + projectName[0]["modelData"] + "/" + modelData+"/UIReport"
 
-        # 创建日志文件
-        log_path = "/root/platform/logs/"
+    #UI脚本执行结果文件夹
+    UIreportRestlt=testReportAddress + projectName[0]["modelData"] + "/" + modelData+"/UIReport/results"
 
+    #UI脚本执行生成测试报告文件夹
+    UIreportHtml=testReportAddress + projectName[0]["modelData"] + "/" + modelData+"/UIReport/html"
 
-        # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")):
-        #     os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")
-        # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")):
-        #     os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
-        # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")):
-        #     os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")
-        # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")):
-        #     os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
+    #UI测试报告
+    UIreport="/static/" + projectName[0]["modelData"] + "/" + modelData+"/UIReport/"+"html/index.html"
 
-        #创建脚本目录
-        #接口测试脚本
-        apiScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/script/'
+    #UI测试脚本位置
+    UIscriptAddress=testUIReportAddress+projectName[0]["modelData"] + "/" + modelData+"/UIReport/script"
 
-        #性能测试脚本
-        performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
+    #判断是否有脚本执行文件，没有会创建
+    # if not  os.path.exists(UIscriptAddress):
+    #     os.makedirs(UIscriptAddress)
 
-        # if not os.path.exists(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
-        #     os.makedirs(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
-        #
-        # if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
-        #     os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+    #UI执行命令
+    UIdata="pytest  {}  --alluredir={}".format(UIscriptAddress,UIreportRestlt)
 
-        apiScriptfile=apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData
-        perFormanceScriptfile=performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData+"/*.jmx"
+    #UI根据生成的测试数据生成测试报告
+    execUIReport="allure generate {} -o {} --clean".format(UIreportRestlt,UIreportHtml)
 
-        performanceData = "jmeter -n -t "+perFormanceScriptfile+" -l "+performanceJtlAddress+" -e -o "+perFormanceReportAdd+"html"
+    #接口报告
+    apiReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"+"html/TestReport.html"
 
+    #性能测试报告
+    perFormanceReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"+"html/index.html"
+
+    # 创建日志文件
+    log_path = "/root/platform/logs/"
 
 
-        if "projectstatus" not in dataDictList.keys():
-            status="Flase"
-        else:
-            status=dataDictList['projectstatus']
+    # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")):
+    #     os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/")
+    # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")):
+    #     os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
+    # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")):
+    #     os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text")
+    # if not os.path.exists(os.path.join(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")):
+    #     os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
 
-        if dataDictList['buildAddress']=='':
-            dataDictList['buildAddress']=antBuildAddress
+    #创建脚本目录
+    #接口测试脚本
+    apiScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/script/'
 
-        if dataDictList['reportAddress']=="":
-            dataDictList['reportAddress']=apiReport
+    #性能测试脚本
+    performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
 
-        if dataDictList['performanceReport']=='':
-            dataDictList['performanceReport']=perFormanceReport
+    # if not os.path.exists(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+    #     os.makedirs(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+    #
+    # if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+    #     os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
 
-        environmentData=dataDictList['environment']
-        sceiptProject_id = dataDictList['sceiptProject_id']
-        projectName = dataDictList['projectName']
-        versionName = dataDictList['versionName']
-        buildAddress = dataDictList['buildAddress']
-        reportAddress = dataDictList['reportAddress']
+    apiScriptfile=apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData
+    perFormanceScriptfile=performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData+"/*.jmx"
 
-        scriptName = dataDictList['urlList']
-        executeType = dataDictList['executeType']
-        performanceData = performanceData
-        performanceReport = dataDictList['performanceReport']
-        if dataDictList['creater']=='':
-            creater = username
-        else:
-            creater=dataDictList['creater']
-        _scriptProject=Scriptproject()
+    performanceData = "jmeter -n -t "+perFormanceScriptfile+" -l "+performanceJtlAddress+" -e -o "+perFormanceReportAdd+"html"
 
-        if sceiptProject_id:
-            _scriptProject.sceiptProject_id=sceiptProject_id
-            _scriptProject.projectName = projectName
-            _scriptProject.versionName = versionName
-            _scriptProject.buildAddress = buildAddress
-            _scriptProject.reportAddress = reportAddress
-            _scriptProject.environment = environmentData
-            _scriptProject.scriptName = scriptName
-            _scriptProject.executeType = executeType
-            _scriptProject.performanceData = performanceData
-            _scriptProject.performanceReport = performanceReport
-            _scriptProject.creater=creater
-            time = datetime.now()
-            _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
-            _scriptProject.status=status
-            _scriptProject.save()
-            data={
-                "code":200,
-                "msg":"接口脚本编辑成功"
-            }
-            return JsonResponse(data,safe=False)
-        else:
-            _scriptProject.projectName = projectName
-            _scriptProject.versionName = versionName
-            _scriptProject.buildAddress = buildAddress
-            _scriptProject.reportAddress = reportAddress
-            _scriptProject.environment = environmentData
-            _scriptProject.scriptName = scriptName
-            _scriptProject.executeType = executeType
-            _scriptProject.performanceData = performanceData
-            _scriptProject.performanceReport = performanceReport
-            _scriptProject.creater = creater
-            _scriptProject.status = status
-            time = datetime.now()
-            _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
-            _scriptProject.save()
-            data = {
-                "code": 200,
-                "msg": "接口脚本保存成功"
-            }
-            return JsonResponse(data, safe=False)
+
+    if "projectstatus" not in dataDictList.keys():
+        status="Flase"
+    else:
+        status=dataDictList['projectstatus']
+
+    if dataDictList['buildAddress']=='':
+        dataDictList['buildAddress']=antBuildAddress
+
+    if dataDictList['reportAddress']=="":
+        dataDictList['reportAddress']=apiReport
+
+    if dataDictList['performanceReport']=='':
+        dataDictList['performanceReport']=perFormanceReport
+
+    environmentData=dataDictList['environment']
+    sceiptProject_id = dataDictList['sceiptProject_id']
+    projectName = dataDictList['projectName']
+    versionName = dataDictList['versionName']
+    buildAddress = dataDictList['buildAddress']
+    reportAddress = dataDictList['reportAddress']
+
+    scriptName = dataDictList['urlList']
+    executeType = dataDictList['executeType']
+    performanceData = performanceData
+    performanceReport = dataDictList['performanceReport']
+    if dataDictList['creater']=='':
+        creater = username
+    else:
+        creater=dataDictList['creater']
+    _scriptProject=Scriptproject()
+
+    if sceiptProject_id:
+        _scriptProject.sceiptProject_id=sceiptProject_id
+        _scriptProject.projectName = projectName
+        _scriptProject.versionName = versionName
+        _scriptProject.buildAddress = buildAddress
+        _scriptProject.reportAddress = reportAddress
+        _scriptProject.environment = environmentData
+        _scriptProject.scriptName = scriptName
+        _scriptProject.executeType = executeType
+        _scriptProject.performanceData = performanceData
+        _scriptProject.performanceReport = performanceReport
+        _scriptProject.UIdata=UIdata
+        _scriptProject.UIExcReport=execUIReport
+        _scriptProject.UIReport=UIreport
+        _scriptProject.UIScript=UIscriptAddress
+        _scriptProject.creater=creater
+        time = datetime.now()
+        _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
+        _scriptProject.status=status
+        _scriptProject.save()
+        data={
+            "code":200,
+            "msg":"接口脚本编辑成功"
+        }
+        return JsonResponse(data,safe=False)
+    else:
+        _scriptProject.projectName = projectName
+        _scriptProject.versionName = versionName
+        _scriptProject.buildAddress = buildAddress
+        _scriptProject.reportAddress = reportAddress
+        _scriptProject.environment = environmentData
+        _scriptProject.scriptName = scriptName
+        _scriptProject.executeType = executeType
+        _scriptProject.UIdata=UIdata
+        _scriptProject.UIExcReport=execUIReport
+        _scriptProject.UIReport=UIreport
+        _scriptProject.UIScript=UIscriptAddress
+        _scriptProject.performanceData = performanceData
+        _scriptProject.performanceReport = performanceReport
+        _scriptProject.creater = creater
+        _scriptProject.status = status
+        time = datetime.now()
+        _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
+        _scriptProject.save()
+        data = {
+            "code": 200,
+            "msg": "接口脚本保存成功"
+        }
+        return JsonResponse(data, safe=False)
 #删除脚本信息
 @msgMessage
 def deleteScriptFile(request):
@@ -1471,6 +1504,12 @@ def executeScript(request):
         #删除已经删除的脚本
         check_and_delete_files(directory_path,substrings_to_check)
 
+        #获取UI
+        UIdata=requestData['UIdata']
+        UIExcReport=requestData['UIExcReport']
+        UIReport=requestData['UIReport']
+        UIScript=requestData['UIScript']
+
         #创建build文件目录
         ant_build="/root/ant/apache-ant-1.9.16/build/"
         if not os.path.exists(ant_build+projectName[0]["modelData"]+"/"+modelData):
@@ -1481,14 +1520,24 @@ def executeScript(request):
         if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData):
             os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/")
             os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/")
-        #
+
+            os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/UIReport/results")
+            os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/UIReport/html")
+            
+
+
         # #创建日志文件
         log_path="/root/platform/logs/"
         if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData):
+            #创建日志文件夹
             os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/")
             os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
+            os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/UIReport/logs")
+
+            #创建日志文件
             os.mknod(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text")
             os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
+            os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/UILog/" + "log.text")
 
         #创建脚本目录
         #接口脚本
@@ -1497,6 +1546,9 @@ def executeScript(request):
         #性能接口脚本
         performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
 
+        #UI脚本
+        UIScriptAddress='/root/platform/playwright/UI_test_framework/testcase/'
+
         if not os.path.exists(apiScriptFilePath+projectName[0]["modelData"] + "/" + modelData):
             os.makedirs(apiScriptFilePath+projectName[0]["modelData"] + "/" + modelData)
         if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
@@ -1504,7 +1556,6 @@ def executeScript(request):
 
         #复制脚本到对应的文件夹
         fileUrlList=[i["url"] for i in scriptName]
-
         if executeType == '0' or executeType == False:#接口
             for fileUrl in fileUrlList:
                 fileName = os.path.split(fileUrl)[1]  # 读取文件名
@@ -1516,8 +1567,19 @@ def executeScript(request):
                     sourceFilePath='/root/platform/media/'+fileName
                     shutil.copyfile(sourceFilePath,fullFilePath)
                     log.info("复制接口脚本成功{}".format(fullFilePath))
+        elif executeType == '2':
+            for fileUrl in fileUrlList:
+                fileName = os.path.split(fileUrl)[1]  # 读取文件名
+                fullFilePath = UIScriptAddress + projectName[0]["modelData"] + "/" + modelData+"/UIReport/script/"+ fileName
+                if os.path.exists(fullFilePath):
+                    pass
+                else:
+                    log.info("=========================复制接口脚本=======================")
+                    sourceFilePath='/root/platform/media/'+fileName
+                    shutil.copyfile(sourceFilePath,fullFilePath)
+                    log.info("复制UI脚本成功{}".format(fullFilePath))
 
-        else:#性能
+        else:
             for fileUrl in fileUrlList:
                 fileName = os.path.split(fileUrl)[1]  # 读取文件名
                 fullFilePath = performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData + "/" + fileName
@@ -1535,12 +1597,17 @@ def executeScript(request):
         # 执行脚本前清除报告数据
         performanceReportPath = testReportAddress + projectName[0]["modelData"] + '/' + modelData + '/PerformanceReport/*'
         apiReportPatb = testReportAddress + projectName[0]["modelData"] + '/' + modelData + '/ApiReport/*'
+        UIHtml=testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/UIReport/html/*"
 
         #执行脚本前清理日志文件-jmeter执行日志文件-ant执行日志文件
         #Jmeter执行文件地址
         jmeterAPiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
         jmeterPerforLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
 
+        #执行UI脚本前清理日志- results数据-测试报告文件- log日志
+        UIResult=testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/UIReport/results/*"
+        UILog=testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/UIReport/logs/*"
+        
         #Ant执行日志文件
         antApiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
         antPerForLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
@@ -1548,9 +1615,16 @@ def executeScript(request):
         if executeType=='0' or executeType==False :
             os.system("rm -rf " + jmeterAPiLogPath)
             os.system("rm -rf " + antApiLogPath)
+
         if executeType == '1' or executeType == True:
             os.system("rm -rf " + jmeterPerforLogPath)
             os.system("rm -rf " + antPerForLogPath)
+
+        if executeType == '2':
+            os.system("rm -rf " + UIResult)
+            os.system("rm -rf " + UIHtml)
+            os.system("rm -rf " + UILog)
+
 
         os.system("rm -rf " + '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml")
         log.info("=====删除日志和报告文件=====")
@@ -1569,18 +1643,11 @@ def executeScript(request):
 
         buildScriptData = "xmlstarlet ed --inplace -u '//testplans/@dir' -v '/root/jmeter/apache-jmeter-5.4.1/script/"+projectName[0]["modelData"] + '/' + modelData +"' " + destFilePath
 
-        # log.info("====buildJtlData====={}".format(buildJtlData))
-        # log.info("====buildHtmlData====={}".format(buildHtmlData))
-        # log.info("====buildScriptData====={}".format(buildScriptData))
-
         os.system(buildJtlData)
         os.system(buildHtmlData)
         os.system(buildScriptData)
 
-
         log.info("=====修改build文件内容=========")
-
-
 
         #执行前更新项目状态
         sql = 'update quality_scriptproject set runstatus=1 where sceiptProject_id='+str(sceiptProject_id)
@@ -1596,7 +1663,18 @@ def executeScript(request):
             shellData=performanceData+" >> "+log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
             log.info('shellData:{}'.format(shellData))
 
+        if executeType=='2':
+            shellData=UIdata+" >> "+log_path+projectName[0]["modelData"]+"/"+modelData+"/UILog/"+"log.text"
+            log.info('shellData:{}'.format(shellData))
+        
+
         os.system(shellData)
+
+        #判断是否是UI自动化，根据已执行的数据生成测试报告
+        if executeType=='2':
+            shellData=UIExcReport+" >> "+log_path+projectName[0]["modelData"]+"/"+modelData+"/UILog/"+"log.text"
+            log.info('shellData:{}'.format(shellData))
+            os.system(shellData)
 
         #获取企信消息通知-开启状态-企信地址
         dingMessageSql = 'select ding_address,ding_version,ding_message,ding_people  from quality_dingmessage'
@@ -1623,6 +1701,7 @@ def executeScript(request):
                     if int(modelDataId) in  modelDataList:
                         reportAddress = requestData['reportAddress']
                         performanceReport = requestData['performanceReport']
+
                         # 根据测试报告是否生成,巡检状态,开启群通知
                         if executeType==0 and os.path.exists('/root/platform'+reportAddress) and openDingMessAge=="True" :
                             testReportAddress = '/root/platform/static/'
@@ -1638,27 +1717,6 @@ def executeScript(request):
                                 '<failure>false</failure>')
                             true_count = content.count('<failure>true</failure>')
 
-                            # 统计测试中所有的URL地址
-                            # pattern = r'<java\.net\.URL>https?://[^/]+(/[^?]+).*?</java\.net\.URL>'
-                            # urls = re.findall(pattern, content)
-                            #
-                            # unique_urls = list(set(urls))
-                            # log.info(urls)
-                            # log.info(type(urls))
-                            #
-                            # # 查询所有的URL
-                            # selectUrlList='''
-                            #         select path from api_endpoints
-                            # '''
-                            #
-                            # pathList=commonList().getModelData(selectUrlList)
-                            # pathValueList=list(set(pathList))
-
-                            # log.info(pathList)
-                            # log.info(type(pathList))
-                            #
-                            # selectPrecent=countElement(unique_urls,pathValueList)
-
                             if true_count>0:
                                 result="构建失败"
                             else:
@@ -1667,14 +1725,6 @@ def executeScript(request):
                             # 计算占比
                             true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
                             true_percentage = round(true_percentage, 2)
-
-                            # curlData = '''curl '{}' \
-                            #                         --header 'Content-Type: application/json' \
-                            #                         --data '{"msgtype": "markdown", "markdown": {"title":"接口自动化脚本执行","text": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>执行人 : {}\n>执行接口 : {}个 \n>失败接口 : {}个\n>执行成功率 : {}%\n>构建结果 ：{} \n>[查看接口测试报告](http://192.168.8.22:8050{})","at": {"isAtAll": true}}}'
-                            #                         '''.format(dingAddress, projectName[0]["modelData"], modelData,
-                            #                                    username, total_count, true_count, true_percentage, result,reportAddress,dingPeople)
-                            # os.system(curlData)
-
                             dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress)
 
                         elif executeType==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
@@ -1685,6 +1735,11 @@ def executeScript(request):
                             '''.format(dingAddress, projectName[0]["modelData"], modelData, username, performanceReport,
                                        dingPeople)
                             os.system(curlData)
+
+                        elif executeType==2 and os.path.exists('/root/platform'+UIReport) and bool(openDingMessAge):
+                          
+                            dingUIMessage(dingAddress, projectName[0]["modelData"], modelData,username,UIReport)
+
                         else:
                             log.info("=====不满足企信推送条件=====")
                     else:
@@ -1714,6 +1769,35 @@ def countElement(sourceList,targetList):
             number+=1
     precent=round(number/len(targetList)*100,2)
     return precent
+def dingUIMessage(dingAddress,projectName,modelData,username,reportAddress):
+    '''叮叮消息通知'''
+    import requests
+    import json
+
+    content='''
+            \n\n><font color=#303133>本消息由系统自动发出，无需回复！</font> 
+            \n\n>各位同事，大家好，以下为【<font color=#E6A23C>{}</font>】-【<font color=#E6A23C>{}</font>】项目构建信息
+            \n\n>执行人 : <font color=#E6A23C>{}</font>
+            \n\n>构建结果 : <font color=#E6A23C>执行成功</font>
+            \n\n>[查看UI测试报告](http://192.168.8.22:8050{})
+            '''.format(projectName,modelData,username,reportAddress)
+    url = dingAddress
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "接口自动化",
+        "text": content,
+        "at": {
+        "isAtAll": True
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    requests.request("POST", url, headers=headers, data=payload)
 def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress):
     '''叮叮消息通知'''
     import requests

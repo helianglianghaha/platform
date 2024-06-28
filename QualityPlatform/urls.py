@@ -97,6 +97,8 @@ urlpatterns = [
 
    
    url('quality/sync_tables/',timeTask.sync_tables, name='sync_tables'),
+   url('quality/XunJianExecuteScript/',timeTask.XunJianExecuteScript, name='XunJianExecuteScript'),
+
    url('quality/saveTestResults/',analysis.saveTestResults, name='saveTestResults'),
    url('quality/clearTestBugs/',analysis.clearTestBugs, name='clearTestBugs'),
    url('quality/selectReportBugList/',analysis.selectReportBugList, name='selectReportBugList'),
