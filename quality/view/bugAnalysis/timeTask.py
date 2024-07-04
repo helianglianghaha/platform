@@ -545,6 +545,7 @@ def XunJianExecuteScript(request):
     xunJian_sql='''
     select ding_version,ding_address from quality_dingmessage where  ding_xunjian = \'True\' AND ding_message = \'True\'
     '''
+    log.info("========巡检项目开始执行========")
     ding_version=commonList().getModelData(xunJian_sql)
     for versioon_list in ding_version:
         version_id_list=eval(versioon_list['ding_version'])
@@ -568,7 +569,7 @@ def XunJianExecuteScript(request):
             for singleProjectData in select_scriptProject_data:
                 exectSingleProject(singleProjectData,version_ding_message)
 
-
+    log.info("=======巡检项目结束=======")
     data = {
         "code": 200,
         "msg": "脚本开始执行，请查看日志及测试报告"

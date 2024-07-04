@@ -159,8 +159,9 @@ def saveXmindCase(request):
         _xmind_data.topic=topic
         _xmind_data.case = case
         _xmind_data.result = result
-        _xmind_data.creater = creater
+        _xmind_data.updater = username
         _xmind_data.caseType=caseType
+        _xmind_data.updateTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         _xmind_data.remark=remark
         _xmind_data.save()
         data = {
@@ -168,7 +169,6 @@ def saveXmindCase(request):
             "data": "编辑测试点成功"
         }
 
-       
     else:
         _xmind_data.topic=topic
         _xmind_data.case = case
@@ -176,6 +176,7 @@ def saveXmindCase(request):
         _xmind_data.creater = creater
         _xmind_data.caseType=caseType
         _xmind_data.remark=remark
+        _xmind_data.updateTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         _xmind_data.save()
     
         data = {

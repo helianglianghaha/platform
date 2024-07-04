@@ -1979,6 +1979,7 @@ def readlog(request):
     try:
         logger=open("/root/platform/logs","r",encoding='UTF-8',errors='ignore')
         loglist=logger.readlines()
+        loglist = loglist[::-1]
         logger.close()
         data={
             "code":200,
