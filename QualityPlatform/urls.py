@@ -30,12 +30,14 @@ urlpatterns = [
    url('quality/selectSingleTest/',cases_api.selectSingleTest, name='selectSingleTest'),
 
    url('quality/delXmindDataList/',cases_api.delXmindDataList, name='delXmindDataList'),
+   url('quality/selectPrd/',cases_api.selectPrd, name='selectPrd'),
 
    
-
    url('quality/selectTotalXmindCases/',cases_api.selectTotalXmindCases, name='selectTotalXmindCases'),
    url('quality/selectXminData/',cases_api.selectXminData, name='selectXminData'),
    url('quality/saveXmindCase/',cases_api.saveXmindCase, name='saveXmindCase'),
+   url('quality/configCaseOwner/',cases_api.configCaseOwner, name='configCaseOwner'),
+   
    
    url('quality/selectTotalCases/',cases_api.selectTotalCases, name='selectTotalCases'),
    url('quality/saveTestCase/',cases_api.saveTestCase, name='saveTestCase'),

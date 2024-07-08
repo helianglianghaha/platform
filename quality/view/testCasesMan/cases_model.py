@@ -28,7 +28,7 @@ class testresult(models.Model):
 class xmind_data(models.Model):
     id=models.AutoField(verbose_name="xmind", primary_key=True)
     case=models.CharField(max_length=10000, verbose_name="测试点", default=None)
-    topic=models.CharField(max_length=10000, verbose_name="节点", default=None)
+    topic=models.CharField(max_length=10000, verbose_name="预期结果", default=None)
     creater = models.CharField(max_length=200, verbose_name="创建人", default=None)
     updater=models.CharField(max_length=200, verbose_name="更新人", default=None)
     version = models.CharField(max_length=500, verbose_name="版本名称", default=None)
@@ -37,3 +37,6 @@ class xmind_data(models.Model):
     caseType = models.CharField(max_length=500, verbose_name="测试点类型", default=None)
     remark=models.CharField(max_length=500, verbose_name="备注", default=None)
     updateTime=models.CharField(max_length=50, verbose_name="更新时间", default=None)
+    prdModel=models.CharField(max_length=100, verbose_name="需求模块", default=None)
+    parentCase=models.CharField(max_length=100, verbose_name="测试点", default=None)
+    owner=models.CharField(max_length=50, verbose_name="负责人", default=None)

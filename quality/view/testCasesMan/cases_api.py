@@ -140,6 +140,8 @@ def saveXmindCase(request):
     caseType=returnData['data']['caseType']
     remark=returnData['data']['remark']
     version=returnData['data']['version']
+    owner=returnData['data']['owner']
+    # prdModel=returnData['data']['prdModel']
 
     name = request.session.get('username', False)
     sql = "select first_name from auth_user where username='{}'".format(name)
@@ -161,6 +163,8 @@ def saveXmindCase(request):
         _xmind_data.result = result
         _xmind_data.updater = username
         _xmind_data.caseType=caseType
+        _xmind_data.owner=owner
+        # _xmind_data.prdModel=prdModel
         _xmind_data.updateTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         _xmind_data.remark=remark
         _xmind_data.save()
@@ -168,7 +172,6 @@ def saveXmindCase(request):
             "code": 200,
             "data": "编辑测试点成功"
         }
-
     else:
         _xmind_data.topic=topic
         _xmind_data.case = case
@@ -176,6 +179,8 @@ def saveXmindCase(request):
         _xmind_data.creater = creater
         _xmind_data.caseType=caseType
         _xmind_data.remark=remark
+        _xmind_data.owner=owner
+        # _xmind_data.prdModel=prdModel
         _xmind_data.updateTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         _xmind_data.save()
     
@@ -188,6 +193,30 @@ def saveXmindCase(request):
         dingXmindMessage(url,xmindStart,username,version, topic, case, caseType, result,remark)
         
     return JsonResponse(data, safe=False)
+
+def selectPrd(request):
+    '''查询版本'''
+    returnData = json.loads(request.body)
+    tableID=returnData['value']
+    sql='''
+        select version,description from quality_versionmanager where tableID=\'{}\'
+    '''.format(tableID)
+    print("========sql=====",sql)
+    response=commonList().getModelData(sql)
+    versionList=[]
+    for version in response:
+        if version['version']!="需求文档地址" and version['version']:
+            singeleVersion={}
+            singeleVersion['value']=version['version']+"-"+version['description']
+            singeleVersion['label']=version['version']+"-"+version['description']
+            versionList.append(singeleVersion)
+    data={
+        "code":200,
+        "data":versionList
+    }
+
+    return JsonResponse(data, safe=False)
+
 def delXmindDataList(request):
     '''批量删除测试点'''
     returnData = json.loads(request.body)
@@ -206,7 +235,7 @@ def delXmindDataList(request):
 
     data = {
             "code": 200,
-            "data": "新增测试点成功"
+            "data": "删除测试点成功"
         }
     
     return JsonResponse(data, safe=False)
@@ -398,11 +427,40 @@ def selectXminData(request):
     print('=======sql========', sql)
     data = commonList().getModelData(sql)
 
+    import ast
+    for i in data:
+        if i.get('prdModel'):
+            i['prdModel']=ast.literal_eval(i['prdModel'])
+
+
     data = {
             "code": 200,
             "data": data
         }
     return JsonResponse(data, safe=False)
+def configCaseOwner(request):
+    '''订单配置负责人'''
+    requestData = json.loads(request.body)
+    cases=requestData["cases"]
+    owner=requestData["owner"]
+
+    for case in cases:
+        _xmind=xmind_data()
+        _xmind.id=case['id']
+        _xmind.owner=owner
+        _xmind.save()
+
+    data = {
+            "code": 200,
+            "data": data
+        }
+    return JsonResponse(data, safe=False)
+
+    
+
+
+
+
 def selectSingleXmindCase(request):
     '''测试点查询'''
     requestData = json.loads(request.body)
@@ -553,19 +611,19 @@ def parse_xmind(file_path):
         table_data = []
 
         def traverse(node, parent_titles=[]):
-            # 如果有子节点，则继续递归遍历，只处理最后一个节点
             if node.get('topics'):
                 for child in node['topics']:
                     traverse(child, parent_titles + [node['title']])
             else:
-                # 如果是末端节点，则将其添加到表格数据中
+                # Determine the second-to-last title in the parent_titles list, if it exists
+                parent_case = parent_titles[-1] if len(parent_titles) >= 1 else ''
                 node_data = {
                     'title': node.get('title', ''),
                     'parent_titles': ' > '.join(parent_titles),
-                    'result':'未执行',
-                    'caseType':'功能测试',
-                    'remark':''
-                    
+                    'parent_cases': parent_case,
+                    'result': '未执行',
+                    'caseType': '功能测试',
+                    'remark': ''
                 }
                 table_data.append(node_data)
 
@@ -629,6 +687,7 @@ def testXmindCasesUpload(request):
     name=nameList[0]['first_name']
 
     content = parse_xmind(file_path)
+    prdModel=requestData["prdModel"]
     
 
     for xmindData in content:
@@ -639,6 +698,8 @@ def testXmindCasesUpload(request):
         _xmind.version=versionName
         _xmind.caseType=xmindData['caseType']
         _xmind.creater=name
+        _xmind.prdModel=prdModel
+        _xmind.parentCase=xmindData['parent_cases']
         _xmind.save()
 
     data = {
@@ -722,11 +783,15 @@ def import_excel_to_database(file_paths,versionName,username):
                 instance.save()
 def selectXmindData(request):
     '''查询所有xmind数据'''
+    import ast
     requestData = json.loads(request.body)
     versionName=requestData['versionName']
     sql="select * from quality_xmind_data where version='{}' ".format(versionName)
     responseData=commonList().getModelData(sql)
-
+    for i in responseData:
+        if i.get('prdModel'):
+            i['prdModel'] = ast.literal_eval(i['prdModel'])
+    
     data = {
         "code": 200,
         "data": responseData
