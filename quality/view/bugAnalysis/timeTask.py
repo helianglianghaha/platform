@@ -486,55 +486,40 @@ def exectSingleProject(requestData,dingAddress):
     reportAddress = requestData['reportAddress']
     # 根据测试报告是否生成,巡检状态,开启群通知
 
-    if executeType==0:
+    if int(executeType)==0  :
         log.info("=====进入循环======")
-        report_path = '/root/platform' + reportAddress
         while True:
-            time.sleep(10)
-            log.info("======10s重试，测试报告已经生成，可以发送报告======")
-            performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
+            fileExist=os.path.exists('/root/platform'+reportAddress)
+            if fileExist:
+                log.info("=======测试报告已经生成，开始企信通知======")
+                testReportAddress = '/root/platform/static/'
+                performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
 
-            with open(performanceJtlAddress, 'r') as file:
-                content = file.read()
-            # 统计总数
-            total_count = content.count('<failure>true</failure>') + content.count(
-                '<failure>false</failure>')
-            # 统计 <failure>true</failure> 的数量
-            success_cont=content.count(
-                '<failure>false</failure>')
-            true_count = content.count('<failure>true</failure>')
+                with open(performanceJtlAddress, 'r') as file:
+                    content = file.read()
+                # 统计总数
+                total_count = content.count('<failure>true</failure>') + content.count(
+                    '<failure>false</failure>')
+                # 统计 <failure>true</failure> 的数量
+                success_cont=content.count(
+                    '<failure>false</failure>')
+                true_count = content.count('<failure>true</failure>')
 
-            # 统计测试中所有的URL地址
-            # pattern = r'<java\.net\.URL>https?://[^/]+(/[^?]+).*?</java\.net\.URL>'
-            # urls = re.findall(pattern, content)
-            #
-            # unique_urls = list(set(urls))
-            # log.info(urls)
-            # log.info(type(urls))
-            #
-            # # 查询所有的URL
-            # selectUrlList='''
-            #         select path from api_endpoints
-            # '''
-            #
-            # pathList=commonList().getModelData(selectUrlList)
-            # pathValueList=list(set(pathList))
+                if true_count>0:
+                    result="构建失败"
+                else:
+                    result="构建成功"
 
-            # log.info(pathList)
-            # log.info(type(pathList))
-            #
-            # selectPrecent=countElement(unique_urls,pathValueList)
-
-            if true_count>0:
-                result="构建失败"
+                # 计算占比
+                true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
+                true_percentage = round(true_percentage, 2)
+                dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress)
+                break
             else:
-                result="构建成功"
-
-            # 计算占比
-            true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
-            true_percentage = round(true_percentage, 2)
-            dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress)
-            break
+                log.info("没有生成测试报告，5s后重试")  
+                import time
+                time.sleep(5)
+                          
     else:
         log.info("=====不满足企信推送条件=====")
 

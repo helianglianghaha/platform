@@ -89,7 +89,6 @@ class Scriptproject(models.Model):
     UIReport=models.CharField(max_length=1000, verbose_name="UI测试报告地址")
     UIScript=models.CharField(max_length=1000, verbose_name="UI测试脚本地址")
 
-
     creater=models.CharField(max_length=100, verbose_name="创建人")
     environment = models.CharField(max_length=10, verbose_name="执行环境")
     status=models.CharField(max_length=100, verbose_name="项目状态")
@@ -122,6 +121,9 @@ class Versionmanager(models.Model):
     juHaoMaiRemarks = models.CharField(max_length=50, verbose_name="备注")
     editable = models.BooleanField(max_length=50, verbose_name="项目名称")
     tableName=models.CharField(max_length=50, verbose_name="周计划名称")
+    onlinModel=models.CharField(max_length=50, verbose_name="上线平台")
+    modelStatus=models.CharField(max_length=50, verbose_name="平台上线状态")
+
 #新增任务信息管理
 class taskmanager(models.Model):
     id=models.AutoField(verbose_name="任务管理ID", primary_key=True)

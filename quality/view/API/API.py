@@ -304,6 +304,16 @@ def selectVersionList(request):
             item['product'] = eval(item['product'])
         else:
             item['product']=[]
+
+        if item['onlinModel']:
+            item['onlinModel'] = eval(item['onlinModel'])
+        else:
+            item['onlinModel']=[]
+
+        if item['modelStatus']:
+            item['modelStatus'] = eval(item['modelStatus'])
+        else:
+            item['modelStatus']=[]
         return item
 
     # Apply the conversion to each dictionary in the list
@@ -382,6 +392,16 @@ def selectVersionManger(request):
             item['product'] = eval(item['product'])
         else:
             item['product']=[]
+        if item['onlinModel']:
+            item['onlinModel']=eval(item['onlinModel'])
+        else:
+            item['onlinModel']=[]
+
+        if item['modelStatus']:
+            item['modelStatus']=eval(item['modelStatus'])
+            
+        else:
+            item['modelStatus']=[]
         return item
 
     # Apply the conversion to each dictionary in the list
@@ -487,7 +507,10 @@ def copyVersionManger(request):
         yueLinRemarks = versionManer['yueLinRemarks']
         juHaoMaiProgress = versionManer['juHaoMaiProgress']
         juHaoMaiRemarks = versionManer['juHaoMaiRemarks']
+        onlinModel=versionManer['onlinModel']
+        modelStatus=versionManer['modelStatus']
         liveTime = versionManer['liveTime']
+
         _Versionmanager = Versionmanager()
 
         _Versionmanager.tableID = tableID
@@ -495,6 +518,8 @@ def copyVersionManger(request):
         _Versionmanager.tableName = tableName
         _Versionmanager.description = description
         _Versionmanager.priority = priority
+        _Versionmanager.onlinModel=onlinModel
+        _Versionmanager.modelStatus=modelStatus
         _Versionmanager.owner = owner
         _Versionmanager.development = development
         _Versionmanager.status = status
@@ -552,6 +577,8 @@ def saveVersionManger(request):
             testingTime = versionManer['testingTime']
             product=versionManer['product']
             liveTime=versionManer['liveTime']
+            onlinModel=versionManer['onlinModel']
+            modelStatus=versionManer['modelStatus']
             editable = versionManer['editable']
 
             username = request.session.get('username', False)
@@ -567,6 +594,8 @@ def saveVersionManger(request):
                 _Versionmanager.autoTableID=autoTableID
                 _Versionmanager.tableID = tableID
                 _Versionmanager.tableName=tableName
+                _Versionmanager.onlinModel=onlinModel
+                _Versionmanager.modelStatus=modelStatus
                 _Versionmanager.version = version
                 _Versionmanager.description = description
                 _Versionmanager.priority = priority
@@ -596,6 +625,8 @@ def saveVersionManger(request):
                 _Versionmanager.description = description
                 _Versionmanager.priority = priority
                 _Versionmanager.owner = owner
+                _Versionmanager.onlinModel=onlinModel
+                _Versionmanager.modelStatus=modelStatus
                 _Versionmanager.development = development
                 _Versionmanager.status = status
                 _Versionmanager.testCases = testCases
@@ -628,6 +659,8 @@ def saveVersionManger(request):
             development = versionManer['development']
             status = versionManer['status']
             testCases = versionManer['testCases']
+            onlinModel=versionManer['onlinModel']
+            modelStatus=versionManer['modelStatus']
 
             testCaseReview = versionManer['testCaseReview']
             firstRoundTest = versionManer['firstRoundTest']
@@ -671,6 +704,8 @@ def saveVersionManger(request):
                 _Versionmanager.liveTime=liveTime
                 _Versionmanager.testingTime = testingTime
                 _Versionmanager.product=product
+                _Versionmanager.onlinModel=onlinModel
+                _Versionmanager.modelStatus=modelStatus
                 _Versionmanager.remarks = remarks
                 _Versionmanager.yueLinProgress = yueLinProgress
                 _Versionmanager.yueLinRemarks = yueLinRemarks
@@ -709,7 +744,7 @@ def saveVersionManger(request):
                 else:
                     testingTime=''
         
-                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development,product, status,
+                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
                                                     testingTime, liveTime, testCases, testCaseReview,
                                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
@@ -728,6 +763,8 @@ def saveVersionManger(request):
                 _Versionmanager.secondRoundTest = secondRoundTest
                 _Versionmanager.thirdRoundTest = thirdRoundTest
                 _Versionmanager.remarks = remarks
+                _Versionmanager.onlinModel=onlinModel
+                _Versionmanager.modelStatus=modelStatus
                 _Versionmanager.testingTime = testingTime
                 _Versionmanager.product = product
                 _Versionmanager.liveTime = liveTime
@@ -744,7 +781,7 @@ def saveVersionManger(request):
     }
     return JsonResponse(data, safe=False)
 
-def dingMessage(url,versionStart,username,tableID,version,description,owner,development,product, status,
+def dingMessage(url,versionStart,username,tableID,version,description,owner,development,product,onlinModel, status,modelStatus,
                         testingTime, liveTime, testCases, testCaseReview,
                         firstRoundTest, secondRoundTest, thirdRoundTest, remarks):
     '''叮叮消息通知'''
@@ -758,8 +795,10 @@ def dingMessage(url,versionStart,username,tableID,version,description,owner,deve
                 \n\n > 需求 : <font color=#303133>{}</font>  
                 \n\n > 负责人 : <font color=#303133>{}</font>  
                 \n\n > 开发者 : <font color=#303133>{}</font>  
-                \n\n > 产品 : <font color=#303133>{}</font>  
-                \n\n > 需求状态 ：<font color=#303133>{}</font>  
+                \n\n > 产品 : <font color=#303133>{}</font>
+                \n\n > 平台 : <font color=#303133>{}</font>   
+                \n\n > 需求状态 ：<font color=#303133>{}</font> 
+                \n\n > 需求上线 : <font color=#303133>{}</font>  
                 \n\n > 提测时间 ：<font color=#303133>{}</font>  
                 \n\n > 上线时间 ：<font color=#303133>{}</font>  
                 \n\n > 编写测试用例 ：<font color=#303133>{}%</font>  
@@ -769,7 +808,7 @@ def dingMessage(url,versionStart,username,tableID,version,description,owner,deve
                 \n\n > 三轮测试进度 ：<font color=#303133>{}%</font>
                 \n\n > 版本备注：<font color=#303133>{}</font>
                 '''.format(
-                    username,tableID, version, description, owner, development, product, status,
+                    username,tableID, version, description, owner, development, product,onlinModel, status,modelStatus,
                     testingTime, liveTime, testCases, testCaseReview,
                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks
                 )
@@ -1402,7 +1441,7 @@ def selectScriptFile(request):
             and d.modelData=\'{}\'
         ORDER BY
             a.createtime DESC'''.format(versionName)
-    # print(sql)
+    print(sql)
     data = commonList().getModelData(sql)
     # print(data)
     for projectData in data:
@@ -1547,9 +1586,10 @@ def executeScript(request):
 
     #创建测试报告文件夹
     testReportAddress='/root/platform/static/'
-    if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData):
+    if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/"):
         os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/")
         os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/")
+        log.info("==========接口测试报告文件已创建====")
 
     #判断UI测试文件夹是否存在
     if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/UIReport/"):
@@ -1564,15 +1604,15 @@ def executeScript(request):
      
     # #创建日志文件
     
-    if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData):
+    if not os.path.exists(log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"):
         #创建日志文件夹
         os.makedirs(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/")
         os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/")
-       
-
+    
         #创建日志文件
         os.mknod(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text")
         os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
+        log.info("======接口日志文件夹已创建=====")
         
 
     #创建脚本目录
@@ -1739,7 +1779,9 @@ def executeScript(request):
     else:
         for dingmessage in dingMessageLIst:
             log.info("dingMessageLIst==={}".format(dingMessageLIst))
-            modelDataList=json.loads(dingmessage['ding_version'])
+            log.info("modelDataId==={}".format(modelDataId))
+            import ast
+            modelDataList=ast.literal_eval(dingmessage['ding_version'])
             openDingMessAge=dingmessage["ding_message"]
             dingAddress=dingmessage['ding_address']
             dingPeople=dingmessage['ding_people']
@@ -1751,31 +1793,44 @@ def executeScript(request):
                     performanceReport = requestData['performanceReport']
 
                     # 根据测试报告是否生成,巡检状态,开启群通知
-                    if executeType==0 and os.path.exists('/root/platform'+reportAddress) and openDingMessAge=="True" :
-                        testReportAddress = '/root/platform/static/'
-                        performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
+                    if int(executeType)==0 and openDingMessAge=="True" :
+                        number=0
+                        while True:
+                            if number>20:
+                                break
+                            fileExist=os.path.exists('/root/platform'+reportAddress)
+                            if fileExist :
+                                log.info("=======测试报告已经生成，开始企信通知======")
+                                testReportAddress = '/root/platform/static/'
+                                performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
 
-                        with open(performanceJtlAddress, 'r') as file:
-                            content = file.read()
-                        # 统计总数
-                        total_count = content.count('<failure>true</failure>') + content.count(
-                            '<failure>false</failure>')
-                        # 统计 <failure>true</failure> 的数量
-                        success_cont=content.count(
-                            '<failure>false</failure>')
-                        true_count = content.count('<failure>true</failure>')
+                                with open(performanceJtlAddress, 'r') as file:
+                                    content = file.read()
+                                # 统计总数
+                                total_count = content.count('<failure>true</failure>') + content.count(
+                                    '<failure>false</failure>')
+                                # 统计 <failure>true</failure> 的数量
+                                success_cont=content.count(
+                                    '<failure>false</failure>')
+                                true_count = content.count('<failure>true</failure>')
 
-                        if true_count>0:
-                            result="构建失败"
-                        else:
-                            result="构建成功"
+                                if true_count>0:
+                                    result="构建失败"
+                                else:
+                                    result="构建成功"
 
-                        # 计算占比
-                        true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
-                        true_percentage = round(true_percentage, 2)
-                        dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress)
-
-                    elif executeType==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
+                                # 计算占比
+                                true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
+                                true_percentage = round(true_percentage, 2)
+                                dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress)
+                                
+                                break
+                            else:
+                                import time
+                                time.sleep(5)
+                                log.info("没有生成测试报告，5s后台重试")
+                                number+=1
+                    elif int(executeType)==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
                         curlData = '''curl '{}' \
                         -H 'Content-Type: application/json' \
                         --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>执行人: {}\n>构建结果 ：Success \n>查看：[性能测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
@@ -1784,7 +1839,7 @@ def executeScript(request):
                                     dingPeople)
                         os.system(curlData)
 
-                    elif executeType==2 and os.path.exists('/root/platform'+UIReport) and bool(openDingMessAge):
+                    elif int(executeType)==2 and os.path.exists('/root/platform'+UIReport) and bool(openDingMessAge):
                         
                         dingUIMessage(dingAddress, projectName[0]["modelData"], modelData,username,UIReport)
 
@@ -1850,6 +1905,7 @@ def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, t
     '''叮叮消息通知'''
     import requests
     import json
+    log.info("===========开始推送接口自动化企信消息========")
 
     content='''
             \n\n><font color=#303133>本消息由系统自动发出，无需回复！</font> 
@@ -1879,7 +1935,7 @@ def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, t
 
     requests.request("POST", url, headers=headers, data=payload)
 
-    # print(response.text)
+    print(response.text)
 
 def sendQiXinMessgae(dingAddress,projectName,versionName,username,total_count,true_count,true_percentage,result,reportAddress):
     '''执行企信通知'''
