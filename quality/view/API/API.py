@@ -2082,13 +2082,35 @@ def addModelVersion(request):
                 "msg":"保存版本信息成功"
             }
     return JsonResponse(data,safe=False)
+def selectModelVersion(request):
+    sql='select modeldata_id as value,modelData as label from quality_modeldata where subModelData!=0'
+    data=commonList().getModelData(sql)
+    return JsonResponse(data,safe=False)
 
 
 #查询版本信息
 @msgMessage
-def selectModelVersion(request):
+def selectSortModelVersion(request):
+    requestData = json.loads(request.body)
+    modelData=requestData['data']
+    print(requestData)
 
-    sql='select modeldata_id as value,modelData as label from quality_modeldata where subModelData!=0'
+
+    sql='''
+        SELECT
+            qm1.modeldata_id AS value,
+            qm1.modelData AS label
+        FROM
+            quality_modeldata qm1
+        INNER JOIN
+            quality_modeldata qm2
+        ON
+            qm1.subModelData = qm2.modeldata_id
+        WHERE
+            qm1.subModelData = {};
+
+    '''.format(modelData)
+    print(sql)
     data=commonList().getModelData(sql)
     return JsonResponse(data,safe=False)
 #查询模块信息

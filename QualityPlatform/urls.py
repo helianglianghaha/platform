@@ -133,6 +133,8 @@ urlpatterns = [
    url('quality/saveModelData/',API.saveModelData, name='saveModelData'),
    url('quality/addModelVersion/',API.addModelVersion, name='addModelVersion'),
    url('quality/selectModelVersion/',API.selectModelVersion, name='selectModelVersion'),
+url('quality/selectSortModelVersion/',API.selectSortModelVersion, name='selectSortModelVersion'),
+   
    url('quality/selectVersionList/',API.selectVersionList, name='selectVersionList'),
 
 

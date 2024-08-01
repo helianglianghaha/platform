@@ -391,7 +391,7 @@ def selectXminData(request):
     print(requestData)
     pageSize=requestData['pageSize']
     currentPage=requestData['currentPage']
-    creater=requestData['owner']
+    owner=requestData['owner']
     result=requestData['result']
     caseType=requestData['caseType']
     case=requestData['caseName']
@@ -406,8 +406,8 @@ def selectXminData(request):
     sql = 'SELECT * FROM quality_xmind_data WHERE '
     conditions = []
 
-    if len(creater) > 0:
-        owner_conditions = ["creater LIKE '%{}%'".format(s) for s in creater]
+    if len(owner) > 0:
+        owner_conditions = ["owner LIKE '%{}%'".format(s) for s in owner]
         conditions.append("(" + " OR ".join(owner_conditions) + ")")
 
     if len(case) > 0:
@@ -432,10 +432,10 @@ def selectXminData(request):
     if conditions:
         sql += " AND ".join(conditions)
 
-    if len(creater) != 0 or len(result) != 0 or len(caseType) != 0 or len(case) !=0 or len(prdModel)!=0:
+    if len(owner) != 0 or len(result) != 0 or len(caseType) != 0 or len(case) !=0 or len(prdModel)!=0:
         sql += " and version='{}'".format(version)
 
-    if len(creater) == 0 and (len(result) == 0 or '全部' in result) and len(caseType) == 0 and len(case)==0 and len(prdModel)==0:
+    if len(owner) == 0 and (len(result) == 0 or '全部' in result) and len(caseType) == 0 and len(case)==0 and len(prdModel)==0:
         sql = "SELECT * FROM quality_xmind_data where version='{}' ".format(version)
 
 
@@ -473,7 +473,6 @@ def selectXminData(request):
     print("=====汇总统计sql=={}".format(sqlTotal))
     
     totalBugData=commonList().getModelData(sqlTotal)
-
 
 
     import ast
