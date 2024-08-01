@@ -44,6 +44,7 @@ urlpatterns = [
    url('quality/detTestCase/',cases_api.detTestCase, name='detTestCase'),
 
    url('quality/delXmindCase/',cases_api.delXmindCase, name='delXmindCase'),
+   url('quality/selectSortXmind/',cases_api.selectSortXmind, name='selectSortXmind'),
 
    url('quality/copyTestCase/',cases_api.copyTestCase, name='copyTestCase'),
    url('quality/downloadTemFiles/',cases_api.downloadTemFiles, name='downloadTemFiles'),

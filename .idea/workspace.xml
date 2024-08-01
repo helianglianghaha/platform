@@ -22,11 +22,13 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="更新版本通知/BUG通知">
+    <list default="true" id="a08cbf26-3cad-4e75-a5e0-0a056b9f1538" name="Default Changelist" comment="版本管理优化">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/QualityPlatform/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/QualityPlatform/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/logs/webtestcase.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/webtestcase.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/quality/view/bugAnalysis/analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/bugAnalysis/analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/0.05.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/加载.jpeg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/添加.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media/节能量.jmx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/quality/view/bugAnalysis/timeTask.py" beforeDir="false" afterPath="$PROJECT_DIR$/quality/view/bugAnalysis/timeTask.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -286,6 +288,9 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Django Server.platform.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.commonbase.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.test (2).executor&quot;: &quot;Run&quot;,
+    &quot;Python.test (3).executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -353,29 +358,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="batchApiXunJian" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="platform" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/quality/xunJian" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/quality/xunJian/batchApiXunJian.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="test (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="platform" />
       <option name="ENV_FILES" value="" />
@@ -399,7 +381,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="test (2)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="platform" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -408,12 +390,35 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../Python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/quality/view/API" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/quality/view/API/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="test (3)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="platform" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../.." />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../Python/test.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -424,19 +429,19 @@
     </configuration>
     <list>
       <item itemvalue="Django Server.platform" />
+      <item itemvalue="Python.test (2)" />
+      <item itemvalue="Python.test (3)" />
       <item itemvalue="Python.Ding" />
       <item itemvalue="Python.V3.5.0求阈值" />
-      <item itemvalue="Python.batchApiXunJian" />
       <item itemvalue="Python.test (1)" />
-      <item itemvalue="Python.test" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test (3)" />
+        <item itemvalue="Python.test (2)" />
         <item itemvalue="Python.Ding" />
         <item itemvalue="Python.V3.5.0求阈值" />
         <item itemvalue="Python.test (1)" />
-        <item itemvalue="Python.test" />
-        <item itemvalue="Python.batchApiXunJian" />
       </list>
     </recent_temporary>
   </component>
@@ -613,7 +618,50 @@
       <workItem from="1708475294377" duration="3156000" />
       <workItem from="1708499847843" duration="14622000" />
       <workItem from="1708561971049" duration="27968000" />
-      <workItem from="1708649274350" duration="10674000" />
+      <workItem from="1708649274350" duration="11942000" />
+      <workItem from="1708734613559" duration="88000" />
+      <workItem from="1708734713837" duration="1283000" />
+      <workItem from="1708907879521" duration="14000" />
+      <workItem from="1708908260523" duration="3549000" />
+      <workItem from="1708994251478" duration="16000" />
+      <workItem from="1708994325562" duration="5317000" />
+      <workItem from="1709080879367" duration="17000" />
+      <workItem from="1709081021041" duration="5188000" />
+      <workItem from="1709204798928" duration="647000" />
+      <workItem from="1709253593725" duration="342000" />
+      <workItem from="1709254226019" duration="3878000" />
+      <workItem from="1709512204419" duration="147000" />
+      <workItem from="1709512757838" duration="24000000" />
+      <workItem from="1709599038737" duration="17669000" />
+      <workItem from="1709635843947" duration="1218000" />
+      <workItem from="1709683873435" duration="4432000" />
+      <workItem from="1709707005097" duration="14753000" />
+      <workItem from="1709771599849" duration="16571000" />
+      <workItem from="1709858125764" duration="1202000" />
+      <workItem from="1709863265720" duration="1199000" />
+      <workItem from="1709969582595" duration="2172000" />
+      <workItem from="1709983715624" duration="21000" />
+      <workItem from="1710117420828" duration="24000" />
+      <workItem from="1710117734356" duration="11333000" />
+      <workItem from="1710202879128" duration="27000" />
+      <workItem from="1710202969322" duration="14225000" />
+      <workItem from="1710288299615" duration="633000" />
+      <workItem from="1710288980895" duration="7230000" />
+      <workItem from="1710323049903" duration="880000" />
+      <workItem from="1710374670744" duration="18277000" />
+      <workItem from="1710462590215" duration="4875000" />
+      <workItem from="1710722579590" duration="615000" />
+      <workItem from="1710807797585" duration="26000" />
+      <workItem from="1710939432031" duration="1150000" />
+      <workItem from="1711019411158" duration="1274000" />
+      <workItem from="1711066526098" duration="15476000" />
+      <workItem from="1711154278754" duration="58642000" />
+      <workItem from="1711933177586" duration="6259000" />
+      <workItem from="1712459716059" duration="31009000" />
+      <workItem from="1712710305109" duration="75786000" />
+      <workItem from="1713164780006" duration="9919000" />
+      <workItem from="1713315576655" duration="8522000" />
+      <workItem from="1714036997101" duration="490000" />
     </task>
     <task id="LOCAL-00001" summary="后端整体推送">
       <created>1649724864730</created>
@@ -854,7 +902,111 @@
       <option name="project" value="LOCAL" />
       <updated>1708595667305</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="新增数据概览">
+      <option name="closed" value="true" />
+      <created>1708689929008</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1708689929008</updated>
+    </task>
+    <task id="LOCAL-00034" summary="新增文档管理">
+      <option name="closed" value="true" />
+      <created>1709554966681</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1709554966681</updated>
+    </task>
+    <task id="LOCAL-00035" summary="新增用例管理">
+      <option name="closed" value="true" />
+      <created>1709727595271</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1709727595271</updated>
+    </task>
+    <task id="LOCAL-00036" summary="新增用例管理-新增增删改查">
+      <option name="closed" value="true" />
+      <created>1709805241647</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1709805241647</updated>
+    </task>
+    <task id="LOCAL-00037" summary="版本管理-新增用例概览/BUG概览">
+      <option name="closed" value="true" />
+      <created>1710156767706</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1710156767706</updated>
+    </task>
+    <task id="LOCAL-00038" summary="新增接口管理&amp;修改用例上传人为创建人">
+      <option name="closed" value="true" />
+      <created>1710228592047</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1710228592047</updated>
+    </task>
+    <task id="LOCAL-00039" summary="新增用例模板&amp;接口导入新增项目/目录">
+      <option name="closed" value="true" />
+      <created>1710300794136</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1710300794136</updated>
+    </task>
+    <task id="LOCAL-00040" summary="修改前端样式">
+      <option name="closed" value="true" />
+      <created>1710425087245</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1710425087245</updated>
+    </task>
+    <task id="LOCAL-00041" summary="新增测试报告">
+      <option name="closed" value="true" />
+      <created>1711709176485</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1711709176485</updated>
+    </task>
+    <task id="LOCAL-00042" summary="测试报告整体样式优化">
+      <option name="closed" value="true" />
+      <created>1712753162073</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1712753162073</updated>
+    </task>
+    <task id="LOCAL-00043" summary="测试报告整体样式优化">
+      <option name="closed" value="true" />
+      <created>1712817141474</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1712817141474</updated>
+    </task>
+    <task id="LOCAL-00044" summary="测试报告整体样式优化">
+      <option name="closed" value="true" />
+      <created>1712819299109</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1712819299109</updated>
+    </task>
+    <task id="LOCAL-00045" summary="版本管理优化">
+      <option name="closed" value="true" />
+      <created>1712909152287</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1712909152287</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -925,16 +1077,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="修改脚本生成测试报告及日志的地址" />
-    <MESSAGE value="修改接口用例部分BUG" />
-    <MESSAGE value="测试报告样式修改" />
-    <MESSAGE value="修改单接口请求加入请求头" />
-    <MESSAGE value="新增钉钉推送消息" />
-    <MESSAGE value="版本新增去重&amp;添加线上地址" />
-    <MESSAGE value="新增安全测试" />
-    <MESSAGE value="mysql造数据" />
-    <MESSAGE value="小工具" />
-    <MESSAGE value="接口测试平台优化" />
     <MESSAGE value="新增生成批量发货订单" />
     <MESSAGE value="后台更新最新" />
     <MESSAGE value="修改脚本上传" />
@@ -945,12 +1087,22 @@
     <MESSAGE value="新增版本管理" />
     <MESSAGE value="版本管理-增删改查" />
     <MESSAGE value="版本管理-样式修改" />
-    <MESSAGE value="版本管理优化" />
     <MESSAGE value="新年样式优化" />
     <MESSAGE value="新增BUG管理" />
     <MESSAGE value="BUG管理新增查询&amp;统计" />
     <MESSAGE value="更新版本通知/BUG通知" />
-    <option name="LAST_COMMIT_MESSAGE" value="更新版本通知/BUG通知" />
+    <MESSAGE value="新增数据概览" />
+    <MESSAGE value="新增文档管理" />
+    <MESSAGE value="新增用例管理" />
+    <MESSAGE value="新增用例管理-新增增删改查" />
+    <MESSAGE value="版本管理-新增用例概览/BUG概览" />
+    <MESSAGE value="新增接口管理&amp;修改用例上传人为创建人" />
+    <MESSAGE value="新增用例模板&amp;接口导入新增项目/目录" />
+    <MESSAGE value="修改前端样式" />
+    <MESSAGE value="新增测试报告" />
+    <MESSAGE value="测试报告整体样式优化" />
+    <MESSAGE value="版本管理优化" />
+    <option name="LAST_COMMIT_MESSAGE" value="版本管理优化" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1024,6 +1176,30 @@
           <url>file://$PROJECT_DIR$/quality/view/API_version/API_function.py</url>
           <line>151</line>
           <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/documentMan/doc_api.py</url>
+          <line>238</line>
+          <option name="timeStamp" value="32" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/view/bugAnalysis/analysis.py</url>
+          <line>432</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/common/commonbase.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/quality/common/commonbase.py</url>
+          <line>48</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/QualityPlatform/urls.py</url>
+          <option name="timeStamp" value="37" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
