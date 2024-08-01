@@ -124,6 +124,7 @@ class Dingmessage(models.Model):
     ding_message=models.CharField(max_length=10, verbose_name="开启消息通知")
     ding_version=models.CharField(max_length=100, verbose_name="巡检版本")
     ding_people = models.CharField(max_length=100, verbose_name="通知人")
+    ding_remark=models.CharField(max_length=100, verbose_name="备注")
 
 class Recordertree(models.Model):
     id=models.AutoField(verbose_name="类目ID", primary_key=True)

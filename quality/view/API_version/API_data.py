@@ -1128,6 +1128,7 @@ def saveDingMessage(request):
     versionList = requestData['versionList']
     dingPeople=requestData['dingPeople']
     dingID=requestData['dingID']
+    dingRemark=requestData['dingRemark']
 
     _dingMessage=Dingmessage()
     if dingID:
@@ -1137,6 +1138,7 @@ def saveDingMessage(request):
         _dingMessage.ding_message=openMessage
         _dingMessage.ding_version=versionList
         _dingMessage.ding_people = dingPeople
+        _dingMessage.ding_remark=dingRemark
         _dingMessage.save()
 
         data={
@@ -1149,6 +1151,7 @@ def saveDingMessage(request):
         _dingMessage.ding_message = openMessage
         _dingMessage.ding_version = versionList
         _dingMessage.ding_people = dingPeople
+        _dingMessage.ding_remark=dingRemark
         _dingMessage.save()
         data = {
             "code": 200,

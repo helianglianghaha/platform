@@ -2083,7 +2083,17 @@ def addModelVersion(request):
             }
     return JsonResponse(data,safe=False)
 def selectModelVersion(request):
-    sql='select modeldata_id as value,modelData as label from quality_modeldata where subModelData!=0'
+    sql='''
+        SELECT
+        qm1.modeldata_id AS value,
+        CONCAT(qm2.modelData, '>', qm1.modelData) AS label
+        FROM
+            quality_modeldata qm1
+        INNER JOIN
+            quality_modeldata qm2
+        ON
+            qm1.subModelData = qm2.modeldata_id;
+    '''
     data=commonList().getModelData(sql)
     return JsonResponse(data,safe=False)
 
@@ -2099,7 +2109,7 @@ def selectSortModelVersion(request):
     sql='''
         SELECT
             qm1.modeldata_id AS value,
-            qm1.modelData AS label
+            CONCAT(qm2.modelData, '>', qm1.modelData) AS label
         FROM
             quality_modeldata qm1
         INNER JOIN
