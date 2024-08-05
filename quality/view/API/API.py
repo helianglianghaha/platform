@@ -372,43 +372,29 @@ def selectTagsManger(request):
 def selectVersionManger(request):
     '''查询版本管理'''
     requestData = json.loads(request.body)
-    tableName=requestData['tableName']
+    tableName = requestData.get('tableName')
 
-    sql='select * from  quality_versionmanager where tableID ='+"\'"+tableName+"\'"
-    # print("sql====", sql)
-    data=commonList().getModelData(sql)
-    # print("data====", data)
+    if not tableName:
+        return JsonResponse({'error': 'Invalid tableName'}, status=400)
+    from django.db import connection
+
+    # Use parameterized queries to prevent SQL injection
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * FROM quality_versionmanager WHERE tableID = %s', [tableName])
+        columns = [col[0] for col in cursor.description]
+        data = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
     def convert_lists(item):
-        if item['owner']:
-            item['owner'] = eval(item['owner'])
-        else:
-            item['owner']=[]
-        if item['development']:
-            item['development'] = eval(item['development'])
-        else:
-            item['development']=[]
-        if item['product']:
-            item['product'] = eval(item['product'])
-        else:
-            item['product']=[]
-        if item['onlinModel']:
-            item['onlinModel']=eval(item['onlinModel'])
-        else:
-            item['onlinModel']=[]
-
-        if item['modelStatus']:
-            item['modelStatus']=eval(item['modelStatus'])
-            
-        else:
-            item['modelStatus']=[]
+        keys = ['owner', 'development', 'product', 'onlinModel', 'modelStatus']
+        for key in keys:
+            if key in item:
+                item[key] = eval(item[key]) if item[key] else []
         return item
 
     # Apply the conversion to each dictionary in the list
     modified_list = [convert_lists(item) for item in data]
 
     return JsonResponse(modified_list, safe=False)
-
 @msgMessage
 def saveSingleVersionManger(request):
     '''保存单个版本'''
@@ -1452,7 +1438,23 @@ def selectScriptFile(request):
 def selectProScriptFile(request):
     '''查询生产脚本信息'''
     import ast
-    sql="select * from quality_scriptproject a,quality_modeldata b,auth_user C where a.versionName=b.modeldata_id AND a.creater=c.username and a.environment='2' order by a.createtime DESC "
+    sql='''
+            select *,d.modelData as verPlatform,f.modelData as platform from 
+            (
+            SELECT
+                * 
+            FROM
+                quality_scriptproject a,
+                quality_modeldata b,
+                auth_user C
+            WHERE
+                a.versionName = b.modeldata_id 
+                AND a.creater = c.username 
+                AND a.environment = '2' 
+            ORDER BY
+                a.createtime DESC)  d ,quality_modeldata f
+                where d.projectName=f.modeldata_id
+        '''
     data = commonList().getModelData(sql)
     # print(data)
     for projectData in data:
@@ -1935,7 +1937,6 @@ def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, t
 
     requests.request("POST", url, headers=headers, data=payload)
 
-    print(response.text)
 
 def sendQiXinMessgae(dingAddress,projectName,versionName,username,total_count,true_count,true_percentage,result,reportAddress):
     '''执行企信通知'''
@@ -1993,11 +1994,18 @@ def readScriptLog(request):
     # 获取项目地址
     projectName_id = requestData['projectName']
     executeType=requestData["executeType"]
+
+
     sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
     projectName = commonList().getModelData(sql)
 
     # 获取版本地址
     modelData = requestData['modelData']
+
+    #获取生产版本地址
+    verPlatform=requestData['verPlatform']
+
+    environment=requestData['environment']
 
     #创建目录
     log_path="/root/platform/logs"
@@ -2011,9 +2019,12 @@ def readScriptLog(request):
 
     #线上环境
 
-    if executeType=='0' or executeType==False :
+    if (executeType=='0' or executeType==False) and environment=='1'  :
         path = "/root/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text"
-        log.info("====apilog====")
+        log.info("====测试API-apilog====")
+    if (executeType=='0' or executeType==False) and environment=='2'  :
+        path = "/root/platform/logs/" + projectName[0]["modelData"] + "/" + verPlatform + "/ApiLog/" + "log.text"
+        log.info("====生产API-apilog====")
     if executeType=='1' or executeType==True :
         path = "/root/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/PerformanceLog/" + "log.text"
         log.info("=====performanceLog====")

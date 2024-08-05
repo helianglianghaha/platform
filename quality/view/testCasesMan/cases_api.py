@@ -397,6 +397,7 @@ def selectXminData(request):
     case=requestData['caseName']
     version=requestData['versionName']
     prdModel=requestData['prdModel']
+    updater=requestData['updater']
 
     print(pageSize)
     print(currentPage)
@@ -405,6 +406,10 @@ def selectXminData(request):
 
     sql = 'SELECT * FROM quality_xmind_data WHERE '
     conditions = []
+
+    if len(updater) > 0:
+        owner_conditions = ["updater LIKE '%{}%'".format(s) for s in updater]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
 
     if len(owner) > 0:
         owner_conditions = ["owner LIKE '%{}%'".format(s) for s in owner]
