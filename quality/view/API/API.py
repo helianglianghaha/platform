@@ -273,8 +273,8 @@ def selectVersionList(request):
         conditions.append("(" + " OR ".join(development_conditions) + ")")
 
     if len(status) > 0 and '全部' not in status:
-        status_conditions = ["status LIKE '%{}%'".format(s) for s in status]
-        conditions.append("(" + " OR ".join(status_conditions) + ")")
+        # status_conditions = ["status LIKE '%{}%'".format(s) for s in status]
+        conditions.append("status LIKE '%已测试待上线%'")
 
     if conditions:
         sql += " AND ".join(conditions)
@@ -1192,6 +1192,11 @@ def saveScriptFile(request):
     # 获取执行人姓名
     username = request.session.get('username', False)
 
+    #获取负责人
+    owner=dataDictList['ownName']
+    #获取备注
+    remark=dataDictList['remark']
+
     # 获取项目地址
     projectName_id =dataDictList['projectName']
     sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
@@ -1342,6 +1347,7 @@ def saveScriptFile(request):
         creater=dataDictList['creater']
     _scriptProject=Scriptproject()
 
+
     if sceiptProject_id:
         _scriptProject.sceiptProject_id=sceiptProject_id
         _scriptProject.projectName = projectName
@@ -1354,6 +1360,9 @@ def saveScriptFile(request):
         _scriptProject.performanceData = performanceData
         _scriptProject.performanceReport = performanceReport
         _scriptProject.UIdata=UIdata
+        _scriptProject.owner=owner
+        _scriptProject.remark=remark
+        _scriptProject.updater=username
         _scriptProject.UIExcReport=execUIReport
         _scriptProject.UIReport=UIreport
         _scriptProject.UIScript=UIscriptAddress
@@ -1376,6 +1385,9 @@ def saveScriptFile(request):
         _scriptProject.scriptName = scriptName
         _scriptProject.executeType = executeType
         _scriptProject.UIdata=UIdata
+        _scriptProject.owner=owner
+        _scriptProject.remark=remark
+        _scriptProject.updater=username
         _scriptProject.UIExcReport=execUIReport
         _scriptProject.UIReport=UIreport
         _scriptProject.UIScript=UIscriptAddress
@@ -1532,6 +1544,13 @@ def executeScript(request):
     performanceData=requestData["performanceData"]
     scriptName=requestData["scriptName"]
     sceiptProject_id=requestData['sceiptProject_id']
+    environment=requestData['environment']
+
+    if environment=='1':
+        execteEnvironment='测试环境'
+    
+    if environment=='2':
+        execteEnvironment='生产环境'
 
     # 获取项目地址
     projectName_id = requestData['projectName']
@@ -1696,11 +1715,13 @@ def executeScript(request):
     if executeType=='0' or executeType==False :
         os.system("rm -rf " + jmeterAPiLogPath)
         os.system("rm -rf " + antApiLogPath)
+        os.system("rm -rf " + apiReportPatb)
         log.info("接口测试执行数据清理完成")
 
     if executeType == '1' or executeType == True:
         os.system("rm -rf " + jmeterPerforLogPath)
         os.system("rm -rf " + antPerForLogPath)
+        os.system("rm -rf " + performanceReportPath)
         log.info("性能测试执行数据清理完成")
 
     if executeType == '2':
@@ -1794,6 +1815,7 @@ def executeScript(request):
                     reportAddress = requestData['reportAddress']
                     performanceReport = requestData['performanceReport']
 
+
                     # 根据测试报告是否生成,巡检状态,开启群通知
                     if int(executeType)==0 and openDingMessAge=="True" :
                         number=0
@@ -1824,7 +1846,7 @@ def executeScript(request):
                                 # 计算占比
                                 true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
                                 true_percentage = round(true_percentage, 2)
-                                dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress)
+                                dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment)
                                 
                                 break
                             else:
@@ -1903,7 +1925,7 @@ def dingUIMessage(dingAddress,projectName,modelData,username,reportAddress):
     }
 
     requests.request("POST", url, headers=headers, data=payload)
-def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress):
+def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment):
     '''叮叮消息通知'''
     import requests
     import json
@@ -1913,12 +1935,13 @@ def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, t
             \n\n><font color=#303133>本消息由系统自动发出，无需回复！</font> 
             \n\n>各位同事，大家好，以下为【<font color=#E6A23C>{}</font>】-【<font color=#E6A23C>{}</font>】项目构建信息
             \n\n>执行人 : <font color=#E6A23C>{}</font>
+            \n\n>执行环境 : <font color=#E6A23C>{}</font>
             \n\n>执行接口 : <font color=#409EFF>{}</font>个 
             \n\n>失败接口 : <font color=#F56C6C>{}</font>个
             \n\n>执行成功率 : <font color=#67C23A>{}</font>%
             \n\n>构建结果 : <font color=#E6A23C>{}</font>
             \n\n>[查看接口测试报告](http://192.168.8.22:8050{})
-            '''.format(projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress)
+            '''.format(projectName,modelData,username,execteEnvironment, total_count, true_count, true_percentage, result,reportAddress)
     url = dingAddress
 
     payload = json.dumps({
@@ -2002,10 +2025,15 @@ def readScriptLog(request):
     # 获取版本地址
     modelData = requestData['modelData']
 
-    #获取生产版本地址
-    verPlatform=requestData['verPlatform']
-
     environment=requestData['environment']
+
+    
+
+    #获取生产版本地址
+    if (executeType=='0' or executeType==False) and environment=='2'  :
+        verPlatform=requestData['verPlatform']
+
+    
 
     #创建目录
     log_path="/root/platform/logs"
@@ -2021,7 +2049,7 @@ def readScriptLog(request):
 
     if (executeType=='0' or executeType==False) and environment=='1'  :
         path = "/root/platform/logs/" + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text"
-        log.info("====测试API-apilog====")
+        log.info("====测试API-日志文件已生成====")
     if (executeType=='0' or executeType==False) and environment=='2'  :
         path = "/root/platform/logs/" + projectName[0]["modelData"] + "/" + verPlatform + "/ApiLog/" + "log.text"
         log.info("====生产API-apilog====")
