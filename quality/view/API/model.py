@@ -97,6 +97,7 @@ class Scriptproject(models.Model):
     remark=models.CharField(max_length=200, verbose_name="备注")
     status=models.CharField(max_length=100, verbose_name="项目状态")
     runstatus = models.CharField(max_length=100, verbose_name="运行状态")
+    platfromType=models.CharField(max_length=50, verbose_name="执行端")
     createtime=models.DateTimeField()
     modifytime=models.DateTimeField()
 
@@ -127,6 +128,7 @@ class Versionmanager(models.Model):
     tableName=models.CharField(max_length=50, verbose_name="周计划名称")
     onlinModel=models.CharField(max_length=50, verbose_name="上线平台")
     modelStatus=models.CharField(max_length=50, verbose_name="平台上线状态")
+    platfromType=models.CharField(max_length=50, verbose_name="执行端")
 
 #新增任务信息管理
 class taskmanager(models.Model):

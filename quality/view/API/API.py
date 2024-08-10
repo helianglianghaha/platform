@@ -251,10 +251,8 @@ def selectVersionTotalData(request):
                 "TestCaseList":TestCaseList
             }
     return JsonResponse(data, safe=False)
-
-def selectVersionList(request):
-    '''筛选版本名称'''
-
+def selectReportVersionList(request):
+    '''筛选测试报告版本'''
     requestData = json.loads(request.body)
     owner=requestData['select_owner_value']
     development = requestData['select_development_value']
@@ -274,6 +272,7 @@ def selectVersionList(request):
 
     if len(status) > 0 and '全部' not in status:
         # status_conditions = ["status LIKE '%{}%'".format(s) for s in status]
+        # conditions.append("(" + " OR ".join(status_conditions) + ")")
         conditions.append("status LIKE '%已测试待上线%'")
 
     if conditions:
@@ -323,6 +322,88 @@ def selectVersionList(request):
                 "code": 200,
                 "data": modified_list
             }
+    return JsonResponse(data, safe=False)
+
+
+def selectVersionList(request):
+    '''筛选版本名称'''
+
+    requestData = json.loads(request.body)
+    owner=requestData['select_owner_value']
+    development = requestData['select_development_value']
+    status=requestData['select_status_value']
+    tableID=requestData['tabelID']
+
+    sql = 'SELECT * FROM quality_versionmanager WHERE '
+    conditions = []
+
+    if len(owner) > 0:
+        owner_conditions = ["owner LIKE '%{}%'".format(v) for v in owner]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(development) > 0:
+        development_conditions = ["development LIKE '%{}%'".format(r) for r in development]
+        conditions.append("(" + " OR ".join(development_conditions) + ")")
+
+    if len(status) > 0 and '全部' not in status:
+        status_conditions = ["status LIKE '%{}%'".format(s) for s in status]
+        conditions.append("(" + " OR ".join(status_conditions) + ")")
+        # conditions.append("status LIKE '%已测试待上线%'")
+
+    if conditions:
+        sql += " AND ".join(conditions)
+
+    if len(owner) != 0 or len(development) != 0 or len(status) != 0:
+        sql += " and tableID='{}'".format(tableID)
+
+    if len(owner) == 0 and len(development) == 0 and (len(status) == 0 or '全部' in status):
+        sql = "SELECT * FROM quality_versionmanager where tableID='{}'".format(tableID)
+
+
+    print('=======sql========', sql)
+    data = commonList().getModelData(sql)
+
+
+    def convert_lists(item):
+        if item['owner']:
+            item['owner'] = eval(item['owner'])
+        else:
+            item['owner']=[]
+        if item['development']:
+            item['development'] = eval(item['development'])
+        else:
+            item['development']=[]
+
+        if item['product']:
+            item['product'] = eval(item['product'])
+        else:
+            item['product']=[]
+
+        if item['onlinModel']:
+            item['onlinModel'] = eval(item['onlinModel'])
+        else:
+            item['onlinModel']=[]
+
+        if item['modelStatus']:
+            item['modelStatus'] = eval(item['modelStatus'])
+        else:
+            item['modelStatus']=[]
+
+        if item['platfromType']:
+            item['platfromType'] = eval(item['platfromType'])
+        else:
+            item['platfromType']=[]
+
+        return item
+
+    # Apply the conversion to each dictionary in the list
+    modified_list = [convert_lists(item) for item in data]
+
+    data = {
+                "code": 200,
+                "data": modified_list
+            }
+    
     return JsonResponse(data, safe=False)
 
 
@@ -385,7 +466,7 @@ def selectVersionManger(request):
         data = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
     def convert_lists(item):
-        keys = ['owner', 'development', 'product', 'onlinModel', 'modelStatus']
+        keys = ['owner', 'development', 'product', 'onlinModel', 'modelStatus','platfromType']
         for key in keys:
             if key in item:
                 item[key] = eval(item[key]) if item[key] else []
@@ -533,11 +614,19 @@ def copyVersionManger(request):
 @msgMessage
 def saveVersionManger(request):
     '''保存版本管理'''
-    requestData = json.loads(request.body)
-    print(requestData)
+    responseData = json.loads(request.body)
+    requestData=responseData['updatedData']
+
+    changedStatusList=responseData['changedStatusList']
+    changeHistoryList=responseData['changeHistoryList']
+    
+    from .executeApi import versionUpdateApi
+    versionUpdateApi().mainExecuteApi(changeHistoryList,changedStatusList)
+
+    # print(requestData)
     if len(requestData)>5: #超过5个内容更新不通知企信
         for versionManer in requestData:
-            print(versionManer)
+            # print(versionManer)
             versionStart = '> 版本信息更新：'
             autoTableID=versionManer['autoTableID']
             tableName=versionManer['tableName']
@@ -554,6 +643,8 @@ def saveVersionManger(request):
             firstRoundTest = versionManer['firstRoundTest']
             secondRoundTest = versionManer['secondRoundTest']
             thirdRoundTest = versionManer['thirdRoundTest']
+
+            platfromType=versionManer['platfromType']
 
             remarks = versionManer['remarks']
             yueLinProgress = versionManer['yueLinProgress']
@@ -588,11 +679,14 @@ def saveVersionManger(request):
                 _Versionmanager.owner = owner
                 _Versionmanager.development = development
                 _Versionmanager.status = status
+                _Versionmanager.platfromType=platfromType
                 _Versionmanager.testCases = testCases
                 _Versionmanager.testCaseReview = testCaseReview
                 _Versionmanager.firstRoundTest = firstRoundTest
                 _Versionmanager.secondRoundTest = secondRoundTest
                 _Versionmanager.thirdRoundTest = thirdRoundTest
+                _Versionmanager.platfromType=platfromType
+
                 _Versionmanager.liveTime=liveTime
                 _Versionmanager.testingTime = testingTime
                 _Versionmanager.product=product
@@ -614,7 +708,10 @@ def saveVersionManger(request):
                 _Versionmanager.onlinModel=onlinModel
                 _Versionmanager.modelStatus=modelStatus
                 _Versionmanager.development = development
+                _Versionmanager.platfromType=platfromType
                 _Versionmanager.status = status
+                _Versionmanager.platfromType=platfromType
+
                 _Versionmanager.testCases = testCases
                 _Versionmanager.testCaseReview = testCaseReview
                 _Versionmanager.firstRoundTest = firstRoundTest
@@ -633,7 +730,7 @@ def saveVersionManger(request):
         
     else:    
         for versionManer in requestData:
-            print(versionManer)
+            # print(versionManer)
             versionStart = '> 版本信息更新：'
             autoTableID=versionManer['autoTableID']
             tableName=versionManer['tableName']
@@ -647,6 +744,7 @@ def saveVersionManger(request):
             testCases = versionManer['testCases']
             onlinModel=versionManer['onlinModel']
             modelStatus=versionManer['modelStatus']
+            platfromType=versionManer['platfromType']
 
             testCaseReview = versionManer['testCaseReview']
             firstRoundTest = versionManer['firstRoundTest']
@@ -687,6 +785,8 @@ def saveVersionManger(request):
                 _Versionmanager.firstRoundTest = firstRoundTest
                 _Versionmanager.secondRoundTest = secondRoundTest
                 _Versionmanager.thirdRoundTest = thirdRoundTest
+                _Versionmanager.platfromType=platfromType
+
                 _Versionmanager.liveTime=liveTime
                 _Versionmanager.testingTime = testingTime
                 _Versionmanager.product=product
@@ -730,9 +830,9 @@ def saveVersionManger(request):
                 else:
                     testingTime=''
         
-                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
-                                                    testingTime, liveTime, testCases, testCaseReview,
-                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                # dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                #                                     testingTime, liveTime, testCases, testCaseReview,
+                #                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
             else:
                 _Versionmanager.tableID = tableID
@@ -748,6 +848,7 @@ def saveVersionManger(request):
                 _Versionmanager.firstRoundTest = firstRoundTest
                 _Versionmanager.secondRoundTest = secondRoundTest
                 _Versionmanager.thirdRoundTest = thirdRoundTest
+                _Versionmanager.platfromType=platfromType
                 _Versionmanager.remarks = remarks
                 _Versionmanager.onlinModel=onlinModel
                 _Versionmanager.modelStatus=modelStatus
@@ -1189,6 +1290,7 @@ def createScriptFile(request):
 def saveScriptFile(request):
     '''保存脚本文件地址'''
     dataDictList = json.loads(request.body)
+
     # 获取执行人姓名
     username = request.session.get('username', False)
 
@@ -1196,6 +1298,10 @@ def saveScriptFile(request):
     owner=dataDictList['ownName']
     #获取备注
     remark=dataDictList['remark']
+
+    # 获取执行端
+    platfromType=dataDictList['platfromType']
+
 
     # 获取项目地址
     projectName_id =dataDictList['projectName']
@@ -1362,6 +1468,7 @@ def saveScriptFile(request):
         _scriptProject.UIdata=UIdata
         _scriptProject.owner=owner
         _scriptProject.remark=remark
+        _scriptProject.platfromType=platfromType
         _scriptProject.updater=username
         _scriptProject.UIExcReport=execUIReport
         _scriptProject.UIReport=UIreport
@@ -1387,6 +1494,7 @@ def saveScriptFile(request):
         _scriptProject.UIdata=UIdata
         _scriptProject.owner=owner
         _scriptProject.remark=remark
+        _scriptProject.platfromType=platfromType
         _scriptProject.updater=username
         _scriptProject.UIExcReport=execUIReport
         _scriptProject.UIReport=UIreport
@@ -1443,8 +1551,11 @@ def selectScriptFile(request):
     data = commonList().getModelData(sql)
     # print(data)
     for projectData in data:
-        # print(projectData["scriptName"])
+        print(projectData["platfromType"])
         projectData["scriptName"]=ast.literal_eval(projectData["scriptName"])
+        if projectData["platfromType"]:
+            projectData["platfromType"]=eval(projectData["platfromType"])
+
     return JsonResponse(data, safe=False)
 @msgMessage
 def selectProScriptFile(request):

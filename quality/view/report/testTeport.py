@@ -114,20 +114,21 @@ def selectReportTotal(request):
     #获取最近五个版本的测试点执行情况
     versionXmindSql='''
         SELECT
-        version,
-        COUNT(*) as total_num,
-        SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS success_count,
-        SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undo_count,
-        SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS pending_count,
-        SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS failed_count
-        FROM
-            quality_xmind_data
-        GROUP BY
-            version
-        ORDER BY
-            version DESC
-        LIMIT 5
-        '''
+		version,
+		COUNT(*) as total_num,
+		SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS success_count,
+		SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undo_count,
+		SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS pending_count,
+		SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS failed_count
+		FROM
+				quality_xmind_data
+		where 
+			version=\'{}\'
+		GROUP BY
+				version
+		ORDER BY
+				version DESC
+        '''.format(versionName)
     versionXmindList=commonList().getModelData(versionXmindSql)
 
     versionNameList=[]
