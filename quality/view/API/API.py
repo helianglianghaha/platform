@@ -273,7 +273,7 @@ def selectReportVersionList(request):
     if len(status) > 0 and '全部' not in status:
         # status_conditions = ["status LIKE '%{}%'".format(s) for s in status]
         # conditions.append("(" + " OR ".join(status_conditions) + ")")
-        conditions.append("status LIKE '%已测试待上线%'")
+        conditions.append("modelStatus LIKE '%已测试待上线%'")
 
     if conditions:
         sql += " AND ".join(conditions)
@@ -346,7 +346,7 @@ def selectVersionList(request):
         conditions.append("(" + " OR ".join(development_conditions) + ")")
 
     if len(status) > 0 and '全部' not in status:
-        status_conditions = ["status LIKE '%{}%'".format(s) for s in status]
+        status_conditions = ["modelStatus LIKE '%{}%'".format(s) for s in status]
         conditions.append("(" + " OR ".join(status_conditions) + ")")
         # conditions.append("status LIKE '%已测试待上线%'")
 
@@ -620,8 +620,8 @@ def saveVersionManger(request):
     changedStatusList=responseData['changedStatusList']
     changeHistoryList=responseData['changeHistoryList']
     
-    from .executeApi import versionUpdateApi
-    versionUpdateApi().mainExecuteApi(changeHistoryList,changedStatusList)
+    # from .executeApi import versionUpdateApi
+    # versionUpdateApi().mainExecuteApi(changeHistoryList,changedStatusList)
 
     # print(requestData)
     if len(requestData)>5: #超过5个内容更新不通知企信
@@ -830,9 +830,9 @@ def saveVersionManger(request):
                 else:
                     testingTime=''
         
-                # dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
-                #                                     testingTime, liveTime, testCases, testCaseReview,
-                #                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                                                    testingTime, liveTime, testCases, testCaseReview,
+                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
             else:
                 _Versionmanager.tableID = tableID
@@ -1549,12 +1549,11 @@ def selectScriptFile(request):
             a.createtime DESC'''.format(versionName)
     print(sql)
     data = commonList().getModelData(sql)
-    # print(data)
+    print(data)
     for projectData in data:
         print(projectData["platfromType"])
         projectData["scriptName"]=ast.literal_eval(projectData["scriptName"])
-        if projectData["platfromType"]:
-            projectData["platfromType"]=eval(projectData["platfromType"])
+        # projectData["platfromType"]=ast.literal_eval(projectData["platfromType"])
 
     return JsonResponse(data, safe=False)
 @msgMessage

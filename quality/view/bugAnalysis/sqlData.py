@@ -6,7 +6,7 @@ class selectSqlData:
         # 执行查询操作，检查数据库中是否存在相同的数据
         print("check_if_data_exists已执行")
         print(new_data)
-        query = "SELECT * FROM testplatform.{} WHERE id ={}".format(target_table,new_data['id'])
+        query = "SELECT * FROM testplatfrom.{} WHERE id ={}".format(target_table,new_data['id'])
         print('query',query)
         existing_data = commonList().getModelData(query)
         return existing_data
@@ -22,7 +22,7 @@ class selectSqlData:
             print("================新数据==new_data_list============", new_data_list)
             for newData in new_data_list:
                 if newData not in old_data_list:
-                    update_query = "UPDATE testplatform.{} SET ".format(target_table)
+                    update_query = "UPDATE testplatfrom.{} SET ".format(target_table)
                     update_query += ", ".join([f"{key} = %s" for key in new_data.keys()])
                     update_query += " WHERE id = %s"
                     print('=======update_query====',update_query)
@@ -51,7 +51,7 @@ class selectSqlData:
             columns = ', '.join(new_data.keys())
             values_template = ', '.join(['%s'] * len(new_data))
             print(new_data.values())
-            insert_query = f"INSERT INTO testplatform.{target_table} ({columns}) VALUES ({values_template})"
+            insert_query = f"INSERT INTO testplatfrom.{target_table} ({columns}) VALUES ({values_template})"
 
             import  re
             if target_table == 'zt_bug':

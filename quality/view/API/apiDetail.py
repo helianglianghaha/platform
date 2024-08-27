@@ -37,10 +37,10 @@ def uploadApi(request):
     project=requestData['project']
 
     db_connection = mysql.connector.connect(
-        host="rm-2zea97l06569u3s1zyo.mysql.rds.aliyuncs.com",
-        user="tk_db_test",
-        password="UUueBYYs9U4uptj",
-        database="testplatform"
+        host="192.168.8.28",
+        user="root",
+        password="mysql_ciFtek",
+        database="testplatfrom"
     )
 
 

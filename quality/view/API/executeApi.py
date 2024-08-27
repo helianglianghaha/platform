@@ -7,7 +7,7 @@ class versionUpdateApi:
         print("新数据=={}".format(newData))
 
         # 返回修改的版本和执行端
-        if len(newData[0]['modelStatus'])==0:
+        if len(newData)==0:
             logging.info("进度为空，不用执行脚本")
             return
         versions_status_list=self.compareVersion(oldData,newData)
@@ -29,14 +29,13 @@ class versionUpdateApi:
         all_old_status = set()
         all_old_platfromType=set()
         for item in oldData:
-            if len(item["modelStatus"]>0):
+            if len(item["modelStatus"])>0:
                 all_old_status.update(item["modelStatus"])
             if len(item["platfromType"]>0):
                 all_old_platfromType.update(item["platfromType"])
 
         missing_status_list['all_old_platfromType']=all_old_platfromType
 
-        # 3. 对比 newData 中的 status
         for item in newData:
             for status in item["modelStatus"]:
                 if status not in all_old_status:

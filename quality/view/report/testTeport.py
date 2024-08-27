@@ -15,14 +15,10 @@ def selectReportTotal(request):
 
     versiondata='''
             SELECT 
-            SUM(CASE WHEN status = '开发中' THEN 1 ELSE 0 END) AS open_count,
-            SUM(CASE WHEN status = '已上线' THEN 1 ELSE 0 END) AS ready_count,
-            SUM(CASE WHEN status = '规划中' THEN 1 ELSE 0 END) AS guihua_count,
-            SUM(CASE WHEN status = '待测试' THEN 1 ELSE 0 END) AS test_count,
-            SUM(CASE WHEN status = '暂停' THEN 1 ELSE 0 END) AS stop_count,
-            SUM(CASE WHEN status = '已测试待上线' THEN 1 ELSE 0 END) AS already_count,
-            SUM(CASE WHEN status = '测试中' THEN 1 ELSE 0 END) AS testing_count,
-            SUM(CASE WHEN status = '部分上线' THEN 1 ELSE 0 END) AS bufenReady_count,
+            SUM(CASE WHEN modelStatus LIKE '%开发中%' THEN 1 ELSE 0 END) AS open_count,
+            SUM(CASE WHEN modelStatus LIKE '%测试中%' THEN 1 ELSE 0 END) AS testing_count,
+            SUM(CASE WHEN modelStatus LIKE '%已测试待上线%' THEN 1 ELSE 0 END) AS already_count,
+            SUM(CASE WHEN modelStatus LIKE '%已上线%' THEN 1 ELSE 0 END) AS ready_count,
             count(tableID is not NULL) AS total_version_count
             FROM quality_versionmanager
             where tableID=\'{}\'

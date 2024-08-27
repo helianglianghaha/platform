@@ -100,10 +100,10 @@ WSGI_APPLICATION = 'QualityPlatform.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
-        'NAME':'testplatform',
-        'USER':'store',
-        'PASSWORD':'UUueBYYs9U4uptj',
-        'HOST':'118.178.255.171',
+        'NAME':'testplatfrom',
+        'USER':'root',
+        'PASSWORD':'mysql_ciFtek',
+        'HOST':'192.168.8.28',
         'PORT':'3306',
     }
 }

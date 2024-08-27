@@ -14,7 +14,7 @@ def compare_and_sync(source_cursor,target_conn, target_cursor, source_table, tar
     log.info("compare_and_sync开始执行")
     target_sql='''SELECT COLUMN_NAME
         FROM information_schema.columns
-        WHERE table_schema = 'testplatform'
+        WHERE table_schema = 'testplatfrom'
         AND table_name = '{target_table}'
     '''.format(target_table=target_table)
 
@@ -73,10 +73,10 @@ def sync_tables(request):
         source_cursor = source_conn.cursor()
 
         target_conn = mysql.connector.connect(
-            host='118.178.255.171',
-            user='store',
-            password='UUueBYYs9U4uptj',
-            database='testplatform'
+            host='192.168.8.28',
+            user='root',
+            password='mysql_ciFtek',
+            database='testplatfrom'
         )
         target_cursor = target_conn.cursor()
 
@@ -122,7 +122,7 @@ def update_versioninfo(request):
             # print("Today is Sunday. Skipping interface update.")
             return
         #查询正在测试中的版本，负责人，BUG，123进度，备注
-        totalVersionSql="select * from quality_versionmanager where  status=\'测试中\'"
+        totalVersionSql="select * from quality_versionmanager where  modelStatus like \'%测试中%\'"
         totalVersionData=commonList().getModelData(totalVersionSql)
 
         # 获取未解决BUG
@@ -542,17 +542,25 @@ def XunJianExecuteScript(request):
             select_scriptProject_sql='''
                         select * from quality_scriptproject where versionName = {}
             '''.format(tuple_version_id_list)
+            print(select_scriptProject_sql)
             select_scriptProject_data=commonList().getModelData(select_scriptProject_sql)
-            exectSingleProject(select_scriptProject_data[0],version_ding_message)
+            if len(select_scriptProject_data)==0:
+                log.info('没有查到可执行的项目，暂不执行')
+            else:
+                exectSingleProject(select_scriptProject_data[0],version_ding_message)
 
 
         else:
             select_scriptProject_sql='''
                         select * from quality_scriptproject where versionName in {}
             '''.format(tuple_version_id_list)
+            print(select_scriptProject_sql)
             select_scriptProject_data=commonList().getModelData(select_scriptProject_sql)
-            for singleProjectData in select_scriptProject_data:
-                exectSingleProject(singleProjectData,version_ding_message)
+            if len(select_scriptProject_data)==0:
+                log.info('没有查到可执行的项目，暂不执行')
+            else:
+                for singleProjectData in select_scriptProject_data:
+                    exectSingleProject(singleProjectData,version_ding_message)
 
     log.info("=======巡检项目结束=======")
     data = {
