@@ -220,19 +220,22 @@ def selectSigleVersionBugData(request):
     created = requestData['createdTime']
     tableID=requestData['tableID']
 
+    #根据版本内容查询禅道实际版本
+    actlSql='''
+            SELECT DISTINCT(version) from quality_versionmanager where tableID=\'{}\'
+            '''.format(tableID)
+    versionList=commonList().getModelData(actlSql)
+    singleVersion=versionList[0]['version']
+
+
     sql='''
-    SELECT DISTINCT b.id AS id, b.title, b.`status`, b.closedDate,c.version,b.pri,b.severity,j.first_name,b.closedBy,b.openedDate,b.assignedTo
+    SELECT DISTINCT b.id AS id, b.title, b.`status`, b.closedDate,b.pri,b.severity,b.closedBy,b.openedBy,b.openedDate,b.assignedTo
         FROM zt_bug b
-        LEFT JOIN zt_project a ON a.id = b.execution 
-            AND a.project = 2 
-            AND a.type = 'stage' 
-            AND a.name LIKE '%v%'
-        LEFT JOIN quality_versionmanager c ON c.version = a.name 
-            AND c.tableID=\'{}\'
-            LEFT JOIN auth_user j ON j.username = b.openedBy
-            WHERE c.version is not NULL AND j.username IS NOT NULL
+        where 
+        execution =
+    ( SELECT a.id FROM zt_project a LEFT JOIN zt_project b ON a.project = b.id WHERE a.project != 0 AND a.team = \'{}\' )
         and 
-    '''.format(tableID)
+    '''.format(singleVersion)
 
     conditions = []
 
@@ -276,17 +279,12 @@ def selectSigleVersionBugData(request):
 
     if  len(openedBy)==0 and len(severity)==0 and (len(status)==0 or 'all' in status) and len(pri)==0 and len(created)==0 :
         sql='''
-        SELECT DISTINCT b.id AS id, b.title, b.`status`, b.closedDate,c.version,b.pri,b.severity,j.first_name,b.closedBy,b.openedDate,b.assignedTo
+        SELECT *
         FROM zt_bug b
-        LEFT JOIN zt_project a ON a.id = b.execution 
-            AND a.project = 2 
-            AND a.type = 'stage' 
-            AND a.name LIKE '%v%'
-        LEFT JOIN quality_versionmanager c ON c.version = a.name 
-            AND c.tableID=\'{}\'
-            LEFT JOIN auth_user j ON j.username = b.openedBy
-            WHERE c.version is not NULL AND j.username IS NOT NULL
-        '''.format(tableID)
+        where 
+        execution =
+        ( SELECT a.id FROM zt_project a LEFT JOIN zt_project b ON a.project = b.id WHERE a.project != 0 AND a.team = \'{}\' )
+        '''.format(singleVersion)
 
     sql += " ORDER BY  b.openedDate DESC"
 

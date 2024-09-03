@@ -13,6 +13,15 @@ def selectReportTotal(request):
     requestData = json.loads(request.body)
     versionName=requestData['versionName']
 
+
+    #根据版本内容查询禅道实际版本
+    actlSql='''
+            SELECT DISTINCT(version) from quality_versionmanager where tableID=\'{}\'
+            '''.format(versionName)
+    versionList=commonList().getModelData(actlSql)
+    print(versionList)
+    singleVersion=versionList[0]['version']
+
     versiondata='''
             SELECT 
             SUM(CASE WHEN modelStatus LIKE '%开发中%' THEN 1 ELSE 0 END) AS open_count,
@@ -43,19 +52,16 @@ def selectReportTotal(request):
     SUM(CASE WHEN `status` = 'resolved' THEN 1 ELSE 0 END) AS resolved_bug_count,
     SUM(CASE WHEN `status` = 'closed' THEN 1 ELSE 0 END) AS closed_bug_count
     FROM (
-        SELECT DISTINCT b.id AS m, b.title, b.`status`, b.closedDate
-        FROM zt_bug b
-        LEFT JOIN zt_project a ON a.id = b.execution 
-            AND a.project = 2 
-            AND a.type = 'stage' 
-            AND a.name LIKE '%v%'
-        LEFT JOIN quality_versionmanager c ON c.version = a.name 
-            AND c.tableID=\'{}\'
-            WHERE c.version is not NULL and b.`status`='closed'
-    ) AS zt_bug
-    GROUP BY DATE(closedDate)
-    ORDER BY event_date
-    '''.format(versionName)
+       SELECT
+            * 
+        FROM
+            zt_bug
+            where execution =
+        ( SELECT a.id FROM zt_project a LEFT JOIN zt_project b ON a.project = b.id WHERE a.project != 0 AND a.team = \'{}\' )
+            ) AS zt_bug
+            GROUP BY DATE(closedDate)
+            ORDER BY event_date
+            '''.format(singleVersion)
     print('resolve_bugs_sql',resolve_bugs_sql)
     resolve_bugs_list=commonList().getModelData(resolve_bugs_sql)
 
@@ -81,10 +87,11 @@ def selectReportTotal(request):
     SELECT DATE(openedDate) AS event_date, COUNT(*) AS bug_count
     FROM (SELECT DISTINCT b.id m,b.title, b.`status`,b.openedDate
     FROM zt_bug b
-    LEFT JOIN zt_project a ON a.id = b.execution AND a.project = 2 AND a.type = 'stage' AND a.name LIKE '%v%'
-    LEFT JOIN quality_versionmanager c ON c.version = a.name and c.tableID=\'{}\' WHERE c.version is not NULL) as zt_bug
+    where execution =
+    ( SELECT a.id FROM zt_project a LEFT JOIN zt_project b ON a.project = b.id WHERE a.project != 0 AND a.team = \'{}\' )
+    ) as zt_bug
     GROUP BY DATE(openedDate)
-    ORDER BY event_date'''.format(versionName)
+    ORDER BY event_date'''.format(singleVersion)
     numbers_bugs_everydata = commonList().getModelData(numbers_bugs_sql)
 
     # 获取该版本周期内BUG总体解决情况
@@ -95,17 +102,15 @@ def selectReportTotal(request):
         SUM(CASE WHEN `status` = 'resolved' THEN 1 ELSE 0 END) AS resolved_bug_count,
         SUM(CASE WHEN `status` = 'closed' THEN 1 ELSE 0 END) AS closed_bug_count
         FROM (
-            SELECT DISTINCT b.id AS m, b.title, b.`status`, b.openedDate,c.version
-            FROM zt_bug b
-            LEFT JOIN zt_project a ON a.id = b.execution 
-                AND a.project = 2 
-                AND a.type = 'stage' 
-                AND a.name LIKE '%v%'
-            LEFT JOIN quality_versionmanager c ON c.version = a.name 
-                AND c.tableID=\'{}\'
-                WHERE c.version is not NULL
-        ) AS zt_bug
-    '''.format(versionName)
+            SELECT
+            * 
+        FROM
+            zt_bug
+            where execution =
+        ( SELECT a.id FROM zt_project a LEFT JOIN zt_project b ON a.project = b.id WHERE a.project != 0 AND a.team = \'{}\' )
+                ) AS zt_bug
+            '''.format(singleVersion)
+    print("获取该版本周期内BUG总体解决情况",bugs_count_sql)
 
     #获取最近五个版本的测试点执行情况
     versionXmindSql='''
@@ -139,6 +144,7 @@ def selectReportTotal(request):
     #分类处理版本数据
     if len(versionXmindList)!=0:
         for versionInfo in versionXmindList:
+            print("99999999999{}".format(versionInfo))
             versionNameList.append(versionInfo['version'])
             total_num_list.append(int(versionInfo['total_num']))
             success_count_list.append(int(versionInfo['success_count']))
@@ -150,17 +156,13 @@ def selectReportTotal(request):
                         COUNT(*) AS bug_count,
                         SUM(CASE WHEN `status` = 'active' THEN 1 ELSE 0 END) AS active_bug_count
                         FROM (
-                            SELECT DISTINCT b.id AS m, b.title, b.`status`, b.openedDate,c.version
+                            SELECT DISTINCT b.id AS m, b.title, b.`status`, b.openedDate
                             FROM zt_bug b
-                            LEFT JOIN zt_project a ON a.id = b.execution 
-                                AND a.project = 2 
-                                AND a.type = 'stage' 
-                                AND a.name LIKE '%v%'
-                            LEFT JOIN quality_versionmanager c ON c.version = a.name 
-                                AND c.tableID=\'{}\'
-                                WHERE c.version is not NULL
+                            where execution =
+                            ( SELECT a.id FROM zt_project a LEFT JOIN zt_project b ON a.project = b.id WHERE a.project != 0 AND a.team = \'{}\' )
                         ) AS zt_bug
-                    '''.format(versionInfo['version'])
+                    '''.format(singleVersion)
+            print("分类处理版本数据",totalBugNumList)
             everyOwnerDataList=commonList().getModelData(totalBugNumList)
             BugTotalNum=everyOwnerDataList[0]['bug_count']
             BUG_number_list.append(BugTotalNum)
@@ -187,21 +189,21 @@ def selectReportTotal(request):
                 j.first_name,
                 b.openedBy
             FROM
-                zt_bug b
-                LEFT JOIN zt_project a ON a.id = b.execution
-                AND a.project = 2
-                AND a.type = 'stage'
-                AND a.NAME LIKE '%v%'
-                LEFT JOIN quality_versionmanager c ON c.version = a.NAME
+                (
+                SELECT
+                    * 
+                FROM
+                    zt_bug
+                    where execution =
+                ( SELECT a.id FROM zt_project a LEFT JOIN zt_project b ON a.project = b.id WHERE a.project != 0 AND a.team = \'{}\' )
+                ) b
                 LEFT JOIN auth_user j ON j.username = b.openedBy
-                AND c.tableID = \'{}\'
             WHERE
-                c.version IS NOT NULL
-                AND j.username IS NOT NULL
+                j.username IS NOT NULL
         ) AS j 
     GROUP BY
         j.first_name
-    '''.format(versionName)
+    '''.format(singleVersion)
     everyOwnerDataList=commonList().getModelData(everyOwnerSql)
 
 
@@ -212,12 +214,11 @@ def selectReportTotal(request):
     ownerTotalData=commonList().getModelData(ownerSql)
     print('ownerTotalData',ownerTotalData)
 
-    all_owners = [eval(item['owner'])[0] for item in ownerTotalData if item['owner'] and item['owner'] != '[]']
+    all_owners = list(set(owner for item in ownerTotalData for owner in eval(item['owner']) if item['owner'] and item['owner'] != '[]'))
 
-    all_developments = [eval(item['development'])[0] for item in ownerTotalData if item['development'] and item['development'] != '[]']
+    all_developments = list(set(dev for item in ownerTotalData for dev in eval(item['development']) if item['development'] and item['development'] != '[]'))
 
-    all_prd=[eval(item['product'])[0] for item in ownerTotalData if item['product'] and item['product'] != '[]']
-
+    all_prd = list(set(prd for item in ownerTotalData for prd in eval(item['product']) if item['product'] and item['product'] != '[]'))
 
 
     unique_owners = list(set(all_owners))
