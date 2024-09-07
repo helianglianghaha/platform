@@ -134,6 +134,9 @@ urlpatterns = [
    url('quality/addModelVersion/',API.addModelVersion, name='addModelVersion'),
    url('quality/selectModelVersion/',API.selectModelVersion, name='selectModelVersion'),
    url('quality/selectSortModelVersion/',API.selectSortModelVersion, name='selectSortModelVersion'),
+   url('quality/createTodoTask/',API.createTodoTask, name='createTodoTask'),
+   url('quality/selectTodoTask/',API.selectTodoTask, name='selectTodoTask'),
+   url('quality/updateTodoTask/',API.updateTodoTask, name='updateTodoTask'),
    
    url('quality/selectVersionList/',API.selectVersionList, name='selectVersionList'),
    url('quality/selectReportVersionList/',API.selectReportVersionList, name='selectReportVersionList'),

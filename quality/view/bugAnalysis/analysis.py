@@ -161,9 +161,6 @@ def selectTopBugData(request):
                     c.tableID
                 FROM zt_bug b
                 LEFT JOIN zt_project a ON a.id = b.execution 
-                    AND a.project = 2 
-                    AND a.type = 'stage' 
-                    AND a.name LIKE '%v%'
                 LEFT JOIN quality_versionmanager c ON c.version = a.name 
                 WHERE c.version IS NOT NULL
             ) AS zt_bug_subquery

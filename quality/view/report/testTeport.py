@@ -19,7 +19,6 @@ def selectReportTotal(request):
             SELECT DISTINCT(version) from quality_versionmanager where tableID=\'{}\'
             '''.format(versionName)
     versionList=commonList().getModelData(actlSql)
-    print(versionList)
     singleVersion=versionList[0]['version']
 
     versiondata='''

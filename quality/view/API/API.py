@@ -12,6 +12,7 @@ from quality.view.API.model import Modelversion
 from quality.view.API.model import  Scriptproject
 from quality.view.API.model import Versionmanager
 from quality.view.API.model import taskmanager
+from quality.view.API.model import todutasklist
 from django.core import serializers
 from quality.common.logger import Log
 from quality.common.msg import msgMessage, msglogger
@@ -43,6 +44,301 @@ def delTaskInfo(request):
     return JsonResponse(data, safe=False)
 
 
+def createTodoTask(request):
+    '''生成待办事项'''
+    # 查询所有负责的版本任务-测试中/已测试待上线
+    _todoTaskList=todutasklist()
+    selectVersionTask='''
+                    SELECT
+                        * 
+                    FROM
+                        `testplatfrom`.`quality_versionmanager` 
+                    WHERE
+                        `modelStatus` LIKE '%测试中%' 
+                        OR `modelStatus` LIKE '%已测试待上线%' 
+                    '''
+    versionTask=commonList().getModelData(selectVersionTask)
+    if len(versionTask)>0:
+        for  i in versionTask:
+            print("======版本任务开始执行========")
+            
+            toDoTaskName = '-'.join([i.get('version', ''), i.get('description', ''), "待上线"])
+
+            owner=eval(i['owner'])
+            if len(owner)>1:
+                for people in owner:
+                    _todoTaskList=todutasklist()
+                    if not todutasklist.objects.filter(toDoTaskName=toDoTaskName, ownerName=people).exists():
+                        _todoTaskList.toDoTaskName=toDoTaskName
+                        _todoTaskList.ownerName=people
+                        _todoTaskList.taskType='版本任务'
+                        _todoTaskList.status='待处理'
+                        _todoTaskList.createTime=datetime.now()
+                        _todoTaskList.save()
+                        print(f"任务 {toDoTaskName}-{people} 已添加")
+                    else:
+                        print(f"任务 {toDoTaskName}-{people} 已经存在，不重复添加")
+            else:
+                if not todutasklist.objects.filter(toDoTaskName=toDoTaskName, ownerName=owner[0]).exists():
+                    _todoTaskList=todutasklist()
+                    _todoTaskList.toDoTaskName=toDoTaskName
+                    _todoTaskList.ownerName=owner[0]
+                    _todoTaskList.taskType='版本任务'
+                    _todoTaskList.status='待处理'
+                    _todoTaskList.createTime=datetime.now()
+                    _todoTaskList.save()
+                    print(f"任务 {toDoTaskName}-{owner[0]}  已添加")
+                else:
+                    print(f"任务 {toDoTaskName}-{owner[0]} 已经存在，不重复添加")
+
+
+    # 任务管理有待处理的任务-未开始/进行中的任务
+    selectTaskManager='''
+                    SELECT
+                        * 
+                    FROM
+                        `testplatfrom`.`quality_taskmanager` 
+                    WHERE
+                        `status` LIKE '%未开始%' 
+                    '''
+    
+    taskManagerList=commonList().getModelData(selectTaskManager)
+    if len(taskManagerList)>0:
+        for  i in taskManagerList:
+            
+            toDoTaskName=i['taskName']
+            owner=eval(i['owner'])
+            for people in owner:
+                _todoTaskList=todutasklist()
+                
+                _todoTaskList.toDoTaskName=toDoTaskName
+                _todoTaskList.ownerName=people
+                if not todutasklist.objects.filter(toDoTaskName=toDoTaskName, ownerName=people).exists():
+                    _todoTaskList.taskType='其他任务'
+                    _todoTaskList.status='待处理'
+                    _todoTaskList.createTime=datetime.now()
+                    _todoTaskList.save()
+                    print(f"任务 {toDoTaskName}-{people} 已添加")
+                else:
+                    print(f"任务 {toDoTaskName}-{people} 已经存在，不重复添加")
+
+    # 有未执行的测试点
+    selectUndoCases='''
+                    SELECT
+                            creater,prdModel
+                    FROM
+                            `testplatfrom`.`quality_xmind_data` 
+                    WHERE
+                            `result` LIKE '%未执行%' 
+                            GROUP BY creater,prdModel
+
+                    '''
+    undoCasesList=commonList().getModelData(selectUndoCases)
+    if len(undoCasesList)>0:
+        for  cases in undoCasesList:
+            _todoTaskList=todutasklist()
+            toDoTaskName='-'.join([eval(cases['prdModel'])[0],'有未执行的测试点'])
+            ownerXmind=(cases['creater'])  
+            _todoTaskList.toDoTaskName=toDoTaskName
+            _todoTaskList.ownerName=ownerXmind
+            if not todutasklist.objects.filter(toDoTaskName=toDoTaskName, ownerName=ownerXmind).exists():
+                _todoTaskList.taskType='测试点'
+                _todoTaskList.status='待处理'
+                _todoTaskList.createTime=datetime.now()
+                _todoTaskList.save()
+                print(f"任务 {toDoTaskName}-{owner} 已添加")
+            else:
+                print(f"任务 {toDoTaskName}-{owner} 已经存在，不重复添加")
+
+    # 有未关闭的BUG
+    selectUndoBug='''
+                    SELECT
+                            openedBy
+                    FROM
+                            `testplatfrom`.`zt_bug` 
+                    WHERE
+                            `status` LIKE '%active%' 
+                            GROUP BY openedBy
+
+                '''
+    undoBugList=commonList().getModelData(selectUndoBug)
+    if len(undoBugList)>0:
+        for  i in undoBugList:
+            _todoTaskList=todutasklist()
+            
+            toDoTaskName='存在未关闭的BUG'
+            owner=i['openedBy']
+            _todoTaskList.toDoTaskName=toDoTaskName
+            _todoTaskList.ownerName=owner
+            _todoTaskList.taskType='BUG'
+            _todoTaskList.status='待处理'
+            _todoTaskList.createTime=datetime.now()
+            if not todutasklist.objects.filter(toDoTaskName=toDoTaskName, ownerName=owner).exists():
+                print(f"任务 {toDoTaskName}-{owner} 已添加")
+                _todoTaskList.save()
+            else:
+                print(f"任务 {toDoTaskName}-{owner} 已经存在，不重复添加")
+    data = {
+                "code": 200,
+                "data": "更新任务成功"
+            }
+    return JsonResponse(data, safe=False)
+    
+
+def updateTodoTask(request):
+    '''更新待办事项'''
+    requestData = json.loads(request.body)
+    id=requestData['value']["id"]
+    taskType=requestData['value']["type"]
+    owner=requestData['value']["owner"]
+    taskName=requestData['value']["taskName"]
+    from django.db.models import Q
+
+    # 根据任务类型和名称查询，对应的待办项是否完成，完成后才能关闭
+    # 检查版本任务中，是否有测试中，已测试待上线的需求
+    if taskType=="版本任务":
+        if  Versionmanager.objects.filter(description__icontains=taskName, owner__icontains=owner).filter(Q(status__icontains='测试中') | Q(status__icontains='已测试待上线')).exists():
+            data = {
+                "code": 10001,
+                "data": "版本进度未修改完成，请修改后再处理"
+            }
+            return JsonResponse(data, safe=False)
+        else:
+            _todutasklist = todutasklist.objects.get(id=id)
+            _todutasklist.status="已完成"
+            _todutasklist.save()
+            data = {
+                    "code": 200,
+                    "data": "更新任务成功"
+                    }
+
+    # 检查是否有未开始/进行中的任务
+    if taskType=="其他任务":
+        
+        if  taskmanager.objects.filter(taskName__icontains=taskName, owner__icontains=owner).filter(Q(status='未开始') | Q(status='进行中')).exists():
+            data = {
+                "code": 10001,
+                "data": "任务未修改完成，请修改后再处理"
+            }
+            return JsonResponse(data, safe=False)
+        else:
+            _todutasklist = todutasklist.objects.get(id=id)
+            _todutasklist.status="已完成"
+            _todutasklist.save()
+            data = {
+                    "code": 200,
+                    "data": "更新任务成功"
+                    }
+        
+    # 检查测试点
+    if taskType=="测试点":
+        selectUndoCases='''
+                        SELECT
+                                creater,prdModel
+                        FROM
+                                `testplatfrom`.`quality_xmind_data` 
+                        WHERE
+                                `result` LIKE '%未执行%' 
+                                GROUP BY creater,prdModel
+                        '''
+        
+        undoCasesList=commonList().getModelData(selectUndoCases)
+
+        if any(owner in  item['creater']   and taskName in item['taskName'] for item in undoCasesList):
+            data = {
+                "code": 10001,
+                "data": "测试点未执行完成，请修改后再处理"
+            }
+            return JsonResponse(data, safe=False)
+        else:
+            _todutasklist = todutasklist.objects.get(id=id)
+            _todutasklist.status="已完成"
+            _todutasklist.save()
+            data = {
+                    "code": 200,
+                    "data": "更新任务成功"
+                    }
+
+    # 检查BUG
+    if taskType=="BUG":
+        selectUndoBug='''
+                        SELECT
+                                openedBy
+                        FROM
+                                `testplatfrom`.`zt_bug` 
+                        WHERE
+                                `status` LIKE '%active%' 
+                                GROUP BY openedBy
+                    '''
+        undoBugList=commonList().getModelData(selectUndoBug)
+        if any(owner in  item['openedBy'] for item in undoBugList):
+            data = {
+                "code": 10001,
+                "data": "还有BUG未修改完成，请修改后再处理"
+            }
+            return JsonResponse(data, safe=False)
+        else:
+            _todutasklist = todutasklist.objects.get(id=id)
+            _todutasklist.status="已完成"
+            _todutasklist.save()
+            data = {
+                    "code": 200,
+                    "data": "更新任务成功"
+                    }
+    return JsonResponse(data, safe=False)
+
+
+def selectTodoTask(request):
+    '''查询待办事项'''
+    username = request.session.get('username', False)
+    print(username)
+    if not username:
+        data = {
+                "code": 10002,
+                "data": "没有获取到用户，请重新登录或联系管理员"
+            }
+        return JsonResponse(data, safe=False)
+
+    user_sql='''
+            select first_name from auth_user where username=\'{}\'
+            '''.format(username)
+    print(user_sql)
+    first_name=commonList().getModelData(user_sql)
+    print(first_name)
+    if len(first_name)==0:
+        data = {
+                "code": 10003,
+                "data": "该账户没有设置别名，请设置后重新登录"
+            }
+        return JsonResponse(data, safe=False)
+
+    todoSql='''
+                select * from quality_todutasklist where ownerName in (\'{}\',\'{}\') and status='待处理'
+            '''.format(username,first_name[0]["first_name"])
+    print(todoSql)
+    todoSqlList=commonList().getModelData(todoSql)
+
+    taskList=[]
+    
+
+    for task in todoSqlList:
+        singleTask={}
+        singleTask["id"]=task["id"]
+        singleTask["taskName"]=task["toDoTaskName"]
+        singleTask["taskDate"]=task["createTime"]
+        singleTask["type"]=task["taskType"]
+        singleTask["owner"]=task["ownerName"]
+        taskList.append(singleTask)
+
+    data = {
+                "code": 200,
+                "data": taskList
+            }
+    return JsonResponse(data, safe=False)
+
+    
+
+
 
 
 def selectTaskInfo(request):
@@ -50,6 +346,12 @@ def selectTaskInfo(request):
     requestData = json.loads(request.body)
     taskInfo=requestData['value']
     # print(type(taskInfo))
+    # username = request.session.get('username', False)
+
+    # first_name='''
+    #             select first_name from auth_user where username=\'{}\'
+    #             '''.format(username)
+    
 
 
     sql = 'SELECT * FROM quality_taskmanager WHERE '
@@ -66,8 +368,6 @@ def selectTaskInfo(request):
         sql += " AND ".join(conditions)+"ORDER BY updateTime desc"
 
     data = commonList().getModelData(sql)
-    print(sql)
-
 
     def convert_lists(item):
         if item['owner']:
@@ -632,6 +932,26 @@ def saveVersionManger(request):
             tableName=versionManer['tableName']
             tableID=versionManer['tableID']
             version = versionManer['version']
+
+            # 查询禅道是否有这个版本，没有这个版本不保存，除了需求文档地址，其他版本都不能保存
+            selectVersionName='''
+                                SELECT b.`name` from zt_project a,zt_project b  where a.id=b.project
+                                '''
+            print(selectVersionName)
+            versionName=commonList().getModelData(selectVersionName)
+            print(versionName)
+            versionList=[i['name'] for i in versionName ]
+            print(versionList)
+            
+            if version not in versionList and version!="需求文档地址":
+                data = {
+                            "code": 100001,
+                            "msg": "当前保存的版本【{}】和禅道的版本不一致，请修改后重新提交".format(version)
+                        }
+                return JsonResponse(data, safe=False)
+
+
+
             description = versionManer['description']
             priority = versionManer['priority']
             owner = versionManer['owner']
@@ -736,6 +1056,24 @@ def saveVersionManger(request):
             tableName=versionManer['tableName']
             tableID=versionManer['tableID']
             version = versionManer['version']
+
+            # 查询禅道是否有这个版本，没有这个版本不保存，除了需求文档地址，其他版本都不能保存
+            selectVersionName='''
+                                SELECT b.`name` from zt_project a,zt_project b  where a.id=b.project
+                                '''
+            print(selectVersionName)
+            versionName=commonList().getModelData(selectVersionName)
+            print(versionName)
+            versionList=[i['name'] for i in versionName ]
+            print(versionList)
+            
+            if version not in versionList and version!="需求文档地址":
+                data = {
+                            "code": 100001,
+                            "msg": "当前保存的版本{}和禅道的版本保存不一致，请修改后重新提交".format(version)
+                        }
+                return JsonResponse(data, safe=False)
+            
             description = versionManer['description']
             priority = versionManer['priority']
             owner = versionManer['owner']

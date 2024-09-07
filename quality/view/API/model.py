@@ -142,3 +142,15 @@ class taskmanager(models.Model):
     updateTime=models.DateTimeField()
     createTime=models.DateTimeField()
 
+
+#新增待办任务
+class todutasklist(models.Model):
+    id=models.AutoField(verbose_name="任务管理ID", primary_key=True)
+    toDoTaskName=models.CharField(max_length=255, verbose_name="待办任务名称")
+    status=models.CharField(max_length=50, verbose_name="任务状态")
+    createTime=models.DateTimeField()
+    updateTime=models.DateTimeField()
+    ownerAccount=models.CharField(max_length=255, verbose_name="账户")
+    ownerName=models.CharField(max_length=255, verbose_name="负责人")
+    taskType=models.CharField(max_length=255, verbose_name="任务类型")
+    description=models.CharField(max_length=255, verbose_name="任务描述")
