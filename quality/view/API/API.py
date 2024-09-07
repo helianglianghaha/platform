@@ -47,6 +47,7 @@ def delTaskInfo(request):
 def createTodoTask(request):
     '''生成待办事项'''
     # 查询所有负责的版本任务-测试中/已测试待上线
+    log.info("======待办任务开始执行=========")
     _todoTaskList=todutasklist()
     selectVersionTask='''
                     SELECT
@@ -75,9 +76,9 @@ def createTodoTask(request):
                         _todoTaskList.status='待处理'
                         _todoTaskList.createTime=datetime.now()
                         _todoTaskList.save()
-                        print(f"任务 {toDoTaskName}-{people} 已添加")
+                        log.info(f"任务 {toDoTaskName}-{people} 已添加")
                     else:
-                        print(f"任务 {toDoTaskName}-{people} 已经存在，不重复添加")
+                        log.info(f"任务 {toDoTaskName}-{people} 已经存在，不重复添加")
             else:
                 if not todutasklist.objects.filter(toDoTaskName=toDoTaskName, ownerName=owner[0]).exists():
                     _todoTaskList=todutasklist()
@@ -87,9 +88,9 @@ def createTodoTask(request):
                     _todoTaskList.status='待处理'
                     _todoTaskList.createTime=datetime.now()
                     _todoTaskList.save()
-                    print(f"任务 {toDoTaskName}-{owner[0]}  已添加")
+                    log.info(f"任务 {toDoTaskName}-{owner[0]}  已添加")
                 else:
-                    print(f"任务 {toDoTaskName}-{owner[0]} 已经存在，不重复添加")
+                    log.info(f"任务 {toDoTaskName}-{owner[0]} 已经存在，不重复添加")
 
 
     # 任务管理有待处理的任务-未开始/进行中的任务
@@ -118,9 +119,9 @@ def createTodoTask(request):
                     _todoTaskList.status='待处理'
                     _todoTaskList.createTime=datetime.now()
                     _todoTaskList.save()
-                    print(f"任务 {toDoTaskName}-{people} 已添加")
+                    log.info(f"任务 {toDoTaskName}-{people} 已添加")
                 else:
-                    print(f"任务 {toDoTaskName}-{people} 已经存在，不重复添加")
+                    log.info(f"任务 {toDoTaskName}-{people} 已经存在，不重复添加")
 
     # 有未执行的测试点
     selectUndoCases='''
@@ -146,9 +147,9 @@ def createTodoTask(request):
                 _todoTaskList.status='待处理'
                 _todoTaskList.createTime=datetime.now()
                 _todoTaskList.save()
-                print(f"任务 {toDoTaskName}-{owner} 已添加")
+                log.info(f"任务 {toDoTaskName}-{owner} 已添加")
             else:
-                print(f"任务 {toDoTaskName}-{owner} 已经存在，不重复添加")
+                log.info(f"任务 {toDoTaskName}-{owner} 已经存在，不重复添加")
 
     # 有未关闭的BUG
     selectUndoBug='''
@@ -174,10 +175,10 @@ def createTodoTask(request):
             _todoTaskList.status='待处理'
             _todoTaskList.createTime=datetime.now()
             if not todutasklist.objects.filter(toDoTaskName=toDoTaskName, ownerName=owner).exists():
-                print(f"任务 {toDoTaskName}-{owner} 已添加")
+                log.info(f"任务 {toDoTaskName}-{owner} 已添加")
                 _todoTaskList.save()
             else:
-                print(f"任务 {toDoTaskName}-{owner} 已经存在，不重复添加")
+                log.info(f"任务 {toDoTaskName}-{owner} 已经存在，不重复添加")
     data = {
                 "code": 200,
                 "data": "更新任务成功"
@@ -916,12 +917,60 @@ def saveVersionManger(request):
     '''保存版本管理'''
     responseData = json.loads(request.body)
     requestData=responseData['updatedData']
+    compare_results=[]
 
-    changedStatusList=responseData['changedStatusList']
-    changeHistoryList=responseData['changeHistoryList']
-    
-    # from .executeApi import versionUpdateApi
-    # versionUpdateApi().mainExecuteApi(changeHistoryList,changedStatusList)
+    # 遍历 onlinModel 和 modelStatus，检查项目是否出现在 modelStatus 中
+    def compare_models(onlinModel, modelStatus):
+
+        projectList=[model.split('>')[0] for model in modelStatus ]
+        
+        for model in onlinModel:
+            if model not in projectList:
+                compare_results.append("false")
+        # print(compare_results)
+            
+    if len(requestData)>1:
+        for version in requestData:
+            compare_models(version['onlinModel'],version['modelStatus'])
+            if len(version['onlinModel'])==0 and len(version['modelStatus'])==0 or len(version['platfromType'])==0:
+                data = {
+                            "code": 100009,
+                            "msg": "【平台】【后台】[需求进度]不能为空，修改后重新提交"
+                        }
+                return JsonResponse(data, safe=False)
+
+        if 'false' in compare_results:
+            print(compare_results)
+            data = {
+                            "code": 100009,
+                            "msg": "【平台】和【需求进度】显示不一致，修改后重新提交"
+                        }
+            return JsonResponse(data, safe=False)
+        
+            
+    else:
+        # print(requestData)
+        onlinModel=requestData[0]['onlinModel']
+        modelStatus=requestData[0]['modelStatus']
+        platfromType=requestData[0]['platfromType']
+        if len(onlinModel)==0 and len(modelStatus)==0  or len(platfromType)==0 :
+            data = {
+                        "code": 100009,
+                        "msg": "【平台】【后台】【需求进度】不能为空，修改后重新提交"
+                    }
+            return JsonResponse(data, safe=False)
+        compare_models(onlinModel,modelStatus)
+        if 'false' in compare_results:
+            # print(compare_results)
+            data = {
+                            "code": 100009,
+                            "msg": "【平台】和【需求进度】显示不一致，修改后重新提交"
+                        }
+            return JsonResponse(data, safe=False)
+            
+    #根据要保存的项目类型运行对应的脚本
+    from .executeApi import versionUpdateApi
+    versionUpdateApi().mainExecuteApi(requestData)
 
     # print(requestData)
     if len(requestData)>5: #超过5个内容更新不通知企信
@@ -937,16 +986,16 @@ def saveVersionManger(request):
             selectVersionName='''
                                 SELECT b.`name` from zt_project a,zt_project b  where a.id=b.project
                                 '''
-            print(selectVersionName)
+            # print(selectVersionName)
             versionName=commonList().getModelData(selectVersionName)
-            print(versionName)
+            # print(versionName)
             versionList=[i['name'] for i in versionName ]
-            print(versionList)
+            # print(versionList)
             
             if version not in versionList and version!="需求文档地址":
                 data = {
                             "code": 100001,
-                            "msg": "当前保存的版本【{}】和禅道的版本不一致，请修改后重新提交".format(version)
+                            "msg": "当前保存的【版本】-【{}】和禅道的【版本】不一致，请检查（版本号/大小写），修改后重新提交".format(version)
                         }
                 return JsonResponse(data, safe=False)
 
@@ -1061,16 +1110,16 @@ def saveVersionManger(request):
             selectVersionName='''
                                 SELECT b.`name` from zt_project a,zt_project b  where a.id=b.project
                                 '''
-            print(selectVersionName)
+            # print(selectVersionName)
             versionName=commonList().getModelData(selectVersionName)
-            print(versionName)
+            # print(versionName)
             versionList=[i['name'] for i in versionName ]
-            print(versionList)
+            # print(versionList)
             
             if version not in versionList and version!="需求文档地址":
                 data = {
                             "code": 100001,
-                            "msg": "当前保存的版本{}和禅道的版本保存不一致，请修改后重新提交".format(version)
+                            "msg": "当前保存的【版本】-【{}】和禅道的【版本】不一致，请检查（版本号/大小写），修改后重新提交".format(version)
                         }
                 return JsonResponse(data, safe=False)
             
@@ -1168,9 +1217,9 @@ def saveVersionManger(request):
                 else:
                     testingTime=''
         
-                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
-                                                    testingTime, liveTime, testCases, testCaseReview,
-                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                # dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                #                                     testingTime, liveTime, testCases, testCaseReview,
+                #                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
             else:
                 _Versionmanager.tableID = tableID
@@ -1199,11 +1248,11 @@ def saveVersionManger(request):
                 _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
                 _Versionmanager.editable = 0
                 _Versionmanager.save()
-
     data = {
         "code": 200,
         "msg": "保存版本管理信息成功"
     }
+    
     return JsonResponse(data, safe=False)
 
 def dingMessage(url,versionStart,username,tableID,version,description,owner,development,product,onlinModel, status,modelStatus,
