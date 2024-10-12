@@ -34,7 +34,7 @@ DEBUG =True
 SESSION_COOKIE_NAME = "sessionid"   #Session的cookie保存在浏览器上时的key
 SESSION_COOKIE_PATH = "/"            #Session的cookie保存的路径（默认）
 SESSION_COOKIE_DOMAIN = None          # Session的cookie保存的域名（默认）
-SESSION_COOKIE_AGE = 3600*24
+SESSION_COOKIE_AGE = 30 * 24 * 60 * 60
 # SESSION_COOKIE_SECURE = False         #是否Https传输cookie（默认）
 
 ALLOWED_HOSTS = ['*']

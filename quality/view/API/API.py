@@ -27,6 +27,45 @@ import json,re,os,zipfile
 from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
+def selectPeople(request):
+    '''人员搜索'''
+    # 查询所有模块的颜色
+
+    def query_people_by_type(people_type, color_list):
+        query = f"select name from people where type='{people_type}'"
+        people = commonList().getModelData(query)
+        
+        return [
+            {
+                'value': person['name'],
+                'label': person['name'],
+                'color': color_list.get(person['name'], '')
+            }
+            for person in people
+        ]
+    
+    color_list = {
+            color['name']: color['color']
+            for color in commonList().getModelData("select name, color from people")
+        }
+    qa_list = query_people_by_type('qa', color_list)
+    pr_list = query_people_by_type('pr', color_list)
+    dev_list = query_people_by_type('dev', color_list)
+    project_list = query_people_by_type('project', color_list)
+    project_type_list = query_people_by_type('plat', color_list)
+    version_status_list = query_people_by_type('versionStatus', color_list)
+    data={
+        "code":200,
+        "qa_list":qa_list,
+        "pr_list":pr_list,
+        "dev_list":dev_list,
+        "project_list":project_list,
+        "version_status_list":version_status_list,
+        "color_list":color_list,
+        "project_type_list":project_type_list
+    }
+    return JsonResponse(data, safe=False)
+    
 def delTaskInfo(request):
     '''删除任务信息'''
     requestData = json.loads(request.body)
@@ -57,6 +96,7 @@ def createTodoTask(request):
                     WHERE
                         `modelStatus` LIKE '%测试中%' 
                         OR `modelStatus` LIKE '%已测试待上线%' 
+                        OR `modelStatus` LIKE '%开发中%' 
                     '''
     versionTask=commonList().getModelData(selectVersionTask)
     if len(versionTask)>0:
@@ -467,7 +507,7 @@ def saveTaskInfo(request):
         _taskmanger.endTime=endTime_dt
         _taskmanger.createTime=createTime_dt
 
-        # taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
+        taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
 
         _taskmanger.save()
 
@@ -522,12 +562,20 @@ def selectVersionTotalData(request):
     # 汇总数据
     sqlTotal = '''
                 SELECT 
-                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) AS active,
-                SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) AS closed,
-                SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END) AS resolved,
+                IFNULL(SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END), 0) AS active,
+                IFNULL(SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END), 0) AS closed,
+                IFNULL(SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END), 0) AS resolved,
                 count(id is not NULL) AS totalBugNum
-                FROM zt_bug
-        '''
+                FROM (
+                    SELECT
+                    * 
+                    FROM
+                    zt_bug
+                    where execution =
+                    ( SELECT a.id FROM zt_project a LEFT JOIN zt_project b ON a.project = b.id WHERE a.project != 0 AND a.team = '{}' )
+                            ) AS zt_bug
+                            '''.format(version)
+    print(sqlTotal)
     totalBugData = commonList().getModelData(sqlTotal)
 
     versiondata = '''
@@ -967,10 +1015,29 @@ def saveVersionManger(request):
                             "msg": "【平台】和【需求进度】显示不一致，修改后重新提交"
                         }
             return JsonResponse(data, safe=False)
+        
+    # 获取执行人名称
+    username = request.session.get('username', False)
+    print(username)
+    selectUserNameSql = "select name from people where account=\'{}\'".format(username)
+    returnUserNamedata = commonList().getModelData(selectUserNameSql)
+    username = returnUserNamedata[0]['name']
             
     #根据要保存的项目类型运行对应的脚本
     from .executeApi import versionUpdateApi
-    versionUpdateApi().mainExecuteApi(requestData)
+    # versionUpdateApi().mainExecuteApi(requestData)
+    import threading
+    def execute_in_thread(requestData,username):
+        '''单线程运行接口脚本'''
+        thread = threading.Thread(target=versionUpdateApi().mainExecuteApi, args=(requestData,username))
+        thread.start()
+        log.info("单线程开始运行接口脚本")
+        return thread
+    thread=execute_in_thread(requestData,username)
+    if thread.is_alive():
+        log.info("线程正在运行")
+    else:
+        log.info("线程已结束")
 
     # print(requestData)
     if len(requestData)>5: #超过5个内容更新不通知企信
@@ -1066,6 +1133,10 @@ def saveVersionManger(request):
                 _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
                 _Versionmanager.editable = 0
                 _Versionmanager.save()
+                if '已测试待上线' in modelStatus or  '已上线' in modelStatus:
+                    dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                                                    testingTime, liveTime, testCases, testCaseReview,
+                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
             else:
                 _Versionmanager.tableID = tableID
@@ -1096,6 +1167,11 @@ def saveVersionManger(request):
                 _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
                 _Versionmanager.editable = 0
                 _Versionmanager.save()
+                if  '已上线' in modelStatus:
+                    dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                                                    testingTime, liveTime, testCases, testCaseReview,
+                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+
         
     else:    
         for versionManer in requestData:
@@ -1217,9 +1293,13 @@ def saveVersionManger(request):
                 else:
                     testingTime=''
         
-                # dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
-                #                                     testingTime, liveTime, testCases, testCaseReview,
-                #                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                                                    testingTime, liveTime, testCases, testCaseReview,
+                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                if '已上线' in modelStatus:
+                    dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                                                    testingTime, liveTime, testCases, testCaseReview,
+                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
             else:
                 _Versionmanager.tableID = tableID
@@ -1254,6 +1334,45 @@ def saveVersionManger(request):
     }
     
     return JsonResponse(data, safe=False)
+
+def dingConfiMessage(url,versionStart,username,tableID,version,description,owner,development,product,onlinModel, status,modelStatus,
+                        testingTime, liveTime, testCases, testCaseReview,
+                        firstRoundTest, secondRoundTest, thirdRoundTest, remarks):
+    '''叮叮消息通知'''
+    import requests
+    import json
+
+    versionInfo = '''
+                \n\n > 需求 : <font color=#303133>{}</font>  
+                \n\n > 平台 : <font color=#303133>{}</font>   
+                \n\n > <font color=#303133>接口待补充</font>
+                '''.format(
+                    tableID, version, description, development, product,onlinModel, status,modelStatus,
+                    testingTime, liveTime, testCases, testCaseReview,
+                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks
+                )
+    versionStart = versionStart + versionInfo + '\n'
+
+    url = url
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "版本信息更新",
+        "text": versionStart,
+        "at": {
+        "isAtAll": False,
+        "atMobiles" :['15342209907',]
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    log.info(response.text)
 
 def dingMessage(url,versionStart,username,tableID,version,description,owner,development,product,onlinModel, status,modelStatus,
                         testingTime, liveTime, testCases, testCaseReview,
@@ -1508,15 +1627,33 @@ def deleteApiScript(request):
     Perfer_path=os.path.join('/root/jmeter/apache-jmeter-5.4.1/ProScript/',projectName[0]["modelData"],versionName[0]["modelData"],urlName)
     firstFileName='/root/platform/media/'+urlName
 
+    # 删除脚本时复制一份
+    if not os.path.exists("/root/jmeter/apache-jmeter-5.4.1/script/copy/"):
+        # 如果文件夹不存在，创建文件夹
+        os.makedirs("/root/jmeter/apache-jmeter-5.4.1/script/copy/")
 
+    if not os.path.exists("/root/jmeter/apache-jmeter-5.4.1/ProScript/copy/"):
+        # 如果文件夹不存在，创建文件夹
+        os.makedirs("/root/jmeter/apache-jmeter-5.4.1/ProScript/copy/")
+
+    if not os.path.exists("/root/platform/media/copy/"):
+        # 如果文件夹不存在，创建文件夹
+        os.makedirs("/root/platform/media/copy/")
+
+    # 删除脚本时复制一份
+    import shutil
     if os.path.exists(API_path):
+        shutil.copy(API_path,'/root/jmeter/apache-jmeter-5.4.1/script/copy/')
         os.remove(API_path)
-
+        
     if os.path.exists(Perfer_path):
+        shutil.copy(Perfer_path,'/root/jmeter/apache-jmeter-5.4.1/ProScript/copy/')
         os.remove(Perfer_path)
-
+        
     if os.path.exists(firstFileName):
+        shutil.copy(firstFileName,'/root/platform/media/copy/')
         os.remove(firstFileName)
+        
         data = {
             "code": 200,
             "msg": "执行成功"
@@ -1963,6 +2100,8 @@ def selectProScriptFile(request):
             ORDER BY
                 a.createtime DESC)  d ,quality_modeldata f
                 where d.projectName=f.modeldata_id
+                ORDER BY d.createtime DESC
+
         '''
     data = commonList().getModelData(sql)
     # print(data)
@@ -2064,19 +2203,31 @@ def executeScript(request):
 
     #判断是否有删除文件
     def check_and_delete_files(folder_path, files_to_check):
-        log.info("======删除文件开始执行========")
+        # import logging
+        # logging.basicConfig(level=logging.INFO)
+        # log = logging.getLogger(__name__)
+        # folder_path='/Users/hll/Desktop/apache-jmeter-5.5/script/聚好麦/聚好麦-测试环境-客服系统/'
+        # files_to_check=[{'name': '客服系统-聚好麦-测试环境-星期六小卖铺.jmx', 'url': '/Users/hll/Desktop/git/platform/media/客服系统-聚好麦-测试环境-星期六小卖铺.jmx'}]
+
         all_files = os.listdir(folder_path)
+        log.info(files_to_check)
+        log.info(type(files_to_check))
 
         for file_name in all_files:
             # 构建文件的完整路径
             file_path = os.path.join(folder_path, file_name)
-            log.info("file_path={}".format(file_path))
+         
             # 检查文件是否存在于文件名列表中
-            matching_files = [file for file in files_to_check if file["name"] == file_name and os.path.isfile(file_path)]
+            matching_files=[]
+            for file in files_to_check:
+                if file["name"] == file_name and os.path.isfile(file_path):
+                    matching_files.append(file)
+
+            # matching_files = [file for file in files_to_check if file["name"] == file_name and os.path.isfile(file_path)]
+            log.info(matching_files)
             # 如果没有找到匹配的文件，删除文件
             if not matching_files:
-                # os.remove(file_path)
-                os.system("rm -rf {}".format(file_path))
+                os.remove(file_path)
                 log.info("没有匹配上文件,开始删除文件{}".format(file_path))
     substrings_to_check=scriptName
     if executeType == '0' or executeType == False:#接口

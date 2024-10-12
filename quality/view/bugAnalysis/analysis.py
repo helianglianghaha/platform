@@ -318,7 +318,336 @@ def selectSigleVersionBugData(request):
     return JsonResponse(data, safe=False)
 
 
+def compare_trees(request):
+    '''
+        对比接口结果树
+    '''
+    global oldTree
+    requestData = json.loads(request.body)
+    newTree=requestData['newTree']
+    url=requestData['url']
+    domain=requestData['domain']
+    path=""
 
+    # 聚好麦测试域名
+    if domain in ['api.yifangli.cn','ad.yixikeji.cn','boss.yifang.cn','boss.yixikeji.cn']:
+        sql="select * from jhm_api_endpoints where path like '%{}%'".format(url)
+        apiData=commonList().getModelData(sql)
+        
+        if len(apiData)!=0:
+            oldTree=json.loads(apiData[0]['responses'])
+            
+        else:
+            data = {
+            "code": 2002,
+            "data": "测试平台没有找到-jhm接口API记录,请补充API后再执行"
+                }
+            dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',"测试平台没有找到-jhm接口API记录-{},请补充API后再执行".format(url))
+            
+            return JsonResponse(data, safe=False)
+
+    # 好又多测试域名
+    if domain in ['tboss.hupozhidao.com','tad.hupozhidao.com','ad.hupozhidao.com','boss.hupozhidao.com']:
+        sql="select * from hyd_api_endpoints where path like '%{}%'".format(url)
+        apiData=commonList().getModelData(sql)
+        oldTree=apiData['responses']
+        if len(apiData)!=0:
+            oldTree=eval(apiData[0]['responses'])
+        else:
+            data = {
+            "code": 2002,
+            "data": "测试平台没有找到-hyd接口API记录,请补充API后再执行"
+                }
+            dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',"测试平台没有找到-hyd接口API记录-{},请补充API后再执行".format(url))
+            return JsonResponse(data, safe=False)
+
+
+    # 量多多测试域名
+    if domain in ['tad.ldd888.com','tboss.ldd888.com','ad.ldd888.com','boss.ldd888.com']:
+        sql="select * from ldd_api_endpoints where path like '%{}%'".format(url)
+        apiData=commonList().getModelData(sql)
+        oldTree=apiData['responses']
+        if len(apiData)!=0:
+            oldTree=apiData[0]['responses']
+        else:
+            data = {
+            "code": 2002,
+            "data": "测试平台没有找到-ldd接口API记录,请补充API后再执行"
+                }
+            dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',"测试平台没有找到-hyd接口API记录-{},请补充API后再执行".format(url))
+            return JsonResponse(data, safe=False)
+
+
+    # else:
+    #     data = {
+    #     "code": 200,
+    #     "data": "域名不匹配，请修改域名后再检查"
+    #         }
+
+    #     return JsonResponse(data, safe=False)
+    global differences
+    differences = []
+    def compare_dicts(dict1, dict2, path=""):
+        # print("开始执行compare_dicts")
+        print("dict1",(dict1))
+        print("dict2",(dict2))
+
+        # for key in dict1.keys():
+        #     if key not in dict2:
+        #         differences.append(f"'{url}'==新接口==字段缺失=='{path}{key}' ")
+        #     else:
+        #         if isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
+        #             print("====key===dict===",key)
+        #             # 如果值是字典，递归比较
+        #             compare_dicts(dict1[key], dict2[key], f"{path}{key}.")
+        #         elif isinstance(dict1[key], list) and isinstance(dict2[key], list):
+        #             print("===key=list=",key)
+        #             # 如果值是列表，递归比较每个元素
+        #             compare_lists(dict1[key], dict2[key], f"{path}{key}")
+                   
+                # 判断key对应的值是否相同
+                # elif dict1[key] != dict2[key]:
+                #     differences.append(f"Value at '{path}{key}' differs: {dict1[key]} != {dict2[key]}")
+
+        # 对比测试平台和执行接口字段比较
+
+        for key in dict2.keys():
+            if key not in dict1:
+                differences.append(f"【'{url}'】==<'{path}{key}'>>接口字段缺失<<")
+            else:
+                if isinstance(dict1[key], dict) and isinstance(dict2[key], dict):
+                    # 如果值是字典，递归比较
+                    compare_dicts(dict1[key], dict2[key], f"{path}{key}.")
+
+                elif isinstance(dict1[key], list) and isinstance(dict2[key], list):
+                    print("===key=list=",key)
+                    # 如果值是列表，递归比较每个元素
+                    compare_lists(dict1[key], dict2[key], f"{path}{key}")
+                   
+
+                # 判断key对应的值是否相同
+                # elif dict1[key] != dict2[key]:
+                #     differences.append(f"Value at '{path}{key}' differs: {dict1[key]} != {dict2[key]}")
+   
+    def compare_lists(list1, list2, path=""):
+        if list1 is None or list2 is None:
+            if list1 != list2:
+                differences.append(f"List at '{path}' differs: {list1} != {list2}")
+            return differences
+
+        len1, len2 = len(list1), len(list2)
+
+        if len1 != len2:
+            differences.append(f"List at '{path}' has different lengths: {len1} != {len2}")
+
+        for i, (item1, item2) in enumerate(zip(list1, list2)):
+            if isinstance(item1, dict) and isinstance(item2, dict):
+                compare_dicts(item1, item2, f"{path}[{i}].")
+            elif item1 != item2:
+                differences.append(f"Value at '{path}[{i}]' differs: {item1} != {item2}")
+
+    compare_dicts(newTree, oldTree)
+
+    if len(differences)>0:
+        data = {
+            "code": 2001,
+            "data": differences
+                }
+        
+        dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',differences)
+
+    else:
+
+        data = {
+            "code": 200,
+            "data": "接口断言成功"
+                }
+
+    return JsonResponse(data, safe=False)
+
+def sortReportApi(request):
+    '''
+        分析html导入测试平台，区分平台，测试环境，生产环境
+    '''
+    import os
+    import logging
+    file_list=[]
+    # 聚好麦测试环境
+    jhm_test_api_endpoints=[]
+    # 聚好麦生产环境
+    jhm_api_endpoints=[]
+
+    # 好又多测试环境
+    hyd_test_api_endpoints=[]
+    # 好又多生产环境
+    hyd_api_endpoints=[]
+
+    # 量多多测试环境
+    ldd_test_api_endpoints=[]
+    # 量多多生产环境
+    ldd_api_endpoints=[]
+    def find_test_report_files(root_folder):
+        # 遍历根目录及其子目录
+        for dirpath, dirnames, filenames in os.walk(root_folder):
+            for filename in filenames:
+                # 检查文件名是否为 TestReport.html
+                if filename == 'TestReport.html':
+                    # 获取完整路径
+                    file_path = os.path.join(dirpath, filename)
+                    file_list.append(file_path)
+
+
+    # root_folder = '/platform/static'
+    root_folder = '/Users/hll/Desktop/static'
+    # 过滤文件路径
+    find_test_report_files(root_folder)
+
+
+    def extract_data_from_report(html_file):
+        '''分析html文件'''
+        from bs4 import BeautifulSoup
+        with open(html_file, 'r', encoding='utf-8') as file:
+            content = file.read()
+        
+        # 使用 BeautifulSoup 解析 HTML 内容
+        soup = BeautifulSoup(content, 'html.parser')
+
+        requests = []
+        soup_list=soup.find_all('div', class_='group')
+
+        for i in range(len(soup_list)):
+            request_title = soup_list[i].text.strip()
+            if 'Request' in request_title:
+                method_url = soup_list[i].find_next('pre', class_='data').text.strip()
+                url_list = method_url.split()
+                if len(url_list)<=1:
+                    break
+                
+                # Find the next response section
+                response_section = soup_list[i + 1].find_next('pre', class_='data', id=True).text.strip()
+                # print("====response_section===", response_section)
+
+                # if '聚好麦' in html_file and '生产环境' not in html_file:
+
+                #     sql = f'''INSERT INTO jhm_test_api_endpoints(path, responses) VALUES (\'{url_list[1]}\', '{response_section}\')'''
+                #     # print('===sql====',sql)
+                #     try:
+                #         commonList().getModelData(sql)
+                #     except:
+                #         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+
+                # if '聚好麦' in html_file and '生产环境' in html_file:
+                #     sql='''
+                #         INSERT INTO  jhm_api_endpoints(path,responses) values ('{}','{}')
+                #         '''.format(url_list[1],response_section)
+                #     # print('===sql====',sql)
+                #     try:
+                #         commonList().getModelData(sql)
+                #     except:
+                #         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+
+                # if '好又多' in html_file and '生产环境' not in html_file:
+                #     sql='''
+                #         INSERT INTO  hyd_test_api_endpoints(path,responses) values ('{}','{}')
+                #         '''.format(url_list[1],response_section)
+                #     # print('===sql====',sql)
+                #     try:
+                #         commonList().getModelData(sql)
+                #     except:
+                #         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+                # if'好又多' in html_file and '生产环境' in html_file:
+                #     sql='''
+                #         INSERT INTO  hyd_api_endpoints(path,responses) values ('{}','{}')
+                #         '''.format(url_list[1],response_section)
+                #     # print('===sql====',sql)
+                #     try:
+                #         commonList().getModelData(sql)
+                #     except:
+                #         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+
+                if '量多多' in html_file and '生产环境' not in html_file:
+                    sql='''
+                        INSERT INTO  ldd_test_api_endpoints(path,responses) values ('{}','{}')
+                        '''.format(url_list[1],response_section)
+                    # print('===sql====',sql)
+                    try:
+                        commonList().getModelData(sql)
+                    except:
+                        logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+                if '量多多' in html_file and '生产环境'  in html_file:
+                    sql='''
+                        INSERT INTO  ldd_api_endpoints(path,responses) values ('{}','{}')
+                        '''.format(url_list[1],response_section)
+                    # print('===sql====',sql)
+                    try:
+                        commonList().getModelData(sql)
+                    except:
+                        logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+            print('===不能录入的接口====',requests)
+
+    
+
+
+        # for request_section in soup.find_all('div', class_='group'):
+        #     request_title = request_section.text.strip()
+        #     request_dict={}
+        #     if 'Request' in request_title:
+        #         method_url = request_section.find_next('pre', class_='data').text.strip()
+        #         url_list=method_url.split()
+        #         request_dict['url']= url_list[1]
+            
+        #     if 'Response' in request_title:
+
+        #         response_section = request_section.find_next('pre', class_='data',id=True).text.strip()
+        #         print("====response_section===",response_section)
+        #         request_dict['Response']= response_section
+        #     print(request_dict)
+
+            
+        
+    if len(file_list)>0:
+        for response in file_list:
+            print('====开始录入接口=====',response)
+            extract_data_from_report(response)
+            
+
+    data = {
+        "code": 200,
+        "data": "接口导入完成"
+    }
+
+    return JsonResponse(data, safe=False)
+
+
+
+    
+
+
+
+def dingMessage(url,versionStart):
+    '''叮叮消息通知'''
+    import requests
+    import json
+
+    url = url
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "版本信息更新",
+        "text": versionStart,
+        "at": {
+        "isAtAll": False
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    # print(response.text)
 
 def selectBugDataList(request):
     '''查询BUG数据'''

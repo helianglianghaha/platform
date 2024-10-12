@@ -97,16 +97,15 @@ urlpatterns = [
    url('quality/delVersionManger/',API.delVersionManger, name='delVersionManger'),
    url('quality/BUGAnalysis/',analysis.BUGAnalysis, name='BUGAnalysis'),
    url('quality/updateVersion/',analysis.updateVersion, name='updateVersion'),
-
+   url('quality/compare_trees/',analysis.compare_trees, name='compare_trees'),
+   url('quality/sortReportApi/',analysis.sortReportApi, name='sortReportApi'),
+   
    
    url('quality/sync_tables/',timeTask.sync_tables, name='sync_tables'),
    url('quality/XunJianExecuteScript/',timeTask.XunJianExecuteScript, name='XunJianExecuteScript'),
-
    url('quality/saveTestResults/',analysis.saveTestResults, name='saveTestResults'),
    url('quality/clearTestBugs/',analysis.clearTestBugs, name='clearTestBugs'),
    url('quality/selectReportBugList/',analysis.selectReportBugList, name='selectReportBugList'),
-
-
 
    url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
    url('quality/selectTopBugData/',analysis.selectTopBugData, name='selectTopBugData'),
@@ -137,12 +136,10 @@ urlpatterns = [
    url('quality/createTodoTask/',API.createTodoTask, name='createTodoTask'),
    url('quality/selectTodoTask/',API.selectTodoTask, name='selectTodoTask'),
    url('quality/updateTodoTask/',API.updateTodoTask, name='updateTodoTask'),
-   
+
+   url('quality/selectPeople/',API.selectPeople, name='selectPeople'),
    url('quality/selectVersionList/',API.selectVersionList, name='selectVersionList'),
    url('quality/selectReportVersionList/',API.selectReportVersionList, name='selectReportVersionList'),
-
-   
-
 
    url('quality/saveProAddress/',UI_data.saveProAddress, name='saveProAddress'),
    url('quality/selectProAddress/',UI_data.selectProAddress, name='selectProAddress'),
@@ -172,20 +169,13 @@ urlpatterns = [
    url('quality/selectReportList/',API_data.selectReportList, name='selectReportList'),
    url('quality/selectCaseTime/',API_data.selectCaseTime, name='selectCaseTime'),
    url('quality/copyApiTestCases/',API_data.copyApiTestCases, name='copyApiTestCases'),
-   url('quality/executTools/',API_data.executTools, name='copyApiTestCases'),
    url('quality/saveDingMessage/',API_data.saveDingMessage, name='saveDingMessage'),
    url('quality/selectDingMessage/',API_data.selectDingMessage, name='selectDingMessage'),
    url('quality/delDingMessage/',API_data.delDingMessage, name='delDingMessage'),
-   url('quality/checkEnergySaving/',API_data.checkEnergySaving, name='checkEnergySaving'),
-   url('quality/createData/',API_data.createData, name='createData'),
-   url('quality/selectTablesColumns/',API_data.selectTablesColumns, name='selectTablesColumns'),
    url('quality/selectColumns/',API_data.selectColumns, name='selectColumns'),
    url('quality/selectDianWei/',API_data.selectDianWei, name='selectDianWei'),
    url('quality/saveVersionManger/',API.saveVersionManger, name='saveVersionManger'),
    url('quality/sync_tables/',timeTask.sync_tables, name='sync_tables'),
-
-
-
 
    url('quality/readLog/',UI_data.readLog, name='readLog'),
    url('quality/selectUiTestCase/',UI_data.selectUiTestCase, name='selectUiTestCase'),
@@ -223,8 +213,6 @@ urlpatterns = [
    url('quality/saveAPIdata/',API.saveAPIdata, name='saveAPIdata'),
    url('quality/selectVersionData/',API.selectVersionData, name='selectVersionData'),
    url('quality/copyVersionManger/',API.copyVersionManger, name='selectVersionData'),
-
-
 
    url('quality/Login/',login.Login, name='Login'),
     ]

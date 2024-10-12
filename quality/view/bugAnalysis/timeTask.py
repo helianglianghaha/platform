@@ -295,11 +295,18 @@ def exectSingleProject(requestData,dingAddress):
     executeType=requestData["executeType"]
     buildAddress=requestData["buildAddress"]
     performanceData=requestData["performanceData"]
+    environment=requestData['environment']
     scriptName=requestData["scriptName"]
 
     if isinstance(scriptName,str):
         scriptName=eval(requestData["scriptName"])
         log.info(type(scriptName))
+
+    if environment=='1':
+        execteEnvironment='测试环境'
+    
+    if environment=='2':
+        execteEnvironment='生产环境'
 
 
     sceiptProject_id=requestData['sceiptProject_id']
@@ -513,7 +520,7 @@ def exectSingleProject(requestData,dingAddress):
                 # 计算占比
                 true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
                 true_percentage = round(true_percentage, 2)
-                dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress)
+                dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment)
                 break
             else:
                 log.info("没有生成测试报告，5s后重试")  
@@ -580,7 +587,7 @@ def XunJianExecuteScript(request):
     #     }
     return JsonResponse(data, safe=False)
 
-def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress):
+def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment):
     '''叮叮消息通知'''
     import requests
     import json
@@ -589,12 +596,13 @@ def dingScriptMessage(dingAddress,projectName,modelData,username, total_count, t
             \n\n><font color=#303133>本消息由系统自动发出，无需回复！</font> 
             \n\n>各位同事，大家好，以下为【<font color=#E6A23C>{}</font>】-【<font color=#E6A23C>{}</font>】项目构建信息
             \n\n>执行人 : <font color=#E6A23C>{}</font>
+            \n\n>执行平台 : <font color=#E6A23C>{}</font>
             \n\n>执行接口 : <font color=#409EFF>{}</font>个 
             \n\n>失败接口 : <font color=#F56C6C>{}</font>个
             \n\n>执行成功率 : <font color=#67C23A>{}</font>%
             \n\n>构建结果 : <font color=#E6A23C>{}</font>
             \n\n>[查看接口测试报告](http://192.168.8.22:8050{})
-            '''.format(projectName,modelData,username, total_count, true_count, true_percentage, result,reportAddress)
+            '''.format(projectName,modelData,username,execteEnvironment, total_count, true_count, true_percentage, result,reportAddress)
     url = dingAddress
 
     payload = json.dumps({
