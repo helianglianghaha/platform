@@ -40,3 +40,4 @@ class xmind_data(models.Model):
     prdModel=models.CharField(max_length=100, verbose_name="需求模块", default=None)
     parentCase=models.CharField(max_length=100, verbose_name="测试点", default=None)
     owner=models.CharField(max_length=50, verbose_name="负责人", default=None)
+    scriptFile=models.CharField(max_length=1000, verbose_name="关联接口脚本", default=None)

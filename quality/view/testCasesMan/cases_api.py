@@ -141,6 +141,7 @@ def saveXmindCase(request):
     remark=returnData['data']['remark']
     version=returnData['data']['version']
     owner=returnData['data']['owner']
+    scriptFile=returnData['data']['scriptFile']
     # prdModel=returnData['data']['prdModel']
 
     name = request.session.get('username', False)
@@ -164,6 +165,7 @@ def saveXmindCase(request):
         _xmind_data.updater = username
         _xmind_data.caseType=caseType
         _xmind_data.owner=owner
+        _xmind_data.scriptFile=scriptFile
         # _xmind_data.prdModel=prdModel
         _xmind_data.updateTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         _xmind_data.remark=remark
@@ -180,6 +182,7 @@ def saveXmindCase(request):
         _xmind_data.caseType=caseType
         _xmind_data.remark=remark
         _xmind_data.owner=owner
+        _xmind_data.scriptFile=scriptFile
         # _xmind_data.prdModel=prdModel
         _xmind_data.updateTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         _xmind_data.save()
@@ -240,7 +243,26 @@ def delXmindDataList(request):
     
     return JsonResponse(data, safe=False)
 
-    
+def selectScriptFile(request):
+    '''查询接口脚本'''
+    sql='''
+        SELECT
+            CONCAT( b.modelData, '>', a.platfromType, '>', a.platfromName ) AS label,
+            a.platfromName AS value 
+        FROM
+            quality_scriptproject a
+            LEFT JOIN quality_modeldata b ON a.projectName = b.modeldata_id 
+        WHERE
+            a.environment = 1;
+        '''
+    responseData=commonList().getModelData(sql)
+
+    data = {
+        "code": 200,
+        "scriptFile": responseData
+    }
+
+    return JsonResponse(data, safe=False)
 
 
 
@@ -404,7 +426,7 @@ def selectXminData(request):
 
 
 
-    sql = 'SELECT * FROM quality_xmind_data WHERE '
+    sql = 'SELECT * FROM quality_xmind_data  WHERE '
     conditions = []
 
     if len(updater) > 0:
@@ -421,7 +443,6 @@ def selectXminData(request):
         conditions.append("(" + " OR ".join(case_conditions) + ")")
 
     if len(prdModel) > 0:
-        print("111111111")
         prdModel_conditions = " OR ".join("prdModel LIKE '%{}%'".format(model) for model in prdModel)
         conditions.append(f"({prdModel_conditions})")
 
@@ -484,6 +505,8 @@ def selectXminData(request):
     for i in data:
         if i.get('prdModel'):
             i['prdModel']=ast.literal_eval(i['prdModel'])
+        if i.get('scriptFile'):
+            i['scriptFile']=ast.literal_eval(i['scriptFile'])
 
 
     data = {

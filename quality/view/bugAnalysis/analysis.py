@@ -331,7 +331,8 @@ def compare_trees(request):
 
     # 聚好麦测试域名
     if domain in ['api.yifangli.cn','ad.yixikeji.cn','boss.yifang.cn','boss.yixikeji.cn']:
-        sql="select * from jhm_api_endpoints where path like '%{}%'".format(url)
+        sql="select * from jhm_test_api_endpoints where path like '%{}%'".format(url)
+        print(sql)
         apiData=commonList().getModelData(sql)
         
         if len(apiData)!=0:
@@ -345,9 +346,43 @@ def compare_trees(request):
             dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',"测试平台没有找到-jhm接口API记录-{},请补充API后再执行".format(url))
             
             return JsonResponse(data, safe=False)
+        
+    # 聚好麦生产域名
+    if domain in ['ad.yixikeji.cn','boss.yixikeji.cn']:
+        sql="select * from jhm_api_endpoints where path like '%{}%'".format(url)
+        print(sql)
+        apiData=commonList().getModelData(sql)
+        
+        if len(apiData)!=0:
+            oldTree=json.loads(apiData[0]['responses'])
+            
+        else:
+            data = {
+            "code": 2002,
+            "data": "测试平台没有找到-jhm接口API记录,请补充API后再执行"
+                }
+            dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',"测试平台没有找到-jhm接口API记录-{},请补充API后再执行".format(url))
+            
+            return JsonResponse(data, safe=False)
+        
 
     # 好又多测试域名
     if domain in ['tboss.hupozhidao.com','tad.hupozhidao.com','ad.hupozhidao.com','boss.hupozhidao.com']:
+        sql="select * from hyd_test_api_endpoints where path like '%{}%'".format(url)
+        apiData=commonList().getModelData(sql)
+        oldTree=apiData['responses']
+        if len(apiData)!=0:
+            oldTree=eval(apiData[0]['responses'])
+        else:
+            data = {
+            "code": 2002,
+            "data": "测试平台没有找到-hyd接口API记录,请补充API后再执行"
+                }
+            dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',"测试平台没有找到-hyd接口API记录-{},请补充API后再执行".format(url))
+            return JsonResponse(data, safe=False)
+        
+    # 好又多生产域名
+    if domain in ['ad.hupozhidao.com','boss.hupozhidao.com']:
         sql="select * from hyd_api_endpoints where path like '%{}%'".format(url)
         apiData=commonList().getModelData(sql)
         oldTree=apiData['responses']
@@ -364,6 +399,22 @@ def compare_trees(request):
 
     # 量多多测试域名
     if domain in ['tad.ldd888.com','tboss.ldd888.com','ad.ldd888.com','boss.ldd888.com']:
+        sql="select * from ldd_test_api_endpoints where path like '%{}%'".format(url)
+        apiData=commonList().getModelData(sql)
+        oldTree=apiData['responses']
+        if len(apiData)!=0:
+            oldTree=apiData[0]['responses']
+        else:
+            data = {
+            "code": 2002,
+            "data": "测试平台没有找到-ldd接口API记录,请补充API后再执行"
+                }
+            dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',"测试平台没有找到-hyd接口API记录-{},请补充API后再执行".format(url))
+            return JsonResponse(data, safe=False)
+        
+
+    # 量多多生产域名
+    if domain in ['ad.ldd888.com','boss.ldd888.com']:
         sql="select * from ldd_api_endpoints where path like '%{}%'".format(url)
         apiData=commonList().getModelData(sql)
         oldTree=apiData['responses']
@@ -423,6 +474,7 @@ def compare_trees(request):
                     print("===key=list=",key)
                     # 如果值是列表，递归比较每个元素
                     compare_lists(dict1[key], dict2[key], f"{path}{key}")
+
                    
 
                 # 判断key对应的值是否相同
@@ -437,8 +489,8 @@ def compare_trees(request):
 
         len1, len2 = len(list1), len(list2)
 
-        if len1 != len2:
-            differences.append(f"List at '{path}' has different lengths: {len1} != {len2}")
+        # if len1 != len2:
+        #     differences.append(f"List at '{path}' has different lengths: {len1} != {len2}")
 
         for i, (item1, item2) in enumerate(zip(list1, list2)):
             if isinstance(item1, dict) and isinstance(item2, dict):
@@ -468,6 +520,7 @@ def compare_trees(request):
 def sortReportApi(request):
     '''
         分析html导入测试平台，区分平台，测试环境，生产环境
+        需要将测试报告拉到本地，本地执行接口调试
     '''
     import os
     import logging
@@ -527,43 +580,43 @@ def sortReportApi(request):
                 response_section = soup_list[i + 1].find_next('pre', class_='data', id=True).text.strip()
                 # print("====response_section===", response_section)
 
-                # if '聚好麦' in html_file and '生产环境' not in html_file:
+                if '聚好麦' in html_file and '生产环境' not in html_file:
 
-                #     sql = f'''INSERT INTO jhm_test_api_endpoints(path, responses) VALUES (\'{url_list[1]}\', '{response_section}\')'''
-                #     # print('===sql====',sql)
-                #     try:
-                #         commonList().getModelData(sql)
-                #     except:
-                #         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+                    sql = f'''INSERT INTO jhm_test_api_endpoints(path, responses) VALUES (\'{url_list[1]}\', '{response_section}\')'''
+                    # print('===sql====',sql)
+                    try:
+                        commonList().getModelData(sql)
+                    except:
+                        logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
 
-                # if '聚好麦' in html_file and '生产环境' in html_file:
-                #     sql='''
-                #         INSERT INTO  jhm_api_endpoints(path,responses) values ('{}','{}')
-                #         '''.format(url_list[1],response_section)
-                #     # print('===sql====',sql)
-                #     try:
-                #         commonList().getModelData(sql)
-                #     except:
-                #         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+                if '聚好麦' in html_file and '生产环境' in html_file:
+                    sql='''
+                        INSERT INTO  jhm_api_endpoints(path,responses) values ('{}','{}')
+                        '''.format(url_list[1],response_section)
+                    # print('===sql====',sql)
+                    try:
+                        commonList().getModelData(sql)
+                    except:
+                        logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
 
-                # if '好又多' in html_file and '生产环境' not in html_file:
-                #     sql='''
-                #         INSERT INTO  hyd_test_api_endpoints(path,responses) values ('{}','{}')
-                #         '''.format(url_list[1],response_section)
-                #     # print('===sql====',sql)
-                #     try:
-                #         commonList().getModelData(sql)
-                #     except:
-                #         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
-                # if'好又多' in html_file and '生产环境' in html_file:
-                #     sql='''
-                #         INSERT INTO  hyd_api_endpoints(path,responses) values ('{}','{}')
-                #         '''.format(url_list[1],response_section)
-                #     # print('===sql====',sql)
-                #     try:
-                #         commonList().getModelData(sql)
-                #     except:
-                #         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+                if '好又多' in html_file and '生产环境' not in html_file:
+                    sql='''
+                        INSERT INTO  hyd_test_api_endpoints(path,responses) values ('{}','{}')
+                        '''.format(url_list[1],response_section)
+                    # print('===sql====',sql)
+                    try:
+                        commonList().getModelData(sql)
+                    except:
+                        logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
+                if'好又多' in html_file and '生产环境' in html_file:
+                    sql='''
+                        INSERT INTO  hyd_api_endpoints(path,responses) values ('{}','{}')
+                        '''.format(url_list[1],response_section)
+                    # print('===sql====',sql)
+                    try:
+                        commonList().getModelData(sql)
+                    except:
+                        logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
 
                 if '量多多' in html_file and '生产环境' not in html_file:
                     sql='''
@@ -584,8 +637,6 @@ def sortReportApi(request):
                     except:
                         logging.info('method_url{}接口录入失败，请手动录入'.format(method_url))
             print('===不能录入的接口====',requests)
-
-    
 
 
         # for request_section in soup.find_all('div', class_='group'):

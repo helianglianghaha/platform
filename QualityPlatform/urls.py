@@ -37,6 +37,8 @@ urlpatterns = [
    url('quality/selectXminData/',cases_api.selectXminData, name='selectXminData'),
    url('quality/saveXmindCase/',cases_api.saveXmindCase, name='saveXmindCase'),
    url('quality/configCaseOwner/',cases_api.configCaseOwner, name='configCaseOwner'),
+   url('quality/selectScriptFile/',cases_api.selectScriptFile, name='selectScriptFile'),
+   
    
    
    url('quality/selectTotalCases/',cases_api.selectTotalCases, name='selectTotalCases'),
@@ -68,6 +70,8 @@ urlpatterns = [
    url('quality/deleteScript/',API.deleteScript, name='deleteScript'),
    url('quality/upload/',API.upload, name='upload'),
    url('quality/saveScriptFile/',API.saveScriptFile, name='saveScriptFile'),
+   url('quality/saveXmindScriptFile/',API.saveXmindScriptFile, name='saveXmindScriptFile'),
+
    url('quality/deleteScriptFile/',API.deleteScriptFile, name='deleteScriptFile'),
    url('quality/selectScriptFile/',API.selectScriptFile, name='selectScriptFile'),
    url('quality/executeScript/',API.executeScript, name='executeScript'),
@@ -81,9 +85,16 @@ urlpatterns = [
    url('quality/deleteApiScript/',API.deleteApiScript, name='deleteApiScript'),
    url('quality/getReportFileData/',API.getReportFileData, name='getReportFile'),
    url('quality/download_files/',API.download_files, name='download_files'),
+   url('quality/seleMainScript/',API.seleMainScript, name='seleMainScript'),
+   url('quality/seleMainXmindScript/',API.seleMainXmindScript, name='seleMainXmindScript'),  
+   
 
    url('quality/selectTaskInfo/',API.selectTaskInfo, name='selectTaskInfo'),
    url('quality/selectVersionTotalData/',API.selectVersionTotalData, name='selectVersionTotalData'),
+   url('quality/executeAllScript/',API.executeAllScript, name='executeAllScript'),
+   url('quality/selectSortVersion/',API.selectSortVersion, name='selectSortVersion'),
+   
+   
 
    url('quality/sqlcat/',API.sqlcat, name='sqlcat'),
    url('quality/readLog/',API.readLog, name='readLog'),

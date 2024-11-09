@@ -189,19 +189,17 @@ class versionUpdateApi:
     def _sortScript(self,platfrom,environment,platfromTpyeList,username):
         '''筛选项目和平台类型'''
         if len(platfromTpyeList)==1:
-            sql='''SELECT
+            sql='''
+            SELECT
             a.*, 
-            b.*, 
             c.*, 
             d.modeldata
             FROM
                 quality_scriptproject a
             JOIN
-                quality_modeldata b ON a.versionName = b.modeldata_id
-            JOIN
                 auth_user c ON a.creater = c.username
             JOIN
-                quality_modeldata d ON b.subModelData = d.modeldata_id
+                quality_modeldata d ON a.projectName=d.modeldata_id
             WHERE
                 a.environment = \'{}\'
                 and d.modelData=\'{}\'
@@ -212,19 +210,17 @@ class versionUpdateApi:
                 '''.format(environment,platfrom,platfromTpyeList[0])
             
         else:
-            sql='''SELECT
+            sql='''
+            SELECT
             a.*, 
-            b.*, 
             c.*, 
             d.modeldata
             FROM
                 quality_scriptproject a
             JOIN
-                quality_modeldata b ON a.versionName = b.modeldata_id
-            JOIN
                 auth_user c ON a.creater = c.username
             JOIN
-                quality_modeldata d ON b.subModelData = d.modeldata_id
+                quality_modeldata d ON a.projectName=d.modeldata_id
             WHERE
                 a.environment = \'{}\'
                 and d.modelData=\'{}\'
@@ -243,18 +239,22 @@ class versionUpdateApi:
     def _executeScript(self,requestData,username):
         '''执行接口脚本'''
         try:
+            import json
             logging.info("=======版本更新触发接口执行======开始执行脚本=============")
+            log.info("======自动化开始执行======")
+            log.info(requestData)
             executeType=requestData["executeType"]
             buildAddress=requestData["buildAddress"]
             performanceData=requestData["performanceData"]
             scriptName=requestData["scriptName"]
             sceiptProject_id=requestData['sceiptProject_id']
             environment=requestData['environment']
+            platfromName=requestData['platfromName']
             platfromType=requestData['platfromType']
 
-            if isinstance(scriptName,str):
-                scriptName=eval(requestData["scriptName"])
-                log.info(type(scriptName))
+            # 格式化脚本
+            import ast
+            scriptName = ast.literal_eval(scriptName)
 
             if environment=='1':
                 execteEnvironment='测试环境'
@@ -267,52 +267,62 @@ class versionUpdateApi:
             sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
             projectName = (commonList().getModelData(sql))
 
+
             # 获取版本地址
-            modelDataId = requestData['versionName']
-            modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
-            modelDataLIst = (commonList().getModelData(modelDataSql))
-            modelData = modelDataLIst[0]["modelData"]
-            log.info("获取到的项目名称{},版本名称{}".format(projectName,modelData))
+            modelDataId = requestData['sceiptProject_id']
+            # modelDataSql = 'select modelData from quality_modeldata where modeldata_id= ' + str(modelDataId)
+            # modelDataLIst = (commonList().getModelData(modelDataSql))
+            modelData = platfromName
+            # log.info("获取到的项目名称{},版本名称{}".format(projectName,modelData))
             UIScriptAddress='/root/platform/playwright/UI_test_framework/testcase/'
 
-             #判断是否有删除文件
+            #判断是否有删除文件
             def check_and_delete_files(folder_path, files_to_check):
                 # import logging
                 # logging.basicConfig(level=logging.INFO)
                 # log = logging.getLogger(__name__)
                 # folder_path='/Users/hll/Desktop/apache-jmeter-5.5/script/聚好麦/聚好麦-测试环境-客服系统/'
                 # files_to_check=[{'name': '客服系统-聚好麦-测试环境-星期六小卖铺.jmx', 'url': '/Users/hll/Desktop/git/platform/media/客服系统-聚好麦-测试环境-星期六小卖铺.jmx'}]
+                try:
+                    all_files = os.listdir(folder_path)
+                    log.info(files_to_check)
+                    log.info(type(files_to_check))
 
-                all_files = os.listdir(folder_path)
-                log.info(files_to_check)
-                log.info(type(files_to_check))
+                    for file_name in all_files:
+                        # 构建文件的完整路径
+                        file_path = os.path.join(folder_path, file_name)
+                    
+                        # 检查文件是否存在于文件名列表中
+                        matching_files=[]
+                        for file in files_to_check:
+                            if file["name"] == file_name and os.path.isfile(file_path):
+                                matching_files.append(file)
 
-                for file_name in all_files:
-                    # 构建文件的完整路径
-                    file_path = os.path.join(folder_path, file_name)
-                
-                    # 检查文件是否存在于文件名列表中
-                    matching_files=[]
-                    for file in files_to_check:
-                        if file["name"] == file_name and os.path.isfile(file_path):
-                            matching_files.append(file)
+                        # matching_files = [file for file in files_to_check if file["name"] == file_name and os.path.isfile(file_path)]
+                        log.info(matching_files)
+                        # 如果没有找到匹配的文件，删除文件
+                        if not matching_files:
+                            os.remove(file_path)
+                            log.info("没有匹配上文件,开始删除文件{}".format(file_path))
+                except Exception as e:
+                    # 获取异常详细信息
+                    logging.error("Exception occurred", exc_info=True)
+                    print("捕获的异常：", str(e))
+                    print("完整堆栈信息如下：")
+                    traceback.print_exc()
+            substrings_to_check=scriptName
+            if executeType in  ['0','3'] or executeType == False:#接口
+                log.info("======执行接口====")
 
-                    # matching_files = [file for file in files_to_check if file["name"] == file_name and os.path.isfile(file_path)]
-                    log.info(matching_files)
-                    # 如果没有找到匹配的文件，删除文件
-                    if not matching_files:
-                        os.remove(file_path)
-                        log.info("没有匹配上文件,开始删除文件{}".format(file_path))
-                    substrings_to_check=scriptName
-                    if executeType == '0' or executeType == False:#接口
-                        directory_path='/root/jmeter/apache-jmeter-5.4.1/script/'+projectName[0]["modelData"] + "/" + modelData + "/"
-                    elif executeType == '2':#UI
-                        directory_path='/root/platform/playwright/UI_test_framework/testcase/'+projectName[0]["modelData"] + "/" + modelData + "/UIReport/script/"
-                    else:
-                        directory_path='/root/jmeter/apache-jmeter-5.4.1/ProScript/'+projectName[0]["modelData"] + "/" + modelData + "/"
+                directory_path='/root/jmeter/apache-jmeter-5.4.1/script/'+projectName[0]["modelData"] + "/" + modelData + "/"
+            elif executeType == '2':#UI
+                directory_path='/root/platform/playwright/UI_test_framework/testcase/'+projectName[0]["modelData"] + "/" + modelData + "/UIReport/script/"
+            else:
+                directory_path='/root/jmeter/apache-jmeter-5.4.1/ProScript/'+projectName[0]["modelData"] + "/" + modelData + "/"
 
-                #删除已经删除的脚本
-                check_and_delete_files(directory_path,substrings_to_check)
+
+            #删除已经删除的脚本
+            check_and_delete_files(directory_path,substrings_to_check)
 
             #获取UI
             UIdata=requestData['UIdata']
@@ -331,7 +341,7 @@ class versionUpdateApi:
             if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/"):
                 os.makedirs(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/ApiReport/")
                 os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/")
-                log.info("====版本更新触发接口执行======接口测试报告文件已创建====")
+                log.info("==========接口测试报告文件已创建====")
 
             #判断UI测试文件夹是否存在
             if not  os.path.exists(testReportAddress+projectName[0]["modelData"]+"/"+modelData+"/UIReport/"):
@@ -342,7 +352,7 @@ class versionUpdateApi:
             if not  os.path.exists(log_path + projectName[0]["modelData"] + "/" + modelData + "/UILog/"):
                 os.makedirs(log_path + projectName[0]["modelData"] + "/" + modelData + "/UILog/")
                 os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/UILog/" + "log.text")
-                log.info("===版本更新触发接口执行==UI文件已创建======")
+                log.info("=====UI文件已创建======")
             
             # #创建日志文件
             
@@ -354,7 +364,7 @@ class versionUpdateApi:
                 #创建日志文件
                 os.mknod(log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text")
                 os.mknod(log_path + projectName[0]["modelData"] + "/" + modelData + "/ApiLog/" + "log.text")
-                log.info("===版本更新触发接口执行===接口日志文件夹已创建=====")
+                log.info("======接口日志文件夹已创建=====")
                 
 
             #创建脚本目录
@@ -376,26 +386,26 @@ class versionUpdateApi:
             
             #复制脚本到对应的文件夹
             fileUrlList=[i["url"] for i in scriptName]
-            if executeType == '0' or executeType == False:#接口
+            if executeType in ['0','3']  or executeType == False:#接口
                 for fileUrl in fileUrlList:
                     fileName = os.path.split(fileUrl)[1]  # 读取文件名
                     fullFilePath = apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData + "/" + fileName
                     if os.path.exists(fullFilePath):
                         pass
                     else:
-                        log.info("===========版本更新触发接口执行==============复制接口脚本=======================")
+                        log.info("=========================复制接口脚本=======================")
                         sourceFilePath='/root/platform/media/'+fileName
                         shutil.copyfile(sourceFilePath,fullFilePath)
                         log.info("复制接口脚本成功{}".format(fullFilePath))
             elif executeType == '2':
-                log.info("====版本更新触发接口执行====开始复制文件=======")
+                log.info("========开始复制文件=======")
                 for fileUrl in fileUrlList:
                     fileName = os.path.split(fileUrl)[1]  # 读取文件名
                     fullFilePath = UIScriptAddress + projectName[0]["modelData"] + "/" + modelData+"/UIReport/script/"+ fileName
                     if os.path.exists(fullFilePath):
                         pass
                     else:
-                        log.info("==============版本更新触发接口执行===========开始复制UI脚本=======================")
+                        log.info("=========================开始复制UI脚本=======================")
                         sourceFilePath='/root/platform/media/'+fileName
                         shutil.copyfile(sourceFilePath,fullFilePath)
                         log.info("=======复制UI脚本成功{}=========".format(fullFilePath))
@@ -407,7 +417,7 @@ class versionUpdateApi:
                     if os.path.exists(fullFilePath):
                         pass
                     else:
-                        log.info("==============版本更新触发接口执行==========复制性能脚本=================")
+                        log.info("========================复制性能脚本=================")
                         sourceFilePath = '/root/platform/media/' + fileName
                         shutil.copyfile(sourceFilePath, fullFilePath)
                         log.info("复制接口脚本成功{}".format(fullFilePath))
@@ -433,17 +443,17 @@ class versionUpdateApi:
             antApiLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
             antPerForLogPath=log_path+projectName[0]["modelData"]+"/"+modelData+"/PerformanceLog/"+"log.text"
 
-            if executeType=='0' or executeType==False :
+            if executeType in ['0','3'] or executeType==False :
                 os.system("rm -rf " + jmeterAPiLogPath)
                 os.system("rm -rf " + antApiLogPath)
                 os.system("rm -rf " + apiReportPatb)
-                log.info("=版本更新触发接口执行=接口测试执行数据清理完成")
+                log.info("接口测试执行数据清理完成")
 
             if executeType == '1' or executeType == True:
                 os.system("rm -rf " + jmeterPerforLogPath)
                 os.system("rm -rf " + antPerForLogPath)
                 os.system("rm -rf " + performanceReportPath)
-                log.info("=版本更新触发接口执行=性能测试执行数据清理完成")
+                log.info("性能测试执行数据清理完成")
 
             if executeType == '2':
                 os.system("rm -rf " + UIResult)
@@ -454,12 +464,12 @@ class versionUpdateApi:
 
 
             os.system("rm -rf " + '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml")
-            log.info("==版本更新触发接口执行===删除日志和报告文件=====")
+            log.info("=====删除日志和报告文件=====")
             # 复制build文件
 
             destFilePath = '/root/ant/apache-ant-1.9.16/build/' +projectName[0]["modelData"] + "/" + modelData+"/build.xml"
             shutil.copyfile(buildSourceFilePath, destFilePath)
-            log.info("===版本更新触发接口执行====复制build文件{}======".format(destFilePath))
+            log.info("=======复制build文件{}======".format(destFilePath))
 
             # 修改build文件内容
             buildJtlData = "sed -i 's|<property name=\"jmeter.result.jtl.dir\" value=\"/root/ant/report/jtl\" />|<property name=\"jmeter.result.jtl.dir\" value="+"\"" + testReportAddress + \
@@ -474,13 +484,13 @@ class versionUpdateApi:
             os.system(buildHtmlData)
             os.system(buildScriptData)
 
-            log.info("==版本更新触发接口执行===修改build文件内容=========")
+            log.info("=====修改build文件内容=========")
 
             #执行前更新项目状态
             sql = 'update quality_scriptproject set runstatus=1 where sceiptProject_id='+str(sceiptProject_id)
             commonList().getModelData(sql)
 
-            if executeType=='0' or executeType==False :
+            if executeType in ['0','3'] or executeType==False :
                 os.system("rm -rf " + apiReportPatb)
                 shellData='ant -file '+buildAddress+" run  >>"+log_path+projectName[0]["modelData"]+"/"+modelData+"/ApiLog/"+"log.text"
                 log.info('shellData:{}'.format(shellData))
@@ -499,47 +509,53 @@ class versionUpdateApi:
             
 
             os.system(shellData)
-            log.info("=版本更新触发接口执行=脚本已执行完成")
+            log.info("脚本已执行完成")
 
             #判断是否是UI自动化，根据已执行的数据生成测试报告
             if executeType=='2':
                 shellData=UIExcReport+" >> "+log_path+projectName[0]["modelData"]+"/"+modelData+"/UILog/"+"log.text"
                 log.info('shellData:{}'.format(shellData))
                 os.system(shellData)
-                log.info("==版本更新触发接口执行===UI测试报告已生成==========")
+                log.info("=====UI测试报告已生成==========")
 
             #获取企信消息通知-开启状态-企信地址
             dingMessageSql = 'select ding_address,ding_version,ding_message,ding_people  from quality_dingmessage'
             dingMessageLIst = (commonList().getModelData(dingMessageSql))
-
-
+            
+            selectUserNameSql="select first_name from auth_user where username=\'{}\'".format(username)
+            returnUserNamedata=commonList().getModelData(selectUserNameSql)
+            # if returnUserNamedata:
+            #     username=returnUserNamedata[0]['first_name']
+            # else:
+            #     username="猜猜我是谁，一个来自外太空M78星云的陌生人"
             if len(dingMessageLIst)==0:
-                log.info("==版本更新触发接口执行==企信通知地址配置为空======")
+                log.info("====企信通知地址配置为空======")
             else:
                 for dingmessage in dingMessageLIst:
-                    log.info("===版本更新触发接口执行=dingMessageLIst==={}".format(dingMessageLIst))
-                    log.info("==版本更新触发接口执行====modelDataId==={}".format(modelDataId))
+                    log.info("dingMessageLIst==={}".format(dingMessageLIst))
+                    # log.info("modelDataId==={}".format(modelDataId))
                     import ast
                     modelDataList=ast.literal_eval(dingmessage['ding_version'])
                     openDingMessAge=dingmessage["ding_message"]
                     dingAddress=dingmessage['ding_address']
                     dingPeople=dingmessage['ding_people']
                     if len(modelDataList)==0:
-                        log.info("==版本更新触发接口执行==版本配置为空=====")
+                        log.info("====版本配置为空=====")
                     else:
                         if int(modelDataId) in  modelDataList:
                             reportAddress = requestData['reportAddress']
                             performanceReport = requestData['performanceReport']
 
+
                             # 根据测试报告是否生成,巡检状态,开启群通知
-                            if int(executeType)==0 and openDingMessAge=="True" :
+                            if int(executeType) in [0,3] and openDingMessAge=="True" :
                                 number=0
                                 while True:
                                     if number>20:
                                         break
                                     fileExist=os.path.exists('/root/platform'+reportAddress)
                                     if fileExist :
-                                        log.info("====版本更新触发接口执行===测试报告已经生成，开始企信通知======")
+                                        log.info("=======测试报告已经生成，开始企信通知======")
                                         testReportAddress = '/root/platform/static/'
                                         performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
 
@@ -567,25 +583,14 @@ class versionUpdateApi:
                                     else:
                                         import time
                                         time.sleep(5)
-                                        log.info("===版本更新触发接口执行==没有生成测试报告，5s后台重试")
+                                        log.info("没有生成测试报告，5s后台重试")
                                         number+=1
-                            elif int(executeType)==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
-                                curlData = '''curl '{}' \
-                                -H 'Content-Type: application/json' \
-                                --data-raw '{{"msgtype": "markdown", "markdown": {{"content": "本消息由系统自动发出，无需回复！ \n>各位同事，大家好，以下为【{}】-【{}】项目构建信息\n>执行人: {}\n>构建结果 ：Success \n>查看：[性能测试报告](http://192.168.8.22:8050{})","mentioned_mobile_list":["{}"]}}'
-                                --compressed
-                                '''.format(dingAddress, projectName[0]["modelData"], modelData, performanceReport,
-                                            dingPeople)
-                                os.system(curlData)
-
-                            elif int(executeType)==2 and os.path.exists('/root/platform'+UIReport) and bool(openDingMessAge):
-                                
-                                self.dingUIMessage(dingAddress, projectName[0]["modelData"], modelData,UIReport)
-
+                        
                             else:
-                                log.info("===版本更新触发接口执行==不满足企信推送条件=====")
+                                log.info("=====不满足企信推送条件=====")
                         else:
-                            log.info("==版本更新触发接口执行===没有配置该项目企信通知=======")
+                            log.info("=====没有配置该项目企信通知=======")
+
         except Exception as e:
             # 获取异常详细信息
             logging.error("Exception occurred", exc_info=True)

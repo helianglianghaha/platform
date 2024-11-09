@@ -76,7 +76,8 @@ class Proaddress(models.Model):
 class Scriptproject(models.Model):
     sceiptProject_id=models.AutoField(verbose_name="接口脚本id", primary_key=True)
     projectName=models.CharField(max_length=50, verbose_name="项目名称")
-    versionName = models.CharField(max_length=50, verbose_name="版本名称")
+    versionName = models.CharField(max_length=50, verbose_name="版本名称-废弃")
+    platfromName = models.CharField(max_length=100, verbose_name="版本名称")
     buildAddress = models.CharField(max_length=100, verbose_name="build文件地址")
     reportAddress = models.CharField(max_length=100, verbose_name="报告地址")
     scriptName = models.CharField(max_length=1000, verbose_name="脚本文件地址")
