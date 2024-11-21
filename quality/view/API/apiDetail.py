@@ -126,11 +126,55 @@ def jsonfilesupload(request):
 
 def selectAllApiData(request):
     '''查询所有接口'''
-    sql='select * from  api_endpoints'
+    requestData = json.loads(request.body)
+    path=requestData['select_path']
+    project = requestData['select_project']
+    description=requestData['select_apiName']
+    environment=requestData['select_environment']
+    pageSize=requestData['pageSize']
+    currentPage=requestData['currentPage']
+
+    sql = 'SELECT * FROM api_endpoints WHERE '
+    count_query = 'SELECT COUNT(*) as total FROM api_endpoints WHERE '
+    conditions = []
+
+    if len(path) > 0:
+        path_conditions = ["path LIKE '%{}%'".format(path)]
+        conditions.append("(" + " OR ".join(path_conditions) + ")")
+
+    if len(project) > 0:
+        project_conditions = ["project LIKE '%{}%'".format(r) for r in project]
+        conditions.append("(" + " OR ".join(project_conditions) + ")")
+
+    if len(description) > 0:
+        description_conditions = ["description LIKE '%{}%'".format(r) for r in description]
+        conditions.append("(" + " OR ".join(description_conditions) + ")")
+
+    if len(environment) > 0:
+        environment_conditions = ["environment LIKE '%{}%'".format(r) for r in environment]
+        conditions.append("(" + " OR ".join(environment_conditions) + ")")
+
+
+    if conditions:
+        sql += " AND ".join(conditions)
+        count_query += " AND ".join(conditions)
+    else:
+        sql = 'SELECT * FROM api_endpoints'
+        count_query = 'SELECT COUNT(*) as total FROM api_endpoints'
+
+
+    offset = (currentPage - 1) * pageSize
+    sql += "  LIMIT {} OFFSET {}".format(pageSize, offset)
+    # base_query += "  LIMIT {} OFFSET {}".format(pageSize, offset)
+    print(sql)
+    print(count_query)
+
+    totalNum=commonList().getModelData(count_query)
     responseData=commonList().getModelData(sql)
     data = {
         "code": 200,
-        "data": responseData
+        "data": responseData,
+        "totalNum":totalNum
     }
 
     return JsonResponse(data, safe=False)

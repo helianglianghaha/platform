@@ -28,7 +28,15 @@ urlpatterns = [
    url('quality/testCasesUpload/',cases_api.testCasesUpload, name='testCasesUpload'),
    url('quality/selectCasesData/',cases_api.selectCasesData, name='selectCasesData'),
    url('quality/selectSingleTest/',cases_api.selectSingleTest, name='selectSingleTest'),
+   url('quality/selectAutoXmindData/',cases_api.selectAutoXmindData, name='selectAutoXmindData'),
+   url('quality/testXmindAutoCasesUpload/',cases_api.testXmindAutoCasesUpload, name='testXmindAutoCasesUpload'),
+   url('quality/selectTestModelAutoXmindData/',cases_api.selectTestModelAutoXmindData, name='selectTestModelAutoXmindData'),
+   url('quality/saveAutoTestCases/',cases_api.saveAutoTestCases, name='saveAutoTestCases'),
+   
+   
 
+   
+   
    url('quality/delXmindDataList/',cases_api.delXmindDataList, name='delXmindDataList'),
    url('quality/selectPrd/',cases_api.selectPrd, name='selectPrd'),
 
@@ -37,7 +45,7 @@ urlpatterns = [
    url('quality/selectXminData/',cases_api.selectXminData, name='selectXminData'),
    url('quality/saveXmindCase/',cases_api.saveXmindCase, name='saveXmindCase'),
    url('quality/configCaseOwner/',cases_api.configCaseOwner, name='configCaseOwner'),
-   url('quality/selectScriptFile/',cases_api.selectScriptFile, name='selectScriptFile'),
+   url('quality/selectModelScriptFile/',cases_api.selectModelScriptFile, name='selectModelScriptFile'),
    
    
    
@@ -71,14 +79,19 @@ urlpatterns = [
    url('quality/upload/',API.upload, name='upload'),
    url('quality/saveScriptFile/',API.saveScriptFile, name='saveScriptFile'),
    url('quality/saveXmindScriptFile/',API.saveXmindScriptFile, name='saveXmindScriptFile'),
-
-   url('quality/deleteScriptFile/',API.deleteScriptFile, name='deleteScriptFile'),
-   url('quality/selectScriptFile/',API.selectScriptFile, name='selectScriptFile'),
-   url('quality/executeScript/',API.executeScript, name='executeScript'),
-   url('quality/saveTaskInfo/',API.saveTaskInfo, name='saveTaskInfo'),#保存任务信息
-   url('quality/delTaskInfo/',API.delTaskInfo, name='delTaskInfo'),
+   url('quality/executeAllXmindScript/',API.executeAllXmindScript, name='executeAllXmindScript'),
    
 
+   url('quality/deleteScriptFile/',API.deleteScriptFile, name='deleteScriptFile'),
+   url('quality/selectTestScriptFile/',API.selectTestScriptFile, name='selectTestScriptFile'),
+   url('quality/executeScript/',API.executeScript, name='executeScript'),
+   url('quality/saveEndPoint/',API.saveEndPoint, name='saveEndPoint'),
+   url('quality/saveNewEndPoint/',API.saveNewEndPoint, name='saveNewEndPoint'),
+
+
+   url('quality/saveTaskInfo/',API.saveTaskInfo, name='saveTaskInfo'),#保存任务信息
+   url('quality/delTaskInfo/',API.delTaskInfo, name='delTaskInfo'),
+   url('quality/executeXmindScript/',API.executeXmindScript, name='executeXmindScript'),
    
    url('quality/readScriptLog/',API.readScriptLog, name='readScriptLog'),
    url('quality/readHtmlReport/',API.readHtmlReport, name='readHtmlReport'),
@@ -90,12 +103,14 @@ urlpatterns = [
    
 
    url('quality/selectTaskInfo/',API.selectTaskInfo, name='selectTaskInfo'),
+
+
    url('quality/selectVersionTotalData/',API.selectVersionTotalData, name='selectVersionTotalData'),
    url('quality/executeAllScript/',API.executeAllScript, name='executeAllScript'),
    url('quality/selectSortVersion/',API.selectSortVersion, name='selectSortVersion'),
+   url('quality/selectAllPrd/',API.selectAllPrd, name='selectAllPrd'),
+   url('quality/selectAllXmindmodel/',API.selectAllXmindmodel, name='selectAllXmindmodel'),
    
-   
-
    url('quality/sqlcat/',API.sqlcat, name='sqlcat'),
    url('quality/readLog/',API.readLog, name='readLog'),
    url('quality/selectTableList/',API.selectTableList, name='selectTableList'),

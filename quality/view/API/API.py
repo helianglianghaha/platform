@@ -29,6 +29,88 @@ from quality.common.commonbase import commonList
 from quality.view.API.APIClass import APITest
 from quality.common.functionlist import FunctionList
 
+def saveNewEndPoint(request):
+    '''保存API信息'''
+    endPoint = json.loads(request.body)
+
+    path=endPoint['path']
+    method=endPoint['method']
+    description=endPoint['description']
+    parameters=endPoint['parameters']
+    responses=endPoint['responses']
+    firstFile=endPoint['firstFile']
+    secondFile=endPoint['secondFile']
+    thirdFile=endPoint['thirdFile']
+    project=endPoint['project']
+    environment=endPoint['environment']
+
+    sql='''
+            insert into  api_endpoints (path,method,description,parameters,responses,firstFile,secondFile,thirdFile,project,environment) values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')
+            '''.format(path,method,description,parameters,responses,firstFile,secondFile,thirdFile,project,environment)
+    try:
+        commonList().getModelData(sql)
+        data = {
+            "code": 200,
+            "msg": "保存成功"
+            }
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        data = {
+            "code": 500,
+            "msg": str(e)
+            }
+        return JsonResponse(data, safe=False)
+
+
+
+
+def saveEndPoint(request):
+    '''保存API信息'''
+    requestData = json.loads(request.body)
+    endPoint=requestData['endPoint']
+    print(endPoint)
+
+    id=endPoint['id']
+    path=endPoint['path']
+    method=endPoint['method']
+    summary=endPoint['summary']
+    description=endPoint['description']
+    parameters=endPoint['parameters']
+    responses=endPoint['responses']
+    firstFile=endPoint['firstFile']
+    secondFile=endPoint['secondFile']
+    thirdFile=endPoint['thirdFile']
+    project=endPoint['project']
+    environment=endPoint['environment']
+
+    if id:
+        sql='''
+            update api_endpoints set path='{}',method='{}',summary='{}',description='{}',parameters='{}',responses='{}',firstFile='{}',secondFile='{}',thirdFile='{}',project='{}',environment='{}' where id={}
+            '''.format(path,method,summary,description,parameters,responses,firstFile,secondFile,thirdFile,project,environment,id)
+    else:
+        sql='''
+            insert into  api_endpoints (path,method,summary,description,parameters,responses,firstFile,secondFile,thirdFile,project,environment) values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')
+            '''.format(path,method,summary,description,parameters,responses,firstFile,secondFile,thirdFile,project,environment)
+    print(sql)
+    try:
+        commonList().getModelData(sql)
+        data = {
+            "code": 200,
+            "msg": "保存成功"
+            }
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        data = {
+            "code": 500,
+            "msg": str(e)
+            }
+        return JsonResponse(data, safe=False)
+
+
+    
+
+
+
 def selectSortVersion(request):
     '''获取不同的版本'''
     # 获取测试中的版本
@@ -1104,6 +1186,7 @@ def copyVersionManger(request):
 def saveVersionManger(request):
     '''保存版本管理'''
     responseData = json.loads(request.body)
+    # print(responseData)
     requestData=responseData['updatedData']
     compare_results=[]
 
@@ -1126,6 +1209,30 @@ def saveVersionManger(request):
                             "msg": "【平台】【后台】[需求进度]不能为空，修改后重新提交"
                         }
                 return JsonResponse(data, safe=False)
+            if (any('测试中' in status for status in requestData[0]['modelStatus']) or any('已测试待上线' in status for status in requestData[0]['modelStatus']) or any('已上线' in status for status in requestData[0]['modelStatus'])) and not requestData[0]['testingTime']:
+                data = {
+                            "code": 100010,
+                            "msg": "提测时间不能为空"
+                        }
+                return JsonResponse(data, safe=False)
+        
+            if any('已测试待上线' in status for status in requestData[0]['modelStatus']) :
+                if requestData[0]['firstRoundTest']=='' or requestData[0]['secondRoundTest']=='':
+                    data = {
+                                "code": 100011,
+                                "msg": "已测试待上线版本，一轮测试进度和二轮测试进度不为空"
+                            }
+                    return JsonResponse(data, safe=False)
+
+
+            if any('已上线' in status for status in requestData[0]['modelStatus']) :
+                if requestData[0]['firstRoundTest']=='' or requestData[0]['secondRoundTest']=='':
+                    data = {
+                                "code": 100012,
+                                "msg": "已上线版本，一轮测试进度和二轮测试进度不为空"
+                            }
+                    print(data)
+                    return JsonResponse(data, safe=False)
 
         if 'false' in compare_results:
             print(compare_results)
@@ -1137,24 +1244,53 @@ def saveVersionManger(request):
         
             
     else:
-        # print(requestData)
         onlinModel=requestData[0]['onlinModel']
         modelStatus=requestData[0]['modelStatus']
         platfromType=requestData[0]['platfromType']
+        # print(requestData)
+        # print(any('测试中' in status for status in requestData[0]['modelStatus']))
+
         if len(onlinModel)==0 and len(modelStatus)==0  or len(platfromType)==0 :
             data = {
                         "code": 100009,
                         "msg": "【平台】【后台】【需求进度】不能为空，修改后重新提交"
                     }
             return JsonResponse(data, safe=False)
+        
+        if (any('测试中' in status for status in requestData[0]['modelStatus']) or any('已测试待上线' in status for status in requestData[0]['modelStatus']) or any('已上线' in status for status in requestData[0]['modelStatus'])) and not requestData[0]['testingTime']:
+                data = {
+                            "code": 100010,
+                            "msg": "提测时间不能为空"
+                        }
+                return JsonResponse(data, safe=False)
+        
+        if any('已测试待上线' in status for status in requestData[0]['modelStatus']) :
+            if requestData[0]['firstRoundTest']=='' or requestData[0]['secondRoundTest']=='':
+                data = {
+                            "code": 100011,
+                            "msg": "已测试待上线版本，一轮测试进度和二轮测试进度不为空"
+                        }
+                return JsonResponse(data, safe=False)
+
+
+        if any('已上线' in status for status in requestData[0]['modelStatus']) :
+            if requestData[0]['firstRoundTest']=='' or requestData[0]['secondRoundTest']=='':
+                data = {
+                            "code": 100012,
+                            "msg": "已上线版本，一轮测试进度和二轮测试进度不为空"
+                        }
+                print(data)
+                return JsonResponse(data, safe=False)
+        
+
         compare_models(onlinModel,modelStatus)
         if 'false' in compare_results:
-            # print(compare_results)
             data = {
                             "code": 100009,
                             "msg": "【平台】和【需求进度】显示不一致，修改后重新提交"
                         }
             return JsonResponse(data, safe=False)
+  
         
     # 获取执行人名称
     username = request.session.get('username', False)
@@ -2169,7 +2305,9 @@ def saveXmindScriptFile(request):
         _xmind_data = xmind_data()
         _xmind_data = xmind_data.objects.get(id=xmind_id)
         _xmind_data.scriptFile=tuple(_scriptFindProject)
+        _xmind_data.caseType='自动化用例'
         _xmind_data.save()
+
 
         data={
             "code":200,
@@ -2476,10 +2614,53 @@ def deleteScriptFile(request):
         "msg":"脚本文件删除成功"
     }
     return JsonResponse(data, safe=False)
+# 获取所有测试模块
+def selectAllXmindmodel(request):
+    '''获取所有测试点模块'''
+
+    sql='''
+        SELECT
+            CONCAT(platfrom, '>', name) AS label,
+            CONCAT(platfrom, '>', name)  AS value 
+        FROM
+            people 
+        WHERE
+            type='model' 
+        '''
+    response=commonList().getModelData(sql)
+    data={
+        "code":200,
+        "msg":response
+    }
+    return JsonResponse(data, safe=False)
+
+# 获取所有模版版本需求
+def selectAllPrd(request):
+    '''获取所有模块需求'''
+    sql='''
+            SELECT
+                CONCAT(tableID, '>', version, '>', description) AS label,
+                CONCAT(tableID, '>', version, '>', description) AS value 
+            FROM
+                quality_versionmanager
+            WHERE 
+                version NOT LIKE '%需求文档%' 
+                AND version NOT LIKE '%UI%' 
+                AND version NOT LIKE '%https%'
+                and description NOT LIKE '%https%'
+        '''
+    response=commonList().getModelData(sql)
+    data={
+        "code":200,
+        "msg":response
+    }
+    return JsonResponse(data, safe=False)
+
 #查询接口脚本信息
-def selectScriptFile(request):
+def selectTestScriptFile(request):
     '''查询测试脚本信息'''
     response = json.loads(request.body)
+    print("======查询脚本=======")
     versionName=response['versionName']
     import ast
     sql='''SELECT
@@ -2953,18 +3134,92 @@ def executeAllScript(request):
     
     return JsonResponse(data, safe=False)
 
+# 执行单条用例脚本
+def executeXmindScript(request):
+    '''执行单条用例脚本'''
+    requestData = json.loads(request.body)
+    print(requestData)
+    scriptFile=requestData['scriptFile']
+
+    if len(scriptFile)==1:
+
+        # 根据脚本名称，查询脚本
+        sql='''
+                select * from quality_scriptproject where  platfromName =\'{}\'
+            
+            '''.format(scriptFile[0])
+    else:
+        sql='''
+                select * from quality_scriptproject where  platfromName in {}
+            
+            '''.format(tuple(scriptFile))
+        
+    print(sql)
+    scriptList=commonList().getModelData(sql)
+    print('获取到的脚本',scriptList)
+    from .executeApi import versionUpdateApi
+    for i  in scriptList:
+        result=versionUpdateApi().executeSingleScript(i)
+        log.info("=====接口返回结果======")
+        log.info(result)
+
+    data = {
+        "code": 200,
+        "msg": "脚本执行完成，请查看日志及测试报告"
+    }
+    return JsonResponse(data, safe=False)
+# 批量执行所有用例脚本
+def executeAllXmindScript(request):
+    '''批量执行所有用例脚本'''
+    requestData = json.loads(request.body)
+
+    # 获取所有脚本项目名称
+    scriptList=[]
+    for i in requestData:
+        if len(i["scriptFile"])!=0:
+            scriptList.extend(i["scriptFile"])
+
+    if len(scriptList)==1:
+        # 根据脚本名称，查询脚本
+        sql='''
+                select * from quality_scriptproject where  platfromName =\'{}\'
+            '''.format(scriptList[0])
+        
+    else:
+        sql='''
+                select * from quality_scriptproject where  platfromName in {}
+            '''.format(tuple(scriptList))
+         
+    scriptList=commonList().getModelData(sql)
+    from .executeApi import versionUpdateApi
+    for i  in scriptList:
+        versionUpdateApi().executeSingleScript(i)
+
+    data = {
+        "code": 200,
+        "msg": "脚本批量执行完成，请查看日志及测试报告"
+    }
+    return JsonResponse(data, safe=False)
+
+
 
 # 执行脚本
 @msgMessage
 def executeScript(request):
-    '''执行脚本'''
+    '''执行脚本-1120'''
     # try:
-    log.info("======自动化开始执行======")
+    log.info("======自动化开始执行==1120====")
     requestData = json.loads(request.body)
     executeType=requestData["executeType"]
     buildAddress=requestData["buildAddress"]
     performanceData=requestData["performanceData"]
-    scriptName=requestData["scriptName"]
+    # scriptName=requestData["scriptName"]
+
+    import ast
+    scriptName=ast.literal_eval(requestData["scriptName"])
+    print("=====scriptName=====",scriptName)
+    print("=====scriptName=====",type(scriptName))
+
     sceiptProject_id=requestData['sceiptProject_id']
     environment=requestData['environment']
     platfromName=requestData['platfromName']
@@ -2997,11 +3252,13 @@ def executeScript(request):
         # files_to_check=[{'name': '客服系统-聚好麦-测试环境-星期六小卖铺.jmx', 'url': '/Users/hll/Desktop/git/platform/media/客服系统-聚好麦-测试环境-星期六小卖铺.jmx'}]
 
         all_files = os.listdir(folder_path)
+        log.info(all_files)
         log.info(files_to_check)
         log.info(type(files_to_check))
 
         for file_name in all_files:
             # 构建文件的完整路径
+            
             file_path = os.path.join(folder_path, file_name)
          
             # 检查文件是否存在于文件名列表中
@@ -3017,6 +3274,7 @@ def executeScript(request):
                 os.remove(file_path)
                 log.info("没有匹配上文件,开始删除文件{}".format(file_path))
     substrings_to_check=scriptName
+
     if executeType in  ['0','3'] or executeType == False:#接口
         directory_path='/root/jmeter/apache-jmeter-5.4.1/script/'+projectName[0]["modelData"] + "/" + modelData + "/"
     elif executeType == '2':#UI
@@ -3024,7 +3282,7 @@ def executeScript(request):
     else:
         directory_path='/root/jmeter/apache-jmeter-5.4.1/ProScript/'+projectName[0]["modelData"] + "/" + modelData + "/"
 
-
+    
     #删除已经删除的脚本
     check_and_delete_files(directory_path,substrings_to_check)
 

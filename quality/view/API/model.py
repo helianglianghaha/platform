@@ -118,7 +118,7 @@ class Versionmanager(models.Model):
     firstRoundTest = models.CharField(max_length=50, verbose_name="一轮测试进度")
     secondRoundTest = models.CharField(max_length=50, verbose_name="二轮测试进度")
     thirdRoundTest = models.CharField(max_length=50, verbose_name="三轮测试进度")
-    testingTime = models.CharField(max_length=50, verbose_name="上线时间")
+    testingTime = models.CharField(max_length=50, verbose_name="提测时间")
     liveTime = models.CharField(max_length=50, verbose_name="上线时间")
     remarks = models.CharField(max_length=50, verbose_name="备注")
     yueLinProgress = models.CharField(max_length=50, verbose_name="悦邻严选上线进度")

@@ -142,6 +142,9 @@ def saveXmindCase(request):
     version=returnData['data']['version']
     owner=returnData['data']['owner']
     scriptFile=returnData['data']['scriptFile']
+
+    if scriptFile:
+        caseType='自动化测试'
     # prdModel=returnData['data']['prdModel']
 
     name = request.session.get('username', False)
@@ -166,10 +169,13 @@ def saveXmindCase(request):
         _xmind_data.caseType=caseType
         _xmind_data.owner=owner
         _xmind_data.scriptFile=scriptFile
+
         # _xmind_data.prdModel=prdModel
         _xmind_data.updateTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         _xmind_data.remark=remark
         _xmind_data.save()
+
+
         data = {
             "code": 200,
             "data": "编辑测试点成功"
@@ -243,7 +249,7 @@ def delXmindDataList(request):
     
     return JsonResponse(data, safe=False)
 
-def selectScriptFile(request):
+def selectModelScriptFile(request):
     '''查询接口脚本'''
     sql='''
         SELECT
@@ -301,8 +307,26 @@ def dingXmindMessage(url,versionStart,username,version, topic, case, caseType, r
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+def saveAutoTestCases(request):
+    '''自动化用例和需求版本关联'''
+    returnData = json.loads(request.body)
+    prdModel = returnData['versionName']
+    testCases = returnData['handleCases']
+    version = returnData['version']
 
-    
+    for i in testCases:
+        _xmind_data=xmind_data()
+        _xmind_data = xmind_data.objects.get(id=i['id'])
+        _xmind_data.prdModel=prdModel
+        _xmind_data.version=version
+        _xmind_data.save()
+
+    data = {
+        "code": 200,
+        "data": "更新用例成功"
+    }
+    return JsonResponse(data, safe=False)   
+
 
 def saveTestCase(request):
     '''保存单条用例'''
@@ -407,6 +431,270 @@ def selectTotalCases(request):
     }
 
     return JsonResponse(data, safe=False)
+def selectTestModelAutoXmindData(request):
+    '''按模块查询自动化测试用例'''
+    requestData = json.loads(request.body)
+    print(requestData)
+    pageSize=requestData['pageSize']
+    currentPage=requestData['currentPage']
+    testModel=requestData['testModel']
+    
+
+
+     
+
+
+
+    sql = 'SELECT * FROM quality_xmind_data  WHERE '
+    conditions = []
+
+
+    if len(testModel) > 0:
+        testModel_conditions = " OR ".join("testModel LIKE '%{}%'".format(model) for model in testModel)
+        conditions.append(f"({testModel_conditions})")
+        print(conditions)
+        
+
+
+    if conditions:
+        sql += " AND ".join(conditions)
+        sqlTotal='''
+                SELECT 
+                SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS successNum,
+                SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS FailNum,
+                SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undoNum,
+                SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS zusheNum,
+                SUM(CASE WHEN result = '废弃' THEN 1 ELSE 0 END) AS unNum,
+                SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END) AS changeNum,
+                COUNT(id) AS totalNum,
+                ROUND(
+                    ((SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END)) / 
+                    COUNT(id)) * 100, 1
+                ) AS executPre
+                FROM quality_xmind_data
+                where  
+        '''
+        sqlTotal+= " AND ".join(conditions)
+    else:
+        sqlTotal='''
+                SELECT 
+                SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS successNum,
+                SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS FailNum,
+                SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undoNum,
+                SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS zusheNum,
+                SUM(CASE WHEN result = '废弃' THEN 1 ELSE 0 END) AS unNum,
+                SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END) AS changeNum,
+                COUNT(id) AS totalNum,
+                ROUND(
+                    ((SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END)) / 
+                    COUNT(id)) * 100, 1
+                ) AS executPre
+                FROM quality_xmind_data
+                where  testModel is not null
+        '''
+
+    if len(testModel)==0:
+        sql ='''
+            SELECT * 
+            FROM quality_xmind_data 
+            where testModel is not null
+            '''
+
+    offset = (currentPage - 1) * pageSize
+    sql += "  LIMIT {} OFFSET {}".format(pageSize, offset)
+
+    print('查询sql',sql)
+
+    data = commonList().getModelData(sql)
+
+
+
+    import ast
+    for i in data:
+        if i.get('prdModel'):
+            i['prdModel']=ast.literal_eval(i['prdModel'])
+        if i.get('testModel'):
+            i['testModel']=ast.literal_eval(i['testModel'])
+        if i.get('scriptFile'):
+            i['scriptFile']=ast.literal_eval(i['scriptFile'])
+    # 汇总数据
+    
+    totalBugData=commonList().getModelData(sqlTotal)
+
+
+    data = {
+            "code": 200,
+            "data": data,
+            "totalNum":totalBugData
+        }
+    return JsonResponse(data, safe=False)
+def selectAutoXmindData(request):
+    '''查询自动化测试用例'''
+    requestData = json.loads(request.body)
+    print(requestData)
+    pageSize=requestData['pageSize']
+    currentPage=requestData['currentPage']
+    owner=requestData['owner']
+    result=requestData['result']
+    caseType=requestData['caseType']
+    case=requestData['caseName']
+    testModel=requestData['testModel']
+    # updater=requestData['updater']
+
+    print(pageSize)
+    print(currentPage)
+
+     # 汇总数据
+    
+
+
+
+    sql = 'SELECT * FROM quality_xmind_data  WHERE '
+    conditions = []
+
+    # if len(updater) > 0:
+    #     owner_conditions = ["updater LIKE '%{}%'".format(s) for s in updater]
+    #     conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(owner) > 0:
+        owner_conditions = ["owner LIKE '%{}%'".format(s) for s in owner]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if len(case) > 0:
+        case = " `case` LIKE '%" + case + "%'"
+        case_conditions = [case]
+        conditions.append("(" + " OR ".join(case_conditions) + ")")
+
+    if len(testModel) > 0:
+        testModel_conditions = " OR ".join("testModel LIKE '%{}%'".format(model) for model in testModel)
+        conditions.append(f"({testModel_conditions})")
+        sqlTotal='''
+                SELECT 
+                SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS successNum,
+                SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS FailNum,
+                SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undoNum,
+                SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS zusheNum,
+                SUM(CASE WHEN result = '废弃' THEN 1 ELSE 0 END) AS unNum,
+                SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END) AS changeNum,
+                COUNT(id) AS totalNum,
+                ROUND(
+                    ((SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END)) / 
+                    COUNT(id)) * 100, 1
+                ) AS executPre
+                FROM quality_xmind_data
+                where 
+        '''
+        sqlTotal+=testModel_conditions
+        
+    else:
+        sqlTotal='''
+                SELECT 
+                SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS successNum,
+                SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS FailNum,
+                SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undoNum,
+                SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS zusheNum,
+                SUM(CASE WHEN result = '废弃' THEN 1 ELSE 0 END) AS unNum,
+                SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END) AS changeNum,
+                COUNT(id) AS totalNum,
+                ROUND(
+                    ((SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END)) / 
+                    COUNT(id)) * 100, 1
+                ) AS executPre
+                FROM quality_xmind_data
+                where testModel is not null
+        '''
+
+    totalBugData=commonList().getModelData(sqlTotal)
+
+
+    if len(result) > 0 and '全部' not in result:
+        development_conditions = ["result LIKE '%{}%'".format(r) for r in result]
+        conditions.append("(" + " OR ".join(development_conditions) + ")")
+
+    if len(caseType) > 0:
+        status_conditions = ["caseType LIKE '%{}%'".format(s) for s in caseType]
+        conditions.append("(" + " OR ".join(status_conditions) + ")")
+
+    if conditions:
+        sql += " AND ".join(conditions)
+
+    # if len(owner) != 0 or len(result) != 0 or len(caseType) != 0 or len(case) !=0 or len(prdModel)!=0:
+    #     sql += " and version='{}'".format(version)
+
+    if len(owner) == 0 and (len(result) == 0 or '全部' in result) and len(caseType) == 0 and len(case)==0 and len(testModel)==0:
+        sql ='''
+            SELECT * 
+            FROM quality_xmind_data 
+            WHERE  testModel is not null  
+            '''
+
+
+    offset = (currentPage - 1) * pageSize
+    sql += "  LIMIT {} OFFSET {}".format(pageSize, offset)
+
+    print(sql)
+
+    data = commonList().getModelData(sql)
+
+
+    # 获取用例个数
+     # 汇总数据
+    # sqlTotal='''
+    #             SELECT 
+    #             SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) AS successNum,
+    #             SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) AS FailNum,
+    #             SUM(CASE WHEN result = '未执行' THEN 1 ELSE 0 END) AS undoNum,
+    #             SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) AS zusheNum,
+    #             SUM(CASE WHEN result = '废弃' THEN 1 ELSE 0 END) AS unNum,
+    #             SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END) AS changeNum,
+    #             COUNT(id) AS totalNum,
+    #             ROUND(
+    #                 ((SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) + 
+    #                 SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) + 
+    #                 SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) + 
+    #                 SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END)) / 
+    #                 COUNT(id)) * 100, 1
+    #             ) AS executPre
+    #             FROM quality_xmind_data
+    #             where version=\'{}\' 
+    #     '''.format(version)
+    # if conditions:
+    #     sqlTotal= sqlTotal+" and"+" AND ".join(conditions)
+
+    # print("=====汇总统计sql=={}".format(sqlTotal))
+    
+    # totalBugData=commonList().getModelData(sqlTotal)
+
+
+    import ast
+    for i in data:
+        if i.get('prdModel'):
+            i['prdModel']=ast.literal_eval(i['prdModel'])
+        if i.get('testModel'):
+            i['testModel']=ast.literal_eval(i['testModel'])
+        if i.get('scriptFile'):
+            i['scriptFile']=ast.literal_eval(i['scriptFile'])
+
+
+    data = {
+            "code": 200,
+            "data": data,
+            "totalNum":totalBugData
+        }
+    return JsonResponse(data, safe=False)
+
 def selectXminData(request):
     '''测试点查询'''
     requestData = json.loads(request.body)
@@ -715,6 +1003,80 @@ def parse_xmind(file_path):
     data=extract_table_data(data)
         
     return data
+def testXmindAutoCasesUpload(request):
+    '''上传自动化用例库'''
+    requestData = json.loads(request.body)
+    print(requestData)
+
+    file_paths = requestData.get('fileName', [])
+    if not file_paths:
+        data = {
+            "code": 200,
+            "msg": "上传的文件为空"
+        }
+        return JsonResponse(data, safe=False)
+
+    file_path = file_paths[0] if isinstance(file_paths, list) and file_paths else None
+    if not file_path:
+        data = {
+            "code": 400,
+            "msg": "无效的文件路径"
+        }
+        return JsonResponse(data, safe=False)
+
+    testModel = requestData['testModel']
+    if not testModel:
+        data = {
+            "code": 400,
+            "msg": "测试模块不能为空"
+        }
+        return JsonResponse(data, safe=False)
+    username = request.session.get('username', None)
+    
+    if not username:
+        data = {
+            "code": 401,
+            "msg": "用户未登录"
+        }
+        return JsonResponse(data, safe=False)
+
+    sql="select first_name from auth_user where username='{}'".format(username)
+    nameList=commonList().getModelData(sql)
+    
+    
+    if not nameList:
+        data = {
+            "code": 404,
+            "msg": "用户未找到"
+        }
+        return JsonResponse(data, safe=False)
+    name=nameList[0]['first_name']
+
+
+    content = parse_xmind(file_path)
+    prdModel=requestData["prdModel"]
+    log.info("获取当前用户{}".format(name))
+    
+
+    for xmindData in content:
+        _xmind=xmind_data()
+        _xmind.case=xmindData['title']
+        _xmind.topic=xmindData['parent_titles']
+        _xmind.result=xmindData['result']
+        _xmind.testModel=testModel
+        _xmind.caseType=xmindData['caseType']
+        _xmind.owner=name
+        _xmind.creater=name
+        _xmind.prdModel=prdModel
+        _xmind.parentCase=xmindData['parent_cases']
+        _xmind.save()
+
+    data = {
+        "code": 200,
+        "msg": "文件上传成功"
+    }
+    return JsonResponse(data, safe=False)
+
 def testXmindCasesUpload(request):
     '''上传xmind文件'''
     # try:
