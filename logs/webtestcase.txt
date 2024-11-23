@@ -1,26 +1,4 @@
-[2024-02-23 17:03:45,342] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 17:03:45,354] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2024-02-23 17:03:45,377] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
-[2024-02-23 17:07:10,636] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 17:46:30,786] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 18:50:25,075] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 18:51:43,889] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 18:54:47,041] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 18:58:25,363] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:10:26,786] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:12:25,038] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:13:33,183] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:21:23,998] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:27:44,961] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:40:57,450] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:42:46,734] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:43:16,719] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:49:00,731] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:49:42,629] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:54:00,695] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:55:08,191] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:56:34,970] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
-[2024-02-23 19:58:28,862] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2024-02-23 19:58:28,886] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
-[2024-02-23 19:58:31,204] - logger.py[line:34] - fuc:__console- INFO: call selectGlobalVariable()；document：查找全局变量；args:<QueryDict: {}>
-[2024-02-23 19:58:31,224] - logger.py[line:34] - fuc:__console- INFO: response:[{'variable_id': 1, 'variableKey': 'authorization', 'variableValue': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQ1Njg0ODAsImlhdCI6MTY4NDQ4MjA4MCwiand0VXNlcklkIjozLCJqd3RVc2VySW5mbyI6eyJhY2NvdW50IjoieWx5eGtqMSIsImNvbXBhbnlfaWQiOjMsImZyb20iOiIiLCJpZCI6MywicGhvbmUiOiIxNTM0MjIwOTkwNyIsInBsYXRmb3JtX3R5cGUiOjEsInJlYWxuYW1lIjoiaGVsaWFuZyIsInJvbGUiOjMsInNob3BfaWQiOjE1fX0.d2Wyi7nEjHxqyQTUgce43V36d4JATcyWLscn_IkNpv8'}]
+[2024-11-23 18:03:37,809] - logger.py[line:34] - fuc:__console- INFO: call selectModelList()；document：None；args:<QueryDict: {}>
+[2024-11-23 18:03:37,814] - logger.py[line:34] - fuc:__console- INFO: call selectUserInfo()；document：查询用户名；args:<QueryDict: {}>
+[2024-11-23 18:04:49,789] - logger.py[line:34] - fuc:__console- INFO: call selectModelList()；document：None；args:<QueryDict: {}>
+[2024-11-23 18:05:16,951] - logger.py[line:34] - fuc:__console- INFO: call selectModelList()；document：None；args:<QueryDict: {}>

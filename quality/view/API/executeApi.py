@@ -675,6 +675,13 @@ class versionUpdateApi:
             platfromName=requestData['platfromName']
             platfromType=requestData['platfromType']
 
+            # 执行前清空脚本执行状态
+            createSql='''
+                        update quality_scriptproject set totalNumber=0,successNumber=0,failNumber=0,result='未执行' where sceiptProject_id={}
+                        '''.format(sceiptProject_id)
+            commonList().getModelData(createSql)
+
+
             # 格式化脚本
             import ast
             scriptName = ast.literal_eval(scriptName)
@@ -996,11 +1003,18 @@ class versionUpdateApi:
                                             result="构建失败"
                                         else:
                                             result="构建成功"
-
+                                            
+                                        # 统计接口成功/时候/运行结果
+                                        updateSql='''
+                                                    update quality_scriptproject set totalNumber={},successNumber={},failNumber={},result='{}' where sceiptProject_id={}
+                                                  '''.format(total_count,success_cont,true_count,result,sceiptProject_id)
+                                        commonList().getModelData(updateSql)
                                         # 计算占比
                                         true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
                                         true_percentage = round(true_percentage, 2)
                                         self.dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment,username,platfromType)
+                                        
+                                        
                                         
                                         break
                                     else:

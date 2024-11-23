@@ -3138,66 +3138,207 @@ def executeAllScript(request):
 def executeXmindScript(request):
     '''执行单条用例脚本'''
     requestData = json.loads(request.body)
-    print(requestData)
-    scriptFile=requestData['scriptFile']
+    print('=====获取用例脚本=======', requestData)
+    
+    scriptFile = requestData.get('scriptFile')
+    xmind_id = requestData.get('case_id')
 
-    if len(scriptFile)==1:
+    # 获取用例信息
+    caseInfo='''
+                select * from quality_xmind_data where  id={}
+            '''.format(xmind_id)
+    caseinfo=commonList().getModelData(caseInfo)
+    version=caseinfo[0]['version']
+    topic=caseinfo[0]['topic']
+    case=caseinfo[0]['case']
+    caseType=caseinfo[0]['caseType']
+    version=caseinfo[0]['version']
+    remark=caseinfo[0]['remark']
+    xmindStart = '> 测试点执行失败通知：'
 
-        # 根据脚本名称，查询脚本
-        sql='''
-                select * from quality_scriptproject where  platfromName =\'{}\'
-            
-            '''.format(scriptFile[0])
+    script_placeholders = f"'{scriptFile[0]}'" if len(scriptFile) == 1 else str(tuple(scriptFile))
+    query_condition = f"platfromName = {script_placeholders}" if len(scriptFile) == 1 else f"platfromName in {script_placeholders}"
+    
+    script_sql = f"SELECT * FROM quality_scriptproject WHERE {query_condition}"
+    print(script_sql)
+    scriptList = commonList().getModelData(script_sql)
+    print('获取到的脚本', scriptList)
+    
+    for script in scriptList:
+        from .executeApi import versionUpdateApi
+        versionUpdateApi().executeSingleScript(script)
+
+    result_sql = f"SELECT result FROM quality_scriptproject WHERE {query_condition}"
+    results = commonList().getModelData(result_sql)
+
+    if any('失败' in r for r in results):
+        result_status = '失败'
+    elif all('成功' in r for r in results):
+        result_status = '成功'
     else:
-        sql='''
-                select * from quality_scriptproject where  platfromName in {}
-            
-            '''.format(tuple(scriptFile))
-        
-    print(sql)
-    scriptList=commonList().getModelData(sql)
-    print('获取到的脚本',scriptList)
-    from .executeApi import versionUpdateApi
-    for i  in scriptList:
-        result=versionUpdateApi().executeSingleScript(i)
-        log.info("=====接口返回结果======")
-        log.info(result)
+        result_status = '未执行'
+    update_sql = f"UPDATE quality_xmind_data SET result='{result_status}' WHERE id={xmind_id}"
+    commonList().getModelData(update_sql)
 
+
+    # if result_status == '失败':
+    if result_status in ['失败','阻塞']:#执行失败发送企信通知
+        url='https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2'
+        dingXmindMessage(url,xmindStart,'自动化用例执行',version, topic, case, caseType, '失败',remark)
+        
     data = {
         "code": 200,
         "msg": "脚本执行完成，请查看日志及测试报告"
     }
     return JsonResponse(data, safe=False)
+# 发送企信通知
+def dingXmindMessage(url,versionStart,username,version, topic, case, caseType, result,remark):
+    '''叮叮消息通知'''
+    import requests
+    import json
+
+    versionInfo = '''
+                \n\n > 更新人: <font color=#409EFF>{}</font>
+                \n\n > 版本: <font color=#E6A23C>{}</font>
+                \n\n > 执行路径 : <font color=#409EFF>{}</font> 
+                \n\n > 测试点 : <font color=#409EFF>{}</font>  
+                \n\n > 类型 : <font color=#303133>{}</font>  
+                \n\n > 执行结果 : <font color=#E6A23C>{}</font>  
+                \n\n > 备注 : <font color=#303133>{}</font>
+                '''.format(
+                    username, version, topic, case, caseType,result, remark)
+    versionStart = versionStart + versionInfo + '\n'
+
+    url = url
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "执行失败测试点通知",
+        "text": versionStart,
+        "at": {
+        "isAtAll": True
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
 # 批量执行所有用例脚本
 def executeAllXmindScript(request):
     '''批量执行所有用例脚本'''
     requestData = json.loads(request.body)
+    print(requestData)
+    prdModel=requestData['version']
 
+    # 根据需求版本查询所有的测试点
+    versionSql = 'SELECT * FROM quality_xmind_data  WHERE '
+    conditions = []
+    if len(prdModel) > 0:
+        owner_conditions = ["prdModel LIKE '%{}%'".format(s) for s in prdModel]
+        conditions.append("(" + " OR ".join(owner_conditions) + ")")
+
+    if conditions:
+        versionSql += " AND ".join(conditions)
+    versionSql+= "and scriptFile is not null"
+    log.info(versionSql)
+    xmindData = commonList().getModelData(versionSql)
+
+
+    
     # 获取所有脚本项目名称
     scriptList=[]
-    for i in requestData:
+    caseID=[]
+    for i in xmindData:
         if len(i["scriptFile"])!=0:
+            # 获取所有用例脚本
             scriptList.extend(i["scriptFile"])
+            # 获取所有用例ID
+            caseID.append(i['id'])
 
+    # 获取所有的脚本信息
     if len(scriptList)==1:
         # 根据脚本名称，查询脚本
         sql='''
                 select * from quality_scriptproject where  platfromName =\'{}\'
             '''.format(scriptList[0])
-        
+    
     else:
         sql='''
                 select * from quality_scriptproject where  platfromName in {}
             '''.format(tuple(scriptList))
-         
+    log.info(sql)
+        
     scriptList=commonList().getModelData(sql)
+    log.info(scriptList)
+
+    # 执行接口脚本
     from .executeApi import versionUpdateApi
     for i  in scriptList:
         versionUpdateApi().executeSingleScript(i)
 
+    # 脚本执行完成后，根据脚本执行结果，更新用例结果
+    for testCaseID in caseID:
+        xmindStart = '> 测试点执行失败通知：'
+        # 执行前更新用例结果为空
+        update_sql = f"UPDATE quality_xmind_data SET result='' WHERE id={testCaseID}"
+        commonList().getModelData(update_sql)
+
+        # 获取用例脚本
+        caseSql='''
+                select * from quality_xmind_data where id ={}
+                '''.format(testCaseID)
+        caseScriptFile=commonList().getModelData(caseSql)
+
+        version=caseScriptFile[0]['version']
+        topic=caseScriptFile[0]['topic']
+        case=caseScriptFile[0]['case']
+        caseType=caseScriptFile[0]['caseType']
+        version=caseScriptFile[0]['version']
+        remark=caseScriptFile[0]['remark']
+
+        print('=======获取脚本名称==========',caseScriptFile)
+        import ast
+        # ['单规格商品-编辑划线价', '聚好麦-主流程测试'],
+        file_list = ast.literal_eval(caseScriptFile[0]["scriptFile"])
+
+        if len(file_list)==1:
+        # 根据脚本名称，查询脚本
+            fileSql='''
+                    select result from quality_scriptproject where  platfromName =\'{}\'
+                '''.format(file_list[0])
+        else:
+            fileSql='''
+                    select result from quality_scriptproject where  platfromName in {}
+                '''.format(tuple(file_list))
+        
+        caseResult=commonList().getModelData(fileSql)
+
+
+        values = [item['result'] for item in caseResult if item['result'] is not None]
+
+
+        if any('失败' in r for r in values):
+            result_status = '失败'
+        elif all('成功' in r for r in values):
+            result_status = '成功'
+        else:
+            result_status = '未执行'
+        time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        update_sql = f"UPDATE quality_xmind_data SET result='{result_status}',time='{time}' WHERE id={testCaseID}"
+        commonList().getModelData(update_sql)
+
+        # 测试点执行失败发送通知
+        if result_status in ['失败','阻塞']:
+            url='https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2'
+            dingXmindMessage(url,xmindStart,'自动化用例执行',version, topic, case, caseType, '失败',remark)
+
     data = {
         "code": 200,
-        "msg": "脚本批量执行完成，请查看日志及测试报告"
+        "msg": "请稍等，让子弹再飞一会"
     }
     return JsonResponse(data, safe=False)
 
@@ -3223,6 +3364,13 @@ def executeScript(request):
     sceiptProject_id=requestData['sceiptProject_id']
     environment=requestData['environment']
     platfromName=requestData['platfromName']
+
+
+    # 执行前清空脚本执行状态
+    createSql='''
+                update quality_scriptproject set totalNumber=0,successNumber=0,failNumber=0,result='未执行' where sceiptProject_id={}
+                '''.format(sceiptProject_id)
+    commonList().getModelData(createSql)
 
     if environment=='1':
         execteEnvironment='测试环境'
@@ -3535,6 +3683,13 @@ def executeScript(request):
                                     result="构建失败"
                                 else:
                                     result="构建成功"
+
+                                # 统计接口成功/时候/运行结果
+                                updateSql='''
+                                            update quality_scriptproject set totalNumber={},successNumber={},failNumber={},result='{}' where sceiptProject_id={}
+                                            '''.format(total_count,success_cont,true_count,result,sceiptProject_id)
+                                commonList().getModelData(updateSql)
+
 
                                 # 计算占比
                                 true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0

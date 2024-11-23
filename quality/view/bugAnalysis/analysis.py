@@ -134,15 +134,6 @@ def saveTestResults(request):
             }
             return JsonResponse(data, safe=False)
 
-
-
-
-
-
-
-
-
-
 def selectTopBugData(request):
     '''查询首页数据'''
     sql = '''
@@ -331,7 +322,7 @@ def compare_trees(request):
 
     # 聚好麦测试域名
     if domain in ['api.yifangli.cn','ad.yixikeji.cn','boss.yifang.cn','boss.yixikeji.cn']:
-        sql="select * from jhm_test_api_endpoints where path like '%{}%'".format(url)
+        sql="select * from api_endpoints where path like '%{}%' and environment='测试环境' and project='JHM' ".format(url)
         print(sql)
         apiData=commonList().getModelData(sql)
         
@@ -349,7 +340,7 @@ def compare_trees(request):
         
     # 聚好麦生产域名
     if domain in ['ad.yixikeji.cn','boss.yixikeji.cn']:
-        sql="select * from jhm_api_endpoints where path like '%{}%'".format(url)
+        sql="select * from api_endpoints where path like '%{}%' and environment='生产环境' and project='JHM' ".format(url)
         print(sql)
         apiData=commonList().getModelData(sql)
         
@@ -368,7 +359,7 @@ def compare_trees(request):
 
     # 好又多测试域名
     if domain in ['tboss.hupozhidao.com','tad.hupozhidao.com','ad.hupozhidao.com','boss.hupozhidao.com']:
-        sql="select * from hyd_test_api_endpoints where path like '%{}%'".format(url)
+        sql="select * from api_endpoints where path like '%{}%' and environment='测试环境' and project='HYD' ".format(url)
         apiData=commonList().getModelData(sql)
         oldTree=apiData['responses']
         if len(apiData)!=0:
@@ -383,7 +374,7 @@ def compare_trees(request):
         
     # 好又多生产域名
     if domain in ['ad.hupozhidao.com','boss.hupozhidao.com']:
-        sql="select * from hyd_api_endpoints where path like '%{}%'".format(url)
+        sql="select * from api_endpoints where path like '%{}%' and environment='生产环境' and project='HYD' ".format(url)
         apiData=commonList().getModelData(sql)
         oldTree=apiData['responses']
         if len(apiData)!=0:
@@ -399,7 +390,7 @@ def compare_trees(request):
 
     # 量多多测试域名
     if domain in ['tad.ldd888.com','tboss.ldd888.com','ad.ldd888.com','boss.ldd888.com']:
-        sql="select * from ldd_test_api_endpoints where path like '%{}%'".format(url)
+        sql="select * from api_endpoints where path like '%{}%' and environment='测试环境' and project='LDD' ".format(url)
         apiData=commonList().getModelData(sql)
         oldTree=apiData['responses']
         if len(apiData)!=0:
@@ -415,7 +406,7 @@ def compare_trees(request):
 
     # 量多多生产域名
     if domain in ['ad.ldd888.com','boss.ldd888.com']:
-        sql="select * from ldd_api_endpoints where path like '%{}%'".format(url)
+        sql="select * from ldd_api_endpoints where path like '%{}%' and environment='生产环境' and project='LDD' ".format(url)
         apiData=commonList().getModelData(sql)
         oldTree=apiData['responses']
         if len(apiData)!=0:

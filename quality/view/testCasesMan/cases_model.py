@@ -42,3 +42,5 @@ class xmind_data(models.Model):
     owner=models.CharField(max_length=50, verbose_name="负责人", default=None)
     scriptFile=models.CharField(max_length=1000, verbose_name="关联接口脚本", default=None)
     testModel=models.CharField(max_length=100, verbose_name="测试模块", default=None)
+    platFrom=models.CharField(max_length=100, verbose_name="平台", default=None)
+    
