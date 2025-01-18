@@ -662,6 +662,7 @@ class versionUpdateApi:
         'Content-Type': 'application/json'
         }
     def executeSingleScript(self,requestData):
+        '''用例接口脚本执行'''
         try:
             import json
             logging.info("=======执行测试点接口======开始执行脚本=============")
@@ -951,6 +952,42 @@ class versionUpdateApi:
             #获取企信消息通知-开启状态-企信地址
             dingMessageSql = 'select ding_address,ding_version,ding_message,ding_people  from quality_dingmessage'
             dingMessageLIst = (commonList().getModelData(dingMessageSql))
+
+            reportAddress = requestData['reportAddress']
+            performanceReport = requestData['performanceReport']
+
+            number=0
+            while True:
+                if number>20:
+                    break
+                fileExist=os.path.exists('/root/platform'+reportAddress)
+                if fileExist :
+                    log.info("=======测试报告已经生成，开始企信通知======")
+                    testReportAddress = '/root/platform/static/'
+                    performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
+
+                    with open(performanceJtlAddress, 'r') as file:
+                        content = file.read()
+                    # 统计总数
+                    total_count = content.count('<failure>true</failure>') + content.count(
+                        '<failure>false</failure>')
+                    # 统计 <failure>true</failure> 的数量
+                    success_cont=content.count(
+                        '<failure>false</failure>')
+                    true_count = content.count('<failure>true</failure>')
+
+                    if true_count>0:
+                        result="构建失败"
+                    else:
+                        result="构建成功"
+                        
+                    # 统计接口成功/时候/运行结果
+                    updateSql='''
+                                update quality_scriptproject set totalNumber={},successNumber={},failNumber={},result='{}' where sceiptProject_id={}
+                                '''.format(total_count,success_cont,true_count,result,sceiptProject_id)
+                    commonList().getModelData(updateSql)
+                    break
+                number+=1
             
             # selectUserNameSql="select first_name from auth_user where username=\'{}\'".format(username)
             # returnUserNamedata=commonList().getModelData(selectUserNameSql)
@@ -973,60 +1010,18 @@ class versionUpdateApi:
                         log.info("====版本配置为空=====")
                     else:
                         if int(modelDataId) in  modelDataList:
-                            reportAddress = requestData['reportAddress']
-                            performanceReport = requestData['performanceReport']
-
-
                             # 根据测试报告是否生成,巡检状态,开启群通知
                             if int(executeType) in [0,3] and openDingMessAge=="True" :
-                                number=0
-                                while True:
-                                    if number>20:
-                                        break
-                                    fileExist=os.path.exists('/root/platform'+reportAddress)
-                                    if fileExist :
-                                        log.info("=======测试报告已经生成，开始企信通知======")
-                                        testReportAddress = '/root/platform/static/'
-                                        performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
-
-                                        with open(performanceJtlAddress, 'r') as file:
-                                            content = file.read()
-                                        # 统计总数
-                                        total_count = content.count('<failure>true</failure>') + content.count(
-                                            '<failure>false</failure>')
-                                        # 统计 <failure>true</failure> 的数量
-                                        success_cont=content.count(
-                                            '<failure>false</failure>')
-                                        true_count = content.count('<failure>true</failure>')
-
-                                        if true_count>0:
-                                            result="构建失败"
-                                        else:
-                                            result="构建成功"
-                                            
-                                        # 统计接口成功/时候/运行结果
-                                        updateSql='''
-                                                    update quality_scriptproject set totalNumber={},successNumber={},failNumber={},result='{}' where sceiptProject_id={}
-                                                  '''.format(total_count,success_cont,true_count,result,sceiptProject_id)
-                                        commonList().getModelData(updateSql)
-                                        # 计算占比
-                                        true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
-                                        true_percentage = round(true_percentage, 2)
-                                        self.dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment,username,platfromType)
-                                        
-                                        
-                                        
-                                        break
-                                    else:
-                                        import time
-                                        time.sleep(5)
-                                        log.info("没有生成测试报告，5s后台重试")
-                                        number+=1
-                        
+                                
+                                # 计算占比
+                                true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
+                                true_percentage = round(true_percentage, 2)
+                                self.dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment,username,platfromType)
                             else:
                                 log.info("=====不满足企信推送条件=====")
                         else:
                             log.info("=====没有配置该项目企信通知=======")
+            log.info("======脚本执行结束=====")
 
         except Exception as e:
             # 获取异常详细信息

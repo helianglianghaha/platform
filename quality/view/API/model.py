@@ -131,6 +131,11 @@ class Versionmanager(models.Model):
     modelStatus=models.CharField(max_length=50, verbose_name="平台上线状态")
     platfromType=models.CharField(max_length=50, verbose_name="执行端")
 
+    scriptFile=models.CharField(max_length=500, verbose_name="接口脚本")
+    testModel=models.CharField(max_length=50, verbose_name="执行模块")
+    platFrom=models.CharField(max_length=50, verbose_name="执行平台")
+
+
 #新增任务信息管理
 class taskmanager(models.Model):
     id=models.AutoField(verbose_name="任务管理ID", primary_key=True)

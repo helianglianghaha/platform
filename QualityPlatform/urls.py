@@ -52,6 +52,8 @@ urlpatterns = [
    url('quality/selectTotalCases/',cases_api.selectTotalCases, name='selectTotalCases'),
    url('quality/saveTestCase/',cases_api.saveTestCase, name='saveTestCase'),
    url('quality/detTestCase/',cases_api.detTestCase, name='detTestCase'),
+   url('quality/saveVersionScript/',cases_api.saveVersionScript, name='saveVersionScript'),
+   
 
    url('quality/delXmindCase/',cases_api.delXmindCase, name='delXmindCase'),
    url('quality/selectSortXmind/',cases_api.selectSortXmind, name='selectSortXmind'),
@@ -100,6 +102,9 @@ urlpatterns = [
    url('quality/download_files/',API.download_files, name='download_files'),
    url('quality/seleMainScript/',API.seleMainScript, name='seleMainScript'),
    url('quality/seleMainXmindScript/',API.seleMainXmindScript, name='seleMainXmindScript'),  
+   url('quality/saveVersionScriptFile/',API.saveVersionScriptFile, name='saveVersionScriptFile'),  
+
+   
    
 
    url('quality/selectTaskInfo/',API.selectTaskInfo, name='selectTaskInfo'),
@@ -129,9 +134,14 @@ urlpatterns = [
    
    url('quality/sync_tables/',timeTask.sync_tables, name='sync_tables'),
    url('quality/XunJianExecuteScript/',timeTask.XunJianExecuteScript, name='XunJianExecuteScript'),
+
+   url('quality/dingTaskMessage/',timeTask.dingTaskMessage, name='dingTaskMessage'),
+
    url('quality/saveTestResults/',analysis.saveTestResults, name='saveTestResults'),
    url('quality/clearTestBugs/',analysis.clearTestBugs, name='clearTestBugs'),
    url('quality/selectReportBugList/',analysis.selectReportBugList, name='selectReportBugList'),
+
+   
 
    url('quality/selectBugDataList/',analysis.selectBugDataList, name='selectBugDataList'),
    url('quality/selectTopBugData/',analysis.selectTopBugData, name='selectTopBugData'),

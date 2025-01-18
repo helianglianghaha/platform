@@ -201,37 +201,34 @@ def seleMainXmindScript(request):
 
 
 def seleMainScript(request):
-    '''根据平台和执行环境筛选接口主流程接口'''
+    '''根据版本绑定的脚本查询所有脚本'''
     requestData = json.loads(request.body)
-    onlinModel=requestData['onlinModel']
-    platfromType=requestData['platfromType']
+    print("=======获取所有的=====",requestData)
+    autoTableID=requestData['versionID']
+    versionInfo='''
+                select  scriptFile from quality_versionmanager where autoTableID={}
+                '''.format(autoTableID)
+    scriptFile=commonList().getModelData(versionInfo)
+    scriptFile=scriptFile[0]['scriptFile']
+    
 
-    scriptList=[]
-    for model in onlinModel:
-        for platfrom in platfromType:
+    if not scriptFile:
+        totalScriptList = []
+    else:
+        import ast
+        scriptList=ast.literal_eval(scriptFile)
+        placeholder = f"= '{scriptList[0]}'" if len(scriptList) == 1 else f"in {tuple(scriptList)}"
+        scriptSql = f'''
+            SELECT * 
+            FROM quality_scriptproject 
+            WHERE platfromName {placeholder}
+        '''
+        totalScriptList = commonList().getModelData(scriptSql)
 
-            sql='''
-                SELECT
-                    * 
-                FROM
-                    ( SELECT * 
-                    FROM quality_scriptproject 
-                    WHERE platfromType = '{}' 
-                    AND buildAddress LIKE '%{}%' 
-                    AND executeType = 3 
-                    ) a
-                        LEFT JOIN quality_modeldata c
-                    ON a.versionName = c.modeldata_id
-                '''.format(platfrom,model)
-            modeList=commonList().getModelData(sql)
-            scriptList.extend(modeList)
-    for projectData in scriptList:
-        projectData["scriptName"]=ast.literal_eval(projectData["scriptName"])
-    print(scriptList)
 
     data = {
             "code": 200,
-            "msg": scriptList
+            "msg": totalScriptList
             }
     return JsonResponse(data, safe=False)
 
@@ -597,17 +594,15 @@ def selectTodoTask(request):
 def selectTaskInfo(request):
     '''查询任务信息'''
     requestData = json.loads(request.body)
-    taskInfo=requestData['value']
-    # print(type(taskInfo))
-    # username = request.session.get('username', False)
+    taskInfo = requestData['value']
+    pageSize = requestData['pageSize']
+    currentPage = requestData['currentPage']
 
-    # first_name='''
-    #             select first_name from auth_user where username=\'{}\'
-    #             '''.format(username)
-    
+    # Calculate offset for pagination
+    offset = (currentPage - 1) * pageSize
 
-
-    sql = 'SELECT * FROM quality_taskmanager WHERE '
+    # Base SQL query
+    base_sql = 'SELECT * FROM quality_taskmanager WHERE '
     conditions = []
 
     if len(taskInfo) > 0:
@@ -615,29 +610,43 @@ def selectTaskInfo(request):
         conditions.append("(" + " OR ".join(owner_conditions) + ")")
 
     if len(taskInfo) == 0:
-        sql = "SELECT * FROM quality_taskmanager ORDER BY updateTime desc "
+        base_sql = "SELECT * FROM quality_taskmanager"
 
     if conditions:
-        sql += " AND ".join(conditions)+"ORDER BY updateTime desc"
+        base_sql += " AND ".join(conditions)
 
-    data = commonList().getModelData(sql)
+    # Query for total count
+    count_sql = f"SELECT COUNT(*) as total FROM ({base_sql}) AS subquery"
 
+    # Query for paginated data
+    paginated_sql = f"{base_sql} ORDER BY updateTime DESC LIMIT {pageSize} OFFSET {offset}"
+
+    # Execute queries
+    total_count = commonList().getModelData(count_sql)[0]['total']
+    data = commonList().getModelData(paginated_sql)
+    print(paginated_sql)
+
+    # Helper function to process the data
     def convert_lists(item):
         if item['owner']:
             item['owner'] = eval(item['owner'])
         else:
-            item['owner']=[]
-        
+            item['owner'] = []
         return item
 
+    # Process and return the data
     modified_list = [convert_lists(item) for item in data]
-    # print(modified_list)
 
-    data = {
-                "code": 200,
-                "data": modified_list
-            }
-    return JsonResponse(data, safe=False)
+    # Response structure
+    response = {
+        "code":200,
+        "total": total_count,
+        "data": modified_list,
+        "pageSize": pageSize,
+        "currentPage": currentPage
+    }
+
+    return JsonResponse(response, safe=False)
 
 def saveTaskInfo(request):
     '''保存任务信息'''
@@ -693,7 +702,7 @@ def saveTaskInfo(request):
     else:
         username = "万里悲秋常作客更新了任务"
 
-    url='https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2'
+    url='https://oapi.dingtalk.com/robot/send?access_token=376e9d2d469b1181fd06e51b052274f3e41f16372ac2594d9bd8a5dcead51703'
 
     taskStart='> 任务信息更新：'
 
@@ -709,7 +718,9 @@ def saveTaskInfo(request):
         _taskmanger.updateTime=updateTime
         _taskmanger.createTime=createTime_dt
         _taskmanger.save()
-        taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
+        if taskType!="不用补充":
+            taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
+            
     else:
         _taskmanger.status=taskType
         _taskmanger.owner=owner
@@ -718,8 +729,8 @@ def saveTaskInfo(request):
         _taskmanger.beginTime=beginTime_dt
         _taskmanger.endTime=endTime_dt
         _taskmanger.createTime=createTime_dt
-
-        taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
+        if taskType!="不用补充":
+            taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
 
         _taskmanger.save()
 
@@ -965,6 +976,11 @@ def selectVersionList(request):
         else:
             item['platfromType']=[]
 
+        if item['scriptFile']:
+            item['scriptFile'] = eval(item['scriptFile'])
+        else:
+            item['scriptFile']=[]
+
         return item
 
     # Apply the conversion to each dictionary in the list
@@ -1037,7 +1053,7 @@ def selectVersionManger(request):
         data = [dict(zip(columns, row)) for row in cursor.fetchall()]
 
     def convert_lists(item):
-        keys = ['owner', 'development', 'product', 'onlinModel', 'modelStatus','platfromType']
+        keys = ['owner', 'development', 'product', 'onlinModel', 'modelStatus','platfromType','scriptFile']
         for key in keys:
             if key in item:
                 item[key] = eval(item[key]) if item[key] else []
@@ -1242,7 +1258,7 @@ def saveVersionManger(request):
                         }
             return JsonResponse(data, safe=False)
         
-            
+           
     else:
         onlinModel=requestData[0]['onlinModel']
         modelStatus=requestData[0]['modelStatus']
@@ -1300,20 +1316,20 @@ def saveVersionManger(request):
     username = returnUserNamedata[0]['name']
             
     #根据要保存的项目类型运行对应的脚本
-    from .executeApi import versionUpdateApi
-    # versionUpdateApi().mainExecuteApi(requestData)
-    import threading
-    def execute_in_thread(requestData,username):
-        '''单线程运行接口脚本'''
-        thread = threading.Thread(target=versionUpdateApi().mainExecuteApi, args=(requestData,username))
-        thread.start()
-        log.info("单线程开始运行接口脚本")
-        return thread
-    thread=execute_in_thread(requestData,username)
-    if thread.is_alive():
-        log.info("线程正在运行")
-    else:
-        log.info("线程已结束")
+    # from .executeApi import versionUpdateApi
+    # # versionUpdateApi().mainExecuteApi(requestData)
+    # import threading
+    # def execute_in_thread(requestData,username):
+    #     '''单线程运行接口脚本'''
+    #     thread = threading.Thread(target=versionUpdateApi().mainExecuteApi, args=(requestData,username))
+    #     thread.start()
+    #     log.info("单线程开始运行接口脚本")
+    #     return thread
+    # thread=execute_in_thread(requestData,username)
+    # if thread.is_alive():
+    #     log.info("线程正在运行")
+    # else:
+    #     log.info("线程已结束")
 
     # print(requestData)
     if len(requestData)>5: #超过5个内容更新不通知企信
@@ -1409,6 +1425,35 @@ def saveVersionManger(request):
                 _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
                 _Versionmanager.editable = 0
                 _Versionmanager.save()
+
+                # 版本更新通知到自动化测试小组
+                print("=======modelStatus======",modelStatus)
+                substrings = ['测试中', '已上线']
+                # 检查子字符串是否存在于列表元素中
+                for substring in substrings:
+                    if any(substring in item for item in modelStatus):
+                        dingVersionChange(tableID,version,modelStatus,description)
+
+                        # 版本保存后生成接口任务代办项
+                        combinedTaskName = "{}-接口待补充".format(description)
+
+                        checkTaskExists = '''
+                            SELECT COUNT(1) 
+                            FROM quality_taskmanager 
+                            WHERE taskName = '{}'
+                        '''.format(combinedTaskName)
+                        
+                        taskExists = commonList().getModelData(checkTaskExists)
+                        print("====taskExists=====",taskExists)
+
+                        if len(taskExists) == 0:
+                            updateTaskInfo = '''
+                                INSERT INTO quality_taskmanager(taskName, createTime) 
+                                VALUES('{}', NOW())
+                            '''.format(combinedTaskName)
+                            commonList().getModelData(updateTaskInfo)
+
+
                 if '已测试待上线' in modelStatus or  '已上线' in modelStatus:
                     dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
                                                     testingTime, liveTime, testCases, testCaseReview,
@@ -1443,15 +1488,50 @@ def saveVersionManger(request):
                 _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
                 _Versionmanager.editable = 0
                 _Versionmanager.save()
+
+                # 版本更新通知到自动化测试小组
+                print("=======modelStatus======",modelStatus)
+                substrings = ['测试中', '已上线']
+                # 检查子字符串是否存在于列表元素中
+                for substring in substrings:
+                    if any(substring in item for item in modelStatus):
+                        dingVersionChange(tableID,version,description)
+
+                        # 版本保存后生成接口任务代办项
+                        combinedTaskName = "{}-接口待补充".format(description)
+
+                        checkTaskExists = '''
+                            SELECT COUNT(1) 
+                            FROM quality_taskmanager 
+                            WHERE taskName = '{}'
+                        '''.format(combinedTaskName)
+                        
+                        taskExists = commonList().getModelData(checkTaskExists)
+                        print("====taskExists=====",taskExists)
+
+                        if len(taskExists) == 0:
+                            updateTaskInfo = '''
+                                INSERT INTO quality_taskmanager(taskName, createTime) 
+                                VALUES('{}', NOW())
+                            '''.format(combinedTaskName)
+                            commonList().getModelData(updateTaskInfo)
+
+
+
                 if  '已上线' in modelStatus:
                     dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
                                                     testingTime, liveTime, testCases, testCaseReview,
                                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
+    elif  len(requestData)==0:
+        data = {
+            "code": 200,
+            "msg": "版本信息没有变更"
+        }
         
-    else:    
+        return JsonResponse(data, safe=False)
+    else:     
         for versionManer in requestData:
-            # print(versionManer)
             versionStart = '> 版本信息更新：'
             autoTableID=versionManer['autoTableID']
             tableName=versionManer['tableName']
@@ -1572,6 +1652,33 @@ def saveVersionManger(request):
                 dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
                                                     testingTime, liveTime, testCases, testCaseReview,
                                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                # 版本更新通知到自动化测试小组
+                print("=======modelStatus======",modelStatus)
+                substrings = ['测试中', '已上线']
+                # 检查子字符串是否存在于列表元素中
+                for substring in substrings:
+                    if any(substring in item for item in modelStatus):
+                        dingVersionChange(tableID,version,modelStatus,description)
+
+                        # 版本保存后生成接口任务代办项
+                        combinedTaskName = "{}-接口待补充".format(description)
+
+                        checkTaskExists = '''
+                            SELECT *
+                            FROM quality_taskmanager 
+                            WHERE taskName = '{}'
+                        '''.format(combinedTaskName)
+                        
+                        taskExists = commonList().getModelData(checkTaskExists)
+                        print("====taskExists=====",taskExists)
+
+                        if len(taskExists) == 0:
+                            updateTaskInfo = '''
+                                INSERT INTO quality_taskmanager(taskName, createTime) 
+                                VALUES('{}', NOW())
+                            '''.format(combinedTaskName)
+                            commonList().getModelData(updateTaskInfo)
+                
                 if '已上线' in modelStatus:
                     dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
                                                     testingTime, liveTime, testCases, testCaseReview,
@@ -1604,12 +1711,78 @@ def saveVersionManger(request):
                 _Versionmanager.juHaoMaiRemarks = juHaoMaiRemarks
                 _Versionmanager.editable = 0
                 _Versionmanager.save()
+
+                # 版本更新通知到自动化测试小组
+                print("=======modelStatus======",modelStatus)
+                substrings = ['测试中', '已上线']
+                # 检查子字符串是否存在于列表元素中
+                for substring in substrings:
+                    if any(substring in item for item in modelStatus):
+                        dingVersionChange(tableID,version,modelStatus,description)
+
+                        # 版本保存后生成接口任务代办项
+                        combinedTaskName = "{}-接口待补充".format(description)
+
+                        checkTaskExists = '''
+                            SELECT COUNT(1) 
+                            FROM quality_taskmanager 
+                            WHERE taskName = '{}'
+                        '''.format(combinedTaskName)
+                        
+                        taskExists = commonList().getModelData(checkTaskExists)
+                        print("====taskExists=====",taskExists)
+
+                        if len(taskExists) == 0:
+                            updateTaskInfo = '''
+                                INSERT INTO quality_taskmanager(taskName, createTime) 
+                                VALUES('{}', NOW())
+                            '''.format(combinedTaskName)
+                            commonList().getModelData(updateTaskInfo)
     data = {
         "code": 200,
         "msg": "保存版本管理信息成功"
     }
     
     return JsonResponse(data, safe=False)
+def dingVersionChange(tableID,version,modelStatus,description):
+    '''版本提测后或上线后运行接口通知'''
+    import requests
+    import json
+    if any('测试中' in item for item in modelStatus):
+        environment='测试环境'
+    else:
+        environment='生产环境'
+
+
+    versionInfo = '''
+                \n\n><font color=#303133>【版本进度更新】</font> 
+                \n\n><font color=#303133>迭代：{}</font>
+                \n\n><font color=#67C23A>版本：{}</font>
+                \n\n><font color=#67C23A>需求：{}</font>
+                \n\n><font color=#E6A23C>进度：{}</font>
+                \n\n><font color=#409EFF>{}-需要补充最新接口</font>
+                '''.format(tableID, version,description,modelStatus,environment)
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "版本更新",
+        "text": versionInfo,
+        "at": {
+        "isAtAll": False,
+        "atMobiles" :['15342209907',]
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+    url='https://oapi.dingtalk.com/robot/send?access_token=376e9d2d469b1181fd06e51b052274f3e41f16372ac2594d9bd8a5dcead51703'
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    log.info(response.text)
+
 
 def dingConfiMessage(url,versionStart,username,tableID,version,description,owner,development,product,onlinModel, status,modelStatus,
                         testingTime, liveTime, testCases, testCaseReview,
@@ -2084,6 +2257,303 @@ def createScriptFile(request):
             "msg": "接口脚本保存成功"
         }
         return JsonResponse(data, safe=False)
+# 保存版本脚本地址
+def saveVersionScriptFile(request):
+    '''保存测试点脚本'''
+    responseData = json.loads(request.body)
+    version_id=responseData['guanLianId']
+    dataDictList=responseData['scriptList']
+
+    print(dataDictList)
+
+    # 获取项目地址
+    projectName_id =dataDictList['projectName']
+    if projectName_id=='':
+        data={
+            "code":10001,
+            "msg":"项目不能为空"
+        }
+        return JsonResponse(data,safe=False)
+    
+    # 获取脚本名称
+    platfromName=dataDictList['platfromName']
+
+    if len(platfromName)==0:
+        data={
+            "code":10002,
+            "msg":"脚本名称不能为空"
+        }
+        return JsonResponse(data,safe=False)
+    
+    # 获取执行人姓名
+    username = request.session.get('username', False)
+
+    #获取负责人
+    owner=dataDictList['ownName']
+
+    #获取备注
+    remark=dataDictList['remark']
+
+    # 获取执行端
+    platfromType=dataDictList['platfromType']
+
+    # 获取模块名称
+    versionName=dataDictList['versionName']
+
+    sql = 'select modelData from quality_modeldata where modeldata_id= ' + str(projectName_id)
+    projectName = (commonList().getModelData(sql))
+
+    modelData=platfromName
+
+
+    # 创建build文件目录
+    ant_build = "/root/ant/apache-ant-1.9.16/build/"
+    # if not os.path.exists(ant_build + projectName[0]["modelData"] + "/" + modelData):
+    #     os.makedirs(ant_build + projectName[0]["modelData"] + "/" + modelData)
+
+    #ant build文件地址
+    antBuildAddress=ant_build + projectName[0]["modelData"] + "/" + modelData+"/build.xml"
+
+    # 创建测试报告文件夹
+    testReportAddress = '/root/platform/static/'
+
+    # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/"):
+    #
+    #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/html/")
+    # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/"):
+    #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/")
+    #
+    # if not os.path.exists(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/"):
+    #     os.makedirs(testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/html/")
+    #
+    # folder_path = os.path.join(testReportAddress, projectName[0]["modelData"], modelData, "PerformanceReport","jtl")
+    # if not os.path.exists(folder_path):
+    #     os.makedirs(folder_path)
+
+    performanceJtlAddress=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/jtl/"
+
+    #接口报告文件夹
+    apiReportAdd = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"
+
+    #性能测试报告文件夹
+    perFormanceReportAdd=testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"
+
+    testUIReportAddress="/root/platform/playwright/UI_test_framework/testcase/"
+
+    #UI测试报告文件夹
+    UIPormanceReportAdd=testReportAddress + projectName[0]["modelData"] + "/" + modelData+"/UIReport"
+
+    #UI脚本执行结果文件夹
+    UIreportRestlt=testReportAddress + projectName[0]["modelData"] + "/" + modelData+"/UIReport/results"
+
+    #UI脚本执行生成测试报告文件夹
+    UIreportHtml=testReportAddress + projectName[0]["modelData"] + "/" + modelData+"/UIReport/html"
+
+    #UI测试报告
+    UIreport="/static/" + projectName[0]["modelData"] + "/" + modelData+"/UIReport/"+"html/index.html"
+
+    #UI测试脚本位置
+    UIscriptAddress=testUIReportAddress+projectName[0]["modelData"] + "/" + modelData+"/UIReport/script"
+
+
+
+    #判断是否有脚本执行文件，没有会创建
+    # if not  os.path.exists(UIscriptAddress):
+    #     os.makedirs(UIscriptAddress)
+
+    #UI执行命令
+    UIdata="pytest  {}  --alluredir={}".format(UIscriptAddress,UIreportRestlt)
+
+    #UI根据生成的测试数据生成测试报告
+    execUIReport="allure generate {} -o {} --clean".format(UIreportRestlt,UIreportHtml)
+
+    #接口报告
+    apiReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/ApiReport/"+"html/TestReport.html"
+
+    #性能测试报告
+    perFormanceReport='/static/'+ projectName[0]["modelData"] + "/" + modelData + "/PerformanceReport/"+"html/index.html"
+
+    # 创建日志文件
+    log_path = "/root/platform/logs/"
+
+    #创建脚本目录
+    #接口测试脚本
+    apiScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/script/'
+
+    #性能测试脚本
+    performanceScriptFilePath = '/root/jmeter/apache-jmeter-5.4.1/ProScript/'
+
+    if not os.path.exists(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+        os.makedirs(apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+        log.info("=====接口文件已创建==="+apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+    
+    if not os.path.exists(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData):
+        os.makedirs(performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+        log.info("======性能脚本文件已创建======"+performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData)
+
+    if not os.path.exists(UIscriptAddress):
+        os.makedirs(UIscriptAddress)
+        log.info("======UI脚本文件已创建======"+UIscriptAddress)
+
+    apiScriptfile=apiScriptFilePath + projectName[0]["modelData"] + "/" + modelData
+    perFormanceScriptfile=performanceScriptFilePath + projectName[0]["modelData"] + "/" + modelData+"/*.jmx"
+    performanceData = "jmeter -n -t "+perFormanceScriptfile+" -l "+performanceJtlAddress+" -e -o "+perFormanceReportAdd+"html"
+
+    if "projectstatus" not in dataDictList.keys():
+        status="Flase"
+    else:
+        status=dataDictList['projectstatus']
+
+
+    # if dataDictList['buildAddress']=='':
+    dataDictList['buildAddress']=antBuildAddress
+
+    # if dataDict?List['reportAddress']=="":
+    dataDictList['reportAddress']=apiReport
+
+    # if dataDictList['performanceReport']=='':
+    dataDictList['performanceReport']=perFormanceReport
+
+    environmentData=dataDictList['environment']
+    sceiptProject_id = dataDictList['sceiptProject_id']
+    projectName = dataDictList['projectName']
+    versionName = dataDictList['versionName']
+    buildAddress = dataDictList['buildAddress']
+    reportAddress = dataDictList['reportAddress']
+
+    scriptName = dataDictList['urlList']
+    executeType = dataDictList['executeType']
+    performanceData = performanceData
+    performanceReport = dataDictList['performanceReport']
+    if dataDictList['creater']=='':
+        creater = username
+    else:
+        creater=dataDictList['creater']
+    _scriptProject=Scriptproject()
+
+
+
+    if sceiptProject_id:
+        _scriptProject.sceiptProject_id=sceiptProject_id
+        _scriptProject.projectName = projectName
+        _scriptProject.versionName = versionName
+        _scriptProject.platfromName=platfromName
+
+        _scriptProject.buildAddress = buildAddress
+        _scriptProject.reportAddress = reportAddress
+        _scriptProject.environment = environmentData
+        _scriptProject.scriptName = scriptName
+        _scriptProject.executeType = executeType
+        _scriptProject.performanceData = performanceData
+        _scriptProject.performanceReport = performanceReport
+        _scriptProject.UIdata=UIdata
+        _scriptProject.owner=owner
+        _scriptProject.remark=remark
+        _scriptProject.platfromType=platfromType
+        _scriptProject.updater=username
+        _scriptProject.UIExcReport=execUIReport
+        _scriptProject.UIReport=UIreport
+        _scriptProject.UIScript=UIscriptAddress
+        _scriptProject.creater=creater
+        time = datetime.now()
+        _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
+        _scriptProject.status=status
+        _scriptProject.save()
+
+        # 根据项目名称，查找到最新的接口脚本和测试点绑定
+        _Version_data = Versionmanager()
+        _Version_data = Versionmanager.objects.get(autoTableID=version_id)
+        # 获取脚本文件信息
+        script = _Version_data.scriptFile
+
+        # 确保 script 是一个可解析的列表
+        if script:
+            try:
+                # 如果 script 是字符串，解析为列表
+                script = ast.literal_eval(script)
+                if not isinstance(script, list):
+                    raise ValueError("Parsed script is not a list")
+            except (ValueError, SyntaxError):
+                # 如果解析失败，重置为空列表
+                script = []
+        else:
+            script = []
+
+        # 确保 platfromName 是一个有效的元素（如字符串）并添加到脚本列表
+        if platfromName not in script:
+            script.append(platfromName)
+
+        # 将列表转为 JSON 字符串存储
+        _Version_data.scriptFile = json.dumps(script)
+        _Version_data.save()
+
+
+        data={
+            "code":200,
+            "msg":"接口脚本编辑成功"
+        }
+        return JsonResponse(data,safe=False)
+    else:
+        _scriptProject.projectName = projectName
+        _scriptProject.versionName = versionName
+        _scriptProject.platfromName=platfromName
+        _scriptProject.buildAddress = buildAddress
+        _scriptProject.reportAddress = reportAddress
+        _scriptProject.environment = environmentData
+        _scriptProject.scriptName = scriptName
+        _scriptProject.executeType = executeType
+        _scriptProject.UIdata=UIdata
+        _scriptProject.owner=owner
+        _scriptProject.remark=remark
+        _scriptProject.platfromType=platfromType
+        _scriptProject.updater=username
+        _scriptProject.UIExcReport=execUIReport
+        _scriptProject.UIReport=UIreport
+        _scriptProject.UIScript=UIscriptAddress
+        _scriptProject.performanceData = performanceData
+        _scriptProject.performanceReport = performanceReport
+        _scriptProject.creater = creater
+        _scriptProject.status = status
+        time = datetime.now()
+        _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
+        _scriptProject.save()
+
+
+         # 根据项目名称，查找到最新的接口脚本和版本绑定
+        _Version_data = Versionmanager()
+        _Version_data = Versionmanager.objects.get(autoTableID=version_id)
+        # _xmind_data.scriptFile=platfromName
+        # 获取脚本文件信息
+        script = _Version_data.scriptFile
+
+        # 确保 script 是一个可解析的列表
+        if script:
+            try:
+                # 如果 script 是字符串，解析为列表
+                script = ast.literal_eval(script)
+                if not isinstance(script, list):
+                    raise ValueError("Parsed script is not a list")
+            except (ValueError, SyntaxError):
+                # 如果解析失败，重置为空列表
+                script = []
+        else:
+            script = []
+
+        # 确保 platfromName 是一个有效的元素（如字符串）并添加到脚本列表
+        if platfromName not in script:
+            script.append(platfromName)
+
+        # 将列表转为 JSON 字符串存储
+        _Version_data.scriptFile = json.dumps(script)
+        _Version_data.save()
+
+
+        data = {
+            "code": 200,
+            "msg": "接口脚本保存成功"
+        }
+        return JsonResponse(data, safe=False)
+
 # 保存测试点脚本地址
 def saveXmindScriptFile(request):
     '''保存测试点脚本'''
@@ -2102,13 +2572,13 @@ def saveXmindScriptFile(request):
         }
         return JsonResponse(data,safe=False)
     
-    # 获取项目名称
+    # 获取脚本名称
     platfromName=dataDictList['platfromName']
 
     if len(platfromName)==0:
         data={
             "code":10002,
-            "msg":"项目名称不能为空"
+            "msg":"脚本名称不能为空"
         }
         return JsonResponse(data,safe=False)
     
@@ -2269,8 +2739,6 @@ def saveXmindScriptFile(request):
     _scriptProject=Scriptproject()
 
 
-    
-
 
     if sceiptProject_id:
         _scriptProject.sceiptProject_id=sceiptProject_id
@@ -2299,13 +2767,16 @@ def saveXmindScriptFile(request):
         _scriptProject.status=status
         _scriptProject.save()
 
-        _scriptFindProject=Scriptproject.objects.get(platfromName=platfromName)
-
         # 根据项目名称，查找到最新的接口脚本和测试点绑定
         _xmind_data = xmind_data()
         _xmind_data = xmind_data.objects.get(id=xmind_id)
-        _xmind_data.scriptFile=tuple(_scriptFindProject)
-        _xmind_data.caseType='自动化用例'
+        # _xmind_data.scriptFile=platfromName
+        script=_xmind_data.scriptFile
+        if isinstance(script,list):
+            _xmind_data.scriptFile=script.extend(platfromName)
+        else:
+            _xmind_data.scriptFile=[platfromName]
+        _xmind_data.caseType='自动化测试'
         _xmind_data.save()
 
 
@@ -2338,6 +2809,21 @@ def saveXmindScriptFile(request):
         time = datetime.now()
         _scriptProject.createtime = time.strftime("%Y-%m-%d %H:%M:%S")
         _scriptProject.save()
+
+
+        # 根据项目名称，查找到最新的接口脚本和测试点绑定
+        _xmind_data = xmind_data()
+        _xmind_data = xmind_data.objects.get(id=xmind_id)
+        # _xmind_data.scriptFile=platfromName
+        script=_xmind_data.scriptFile
+        if isinstance(script,list):
+            _xmind_data.scriptFile=script.extend(platfromName)
+        else:
+            _xmind_data.scriptFile=[platfromName]
+        _xmind_data.caseType='自动化测试'
+        _xmind_data.save()
+
+
         data = {
             "code": 200,
             "msg": "接口脚本保存成功"
@@ -2354,7 +2840,7 @@ def saveScriptFile(request):
 
     # 获取项目地址
     projectName_id =dataDictList['projectName']
-    if len(projectName_id)==0:
+    if projectName_id=='':
         data={
             "code":200,
             "msg":"项目不能为空"
@@ -3168,18 +3654,25 @@ def executeXmindScript(request):
         from .executeApi import versionUpdateApi
         versionUpdateApi().executeSingleScript(script)
 
-    result_sql = f"SELECT result FROM quality_scriptproject WHERE {query_condition}"
-    results = commonList().getModelData(result_sql)
 
-    if any('失败' in r for r in results):
+    log.info("======开始统计用例执行结果=====")
+
+    result_sql = f"SELECT result FROM quality_scriptproject WHERE {query_condition}"
+    log.info('===统计接口执行结果sql===={}'.format(result_sql))
+
+    results = commonList().getModelData(result_sql)
+    log.info('===统计接口执行结果===={}'.format(results))
+
+    if any('构建失败' in result['result'] for result in results):
         result_status = '失败'
-    elif all('成功' in r for r in results):
+    elif all('构建成功' in result['result'] for result in results):
         result_status = '成功'
     else:
         result_status = '未执行'
     update_sql = f"UPDATE quality_xmind_data SET result='{result_status}' WHERE id={xmind_id}"
     commonList().getModelData(update_sql)
 
+    log.info("======用例结果统计结束=====")
 
     # if result_status == '失败':
     if result_status in ['失败','阻塞']:#执行失败发送企信通知
@@ -3243,7 +3736,7 @@ def executeAllXmindScript(request):
     if conditions:
         versionSql += " AND ".join(conditions)
     versionSql+= "and scriptFile is not null"
-    log.info(versionSql)
+    log.info("=======versionSql====={}".format(versionSql))
     xmindData = commonList().getModelData(versionSql)
 
 
@@ -3251,10 +3744,11 @@ def executeAllXmindScript(request):
     # 获取所有脚本项目名称
     scriptList=[]
     caseID=[]
+    import ast
     for i in xmindData:
         if len(i["scriptFile"])!=0:
             # 获取所有用例脚本
-            scriptList.extend(i["scriptFile"])
+            scriptList.extend(ast.literal_eval(i["scriptFile"]))
             # 获取所有用例ID
             caseID.append(i['id'])
 
@@ -3269,7 +3763,7 @@ def executeAllXmindScript(request):
         sql='''
                 select * from quality_scriptproject where  platfromName in {}
             '''.format(tuple(scriptList))
-    log.info(sql)
+    log.info("=======sql====={}".format(sql))
         
     scriptList=commonList().getModelData(sql)
     log.info(scriptList)
@@ -3304,15 +3798,21 @@ def executeAllXmindScript(request):
         # ['单规格商品-编辑划线价', '聚好麦-主流程测试'],
         file_list = ast.literal_eval(caseScriptFile[0]["scriptFile"])
 
+        print(type(file_list))
+        print(file_list)
+
         if len(file_list)==1:
         # 根据脚本名称，查询脚本
             fileSql='''
                     select result from quality_scriptproject where  platfromName =\'{}\'
                 '''.format(file_list[0])
+        elif len(file_list)==0 :
+            break
         else:
             fileSql='''
                     select result from quality_scriptproject where  platfromName in {}
                 '''.format(tuple(file_list))
+        log.info("=======fileSql====={}".format(fileSql))
         
         caseResult=commonList().getModelData(fileSql)
 
@@ -3328,7 +3828,8 @@ def executeAllXmindScript(request):
             result_status = '未执行'
         time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        update_sql = f"UPDATE quality_xmind_data SET result='{result_status}',time='{time}' WHERE id={testCaseID}"
+        update_sql = f"UPDATE quality_xmind_data SET result='{result_status}',updateTime='{time}' WHERE id={testCaseID}"
+        log.info("=======update_sql====={}".format(update_sql))
         commonList().getModelData(update_sql)
 
         # 测试点执行失败发送通知
@@ -3355,11 +3856,13 @@ def executeScript(request):
     buildAddress=requestData["buildAddress"]
     performanceData=requestData["performanceData"]
     # scriptName=requestData["scriptName"]
+    scriptName=requestData["scriptName"]
 
-    import ast
-    scriptName=ast.literal_eval(requestData["scriptName"])
-    print("=====scriptName=====",scriptName)
-    print("=====scriptName=====",type(scriptName))
+    if(isinstance(scriptName,str)):
+        import ast
+        scriptName=ast.literal_eval(requestData["scriptName"])
+        print("=====scriptName=====",scriptName)
+        print("=====scriptName=====",type(scriptName))
 
     sceiptProject_id=requestData['sceiptProject_id']
     environment=requestData['environment']
@@ -3634,6 +4137,51 @@ def executeScript(request):
     username = request.session.get('username', False)
     selectUserNameSql="select first_name from auth_user where username=\'{}\'".format(username)
     returnUserNamedata=commonList().getModelData(selectUserNameSql)
+ # 统计接口运行结果
+    reportAddress = requestData['reportAddress']
+    performanceReport = requestData['performanceReport']
+
+
+    # 汇总脚本执行结果
+    number=0
+    while True:
+        log.info("=======开始统计接口执行结果======")
+        if number>20:
+            break
+        fileExist=os.path.exists('/root/platform'+reportAddress)
+        if fileExist :
+            log.info("=======测试报告已经生成，开始统计接口执行结果======")
+            testReportAddress = '/root/platform/static/'
+            performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
+
+            with open(performanceJtlAddress, 'r') as file:
+                content = file.read()
+            # 统计总数
+            total_count = content.count('<failure>true</failure>') + content.count(
+                '<failure>false</failure>')
+            # 统计 <failure>true</failure> 的数量
+            success_cont=content.count(
+                '<failure>false</failure>')
+            true_count = content.count('<failure>true</failure>')
+
+            if true_count>0:
+                result="构建失败"
+            else:
+                result="构建成功"
+
+            # 统计接口成功/时候/运行结果
+            updateSql='''
+                        update quality_scriptproject set totalNumber={},successNumber={},failNumber={},result='{}' where sceiptProject_id={}
+                        '''.format(total_count,success_cont,true_count,result,sceiptProject_id)
+            commonList().getModelData(updateSql)
+            break
+        else:
+            import time
+            time.sleep(5)
+            log.info("没有生成测试报告，5s后台重试")
+            number+=1
+          
+
     if returnUserNamedata:
         username=returnUserNamedata[0]['first_name']
     else:
@@ -3649,59 +4197,19 @@ def executeScript(request):
             openDingMessAge=dingmessage["ding_message"]
             dingAddress=dingmessage['ding_address']
             dingPeople=dingmessage['ding_people']
+
             if len(modelDataList)==0:
                 log.info("====版本配置为空=====")
             else:
                 if int(modelDataId) in  modelDataList:
-                    reportAddress = requestData['reportAddress']
-                    performanceReport = requestData['performanceReport']
-
-
                     # 根据测试报告是否生成,巡检状态,开启群通知
                     if int(executeType) in [0,3] and openDingMessAge=="True" :
-                        number=0
-                        while True:
-                            if number>20:
-                                break
-                            fileExist=os.path.exists('/root/platform'+reportAddress)
-                            if fileExist :
-                                log.info("=======测试报告已经生成，开始企信通知======")
-                                testReportAddress = '/root/platform/static/'
-                                performanceJtlAddress = testReportAddress + projectName[0]["modelData"] + "/" + modelData + "/ApiReport/jtl/TestReport.jtl"
-
-                                with open(performanceJtlAddress, 'r') as file:
-                                    content = file.read()
-                                # 统计总数
-                                total_count = content.count('<failure>true</failure>') + content.count(
-                                    '<failure>false</failure>')
-                                # 统计 <failure>true</failure> 的数量
-                                success_cont=content.count(
-                                    '<failure>false</failure>')
-                                true_count = content.count('<failure>true</failure>')
-
-                                if true_count>0:
-                                    result="构建失败"
-                                else:
-                                    result="构建成功"
-
-                                # 统计接口成功/时候/运行结果
-                                updateSql='''
-                                            update quality_scriptproject set totalNumber={},successNumber={},failNumber={},result='{}' where sceiptProject_id={}
-                                            '''.format(total_count,success_cont,true_count,result,sceiptProject_id)
-                                commonList().getModelData(updateSql)
-
-
-                                # 计算占比
-                                true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
-                                true_percentage = round(true_percentage, 2)
-                                dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment)
-                                
-                                break
-                            else:
-                                import time
-                                time.sleep(5)
-                                log.info("没有生成测试报告，5s后台重试")
-                                number+=1
+                        # 计算占比
+                        true_percentage =(success_cont / total_count) * 100 if total_count > 0 else 0
+                        true_percentage = round(true_percentage, 2)
+                        dingScriptMessage(dingAddress, projectName[0]["modelData"], modelData,username, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment)
+                        break
+                            
                     elif int(executeType)==1 and os.path.exists('/root/platform'+performanceReport) and bool(openDingMessAge) :
                         curlData = '''curl '{}' \
                         -H 'Content-Type: application/json' \

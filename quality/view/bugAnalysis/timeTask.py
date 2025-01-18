@@ -691,6 +691,40 @@ def XunJianExecuteScript(request):
     #     }
     return JsonResponse(data, safe=False)
 
+def dingTaskMessage(request):
+    '''每日任务通知'''
+    import requests
+    import json
+    log.info("=====每日任务通知========")
+
+    content='''
+            \n\n><font color=#303133>【每日任务通知】</font> 
+            \n\n><font color=#303133>今天上线需求  汇总下目前手里需求进度情况</font>
+            \n\n><font color=#67C23A>今天上线需求：</font>
+            \n\n><font color=#E6A23C>未提测需求数量：</font>
+            \n\n><font color=#409EFF>测试中需求数量：</font>
+            '''
+    url = "https://oapi.dingtalk.com/robot/send?access_token=31769b8f6c90bd0270fd2a1bcaf8b0b48e0f40ef07998a9da5b18db9f084d8cb"
+
+    payload = json.dumps({
+    "msgtype": "markdown",
+    "markdown": {
+        "title": "任务通知",
+        "text": content,
+        "at": {
+        "isAtAll": True
+        }
+    }
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+
+    requests.request("POST", url, headers=headers, data=payload)
+
+    return JsonResponse('通知成功', safe=False)
+
+
 def dingScriptMessage(dingAddress,projectName,modelData, total_count, true_count, true_percentage, result,reportAddress,execteEnvironment,platfromType):
         '''叮叮消息通知'''
         import requests

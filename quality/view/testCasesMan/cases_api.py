@@ -15,6 +15,7 @@ from datetime import datetime
 from django.db import transaction
 from quality.view.testCasesMan.cases_model import testcasemanager
 from quality.view.testCasesMan.cases_model import xmind_data
+from quality.view.API.model import Versionmanager
 from pathlib import Path
 log=Log()
 
@@ -128,6 +129,29 @@ def copyTestCase(request):
     }
 
     return JsonResponse(data, safe=False)
+def saveVersionScript(request):
+    '''版本和脚本关联'''
+    returnData = json.loads(request.body)
+    print(returnData)
+    versionInfo=returnData['data']
+    _Versionmanager=Versionmanager()
+    _Versionmanager = Versionmanager.objects.get(autoTableID=versionInfo['autoTableID'])
+    # _Versionmanager.scriptFile=versionInfo['scriptFile']
+    script=_Versionmanager.scriptFile
+
+    if isinstance(script,list):
+        _Versionmanager.scriptFile=script.extend(versionInfo['scriptFile'])
+    else:
+        _Versionmanager.scriptFile=versionInfo['scriptFile']
+    _Versionmanager.save()
+
+    data = {
+            "code": 200,
+            "data": "新增脚本成功"
+        }   
+    return JsonResponse(data, safe=False)
+
+
 def saveXmindCase(request):
     '''保存单条测试点'''
     returnData = json.loads(request.body)
@@ -439,12 +463,6 @@ def selectTestModelAutoXmindData(request):
     currentPage=requestData['currentPage']
     testModel=requestData['testModel']
     
-
-
-     
-
-
-
     sql = 'SELECT * FROM quality_xmind_data  WHERE '
     conditions = []
 
@@ -519,6 +537,8 @@ def selectTestModelAutoXmindData(request):
     for i in data:
         if i.get('prdModel'):
             i['prdModel']=ast.literal_eval(i['prdModel'])
+        if i.get('platFrom'):
+            i['platFrom']=ast.literal_eval(i['platFrom'])
         if i.get('testModel'):
             i['testModel']=ast.literal_eval(i['testModel'])
         if i.get('scriptFile'):
@@ -594,7 +614,7 @@ def selectAutoXmindData(request):
                 where 
         '''
         sqlTotal+=testModel_conditions
-        
+
     else:
         sqlTotal='''
                 SELECT 
@@ -613,7 +633,6 @@ def selectAutoXmindData(request):
                     COUNT(id)) * 100, 1
                 ) AS executPre
                 FROM quality_xmind_data
-                where testModel is not null
         '''
 
     totalBugData=commonList().getModelData(sqlTotal)
@@ -636,9 +655,9 @@ def selectAutoXmindData(request):
     if len(owner) == 0 and (len(result) == 0 or '全部' in result) and len(caseType) == 0 and len(case)==0 and len(testModel)==0:
         sql ='''
             SELECT * 
-            FROM quality_xmind_data 
-            WHERE  testModel is not null  
+            FROM quality_xmind_data  
             '''
+    sql += " ORDER BY id DESC"
 
 
     offset = (currentPage - 1) * pageSize
@@ -686,6 +705,8 @@ def selectAutoXmindData(request):
             i['testModel']=ast.literal_eval(i['testModel'])
         if i.get('scriptFile'):
             i['scriptFile']=ast.literal_eval(i['scriptFile'])
+        if i.get('platFrom'):
+            i['platFrom']=ast.literal_eval(i['platFrom'])
 
 
     data = {
@@ -711,8 +732,6 @@ def selectXminData(request):
 
     print(pageSize)
     print(currentPage)
-
-
 
     sql = 'SELECT * FROM quality_xmind_data  WHERE '
     conditions = []
@@ -759,7 +778,6 @@ def selectXminData(request):
     print('=======sql========', sql)
     data = commonList().getModelData(sql)
 
-
     # 获取用例个数
      # 汇总数据
     sqlTotal='''
@@ -774,6 +792,7 @@ def selectXminData(request):
                 ROUND(
                     ((SUM(CASE WHEN result = '成功' THEN 1 ELSE 0 END) + 
                     SUM(CASE WHEN result = '失败' THEN 1 ELSE 0 END) + 
+                    SUM(CASE WHEN result = '废弃' THEN 1 ELSE 0 END) + 
                     SUM(CASE WHEN result = '阻塞' THEN 1 ELSE 0 END) + 
                     SUM(CASE WHEN result = '需求变更' THEN 1 ELSE 0 END)) / 
                     COUNT(id)) * 100, 1
@@ -781,13 +800,20 @@ def selectXminData(request):
                 FROM quality_xmind_data
                 where version=\'{}\' 
         '''.format(version)
-    if conditions:
-        sqlTotal= sqlTotal+" and"+" AND ".join(conditions)
+    sqlTotalCondition=sqlTotal
 
-    print("=====汇总统计sql=={}".format(sqlTotal))
-    
-    totalBugData=commonList().getModelData(sqlTotal)
+    # 汇总总数量
+    print("=====汇总统计sql=={}".format(sqlTotalCondition))
+    totalBugDataCondition=commonList().getModelData(sqlTotalCondition)
 
+    #筛选版本和对应需求的测试用例
+    if len(prdModel) > 0:
+        prdModel_conditions = " OR ".join("prdModel LIKE '%{}%'".format(model) for model in prdModel)
+        sqlTotal= sqlTotal+" AND "+"({})".format(prdModel_conditions)
+        log.info(sqlTotal)
+        totalBugData=commonList().getModelData(sqlTotal)
+    else:
+        totalBugData=commonList().getModelData(sqlTotal)
 
     import ast
     for i in data:
@@ -800,7 +826,8 @@ def selectXminData(request):
     data = {
             "code": 200,
             "data": data,
-            "totalNum":totalBugData
+            "totalNum":totalBugDataCondition,
+            "finallNum":totalBugData
         }
     return JsonResponse(data, safe=False)
 def configCaseOwner(request):
@@ -1055,6 +1082,7 @@ def testXmindAutoCasesUpload(request):
 
     content = parse_xmind(file_path)
     prdModel=requestData["prdModel"]
+    platFrom=requestData["platfrom"]
     log.info("获取当前用户{}".format(name))
     
 
@@ -1068,6 +1096,7 @@ def testXmindAutoCasesUpload(request):
         _xmind.owner=name
         _xmind.creater=name
         _xmind.prdModel=prdModel
+        _xmind.platFrom=platFrom
         _xmind.parentCase=xmindData['parent_cases']
         _xmind.save()
 
