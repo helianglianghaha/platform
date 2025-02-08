@@ -619,7 +619,7 @@ def selectTaskInfo(request):
     count_sql = f"SELECT COUNT(*) as total FROM ({base_sql}) AS subquery"
 
     # Query for paginated data
-    paginated_sql = f"{base_sql} ORDER BY updateTime DESC LIMIT {pageSize} OFFSET {offset}"
+    paginated_sql = f"{base_sql} ORDER BY createTime DESC LIMIT {pageSize} OFFSET {offset}"
 
     # Execute queries
     total_count = commonList().getModelData(count_sql)[0]['total']
@@ -720,7 +720,7 @@ def saveTaskInfo(request):
         _taskmanger.save()
         if taskType!="不用补充":
             taskDingMessage(url,taskStart,username,taskName,owner,taskType,beginTime_dt,endTime_dt,remark)
-            
+
     else:
         _taskmanger.status=taskType
         _taskmanger.owner=owner
@@ -1204,6 +1204,7 @@ def saveVersionManger(request):
     responseData = json.loads(request.body)
     # print(responseData)
     requestData=responseData['updatedData']
+
     compare_results=[]
 
     # 遍历 onlinModel 和 modelStatus，检查项目是否出现在 modelStatus 中
@@ -1372,6 +1373,7 @@ def saveVersionManger(request):
             secondRoundTest = versionManer['secondRoundTest']
             thirdRoundTest = versionManer['thirdRoundTest']
 
+
             platfromType=versionManer['platfromType']
 
             remarks = versionManer['remarks']
@@ -1396,6 +1398,7 @@ def saveVersionManger(request):
             _Versionmanager = Versionmanager()
 
             if autoTableID:
+                _Versionmanager = Versionmanager.objects.get(autoTableID=autoTableID)
                 _Versionmanager.autoTableID=autoTableID
                 _Versionmanager.tableID = tableID
                 _Versionmanager.tableName=tableName
@@ -1454,10 +1457,10 @@ def saveVersionManger(request):
                             commonList().getModelData(updateTaskInfo)
 
 
-                if '已测试待上线' in modelStatus or  '已上线' in modelStatus:
-                    dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
-                                                    testingTime, liveTime, testCases, testCaseReview,
-                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                # if '已测试待上线' in modelStatus or  '已上线' in modelStatus:
+                #     dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                #                                     testingTime, liveTime, testCases, testCaseReview,
+                #                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
             else:
                 _Versionmanager.tableID = tableID
@@ -1518,10 +1521,12 @@ def saveVersionManger(request):
 
 
 
-                if  '已上线' in modelStatus:
-                    dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
-                                                    testingTime, liveTime, testCases, testCaseReview,
-                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                # if  '已上线' in modelStatus:
+                #     dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                #                                     testingTime, liveTime, testCases, testCaseReview,
+                #                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+
+
 
     elif  len(requestData)==0:
         data = {
@@ -1590,6 +1595,7 @@ def saveVersionManger(request):
             _Versionmanager = Versionmanager()
 
             if autoTableID:
+                _Versionmanager = Versionmanager.objects.get(autoTableID=autoTableID)
                 _Versionmanager.autoTableID=autoTableID
                 _Versionmanager.tableID = tableID
                 _Versionmanager.tableName=tableName
@@ -1649,9 +1655,9 @@ def saveVersionManger(request):
                 else:
                     testingTime=''
         
-                dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
-                                                    testingTime, liveTime, testCases, testCaseReview,
-                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                # dingMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                #                                     testingTime, liveTime, testCases, testCaseReview,
+                #                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
                 # 版本更新通知到自动化测试小组
                 print("=======modelStatus======",modelStatus)
                 substrings = ['测试中', '已上线']
@@ -1679,10 +1685,10 @@ def saveVersionManger(request):
                             '''.format(combinedTaskName)
                             commonList().getModelData(updateTaskInfo)
                 
-                if '已上线' in modelStatus:
-                    dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
-                                                    testingTime, liveTime, testCases, testCaseReview,
-                                                    firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
+                # if '已上线' in modelStatus:
+                #     dingConfiMessage('https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2',versionStart,username,tableID,version,description,owner,development, product,onlinModel, status,modelStatus,
+                #                                     testingTime, liveTime, testCases, testCaseReview,
+                #                                     firstRoundTest, secondRoundTest, thirdRoundTest, remarks)
 
             else:
                 _Versionmanager.tableID = tableID
@@ -2487,6 +2493,32 @@ def saveVersionScriptFile(request):
         _Version_data.scriptFile = json.dumps(script)
         _Version_data.save()
 
+        # 保存的脚本添加钉钉通知
+        dingSql='''
+                select ding_version from quality_dingmessage where ding_id=9
+                '''
+        dingVersion=commonList().getModelData(dingSql)[0]['ding_version']
+
+        log.info(dingVersion)
+        dingData=ast.literal_eval(dingVersion)
+
+
+        # 获取新增脚本的ID
+        newVersionSql='''
+                        select sceiptProject_id from quality_scriptproject where platfromName='{}'
+                        '''.format(platfromName)
+        sceiptProject_id=commonList().getModelData(newVersionSql)[0]['sceiptProject_id']
+        log.info(sceiptProject_id)
+
+        dingData.append(sceiptProject_id)
+
+        updateDingSql='''
+                        update quality_dingmessage set  ding_version='{}' where ding_id=9
+                        '''.format(dingData)
+        commonList().getModelData(updateDingSql)
+
+        log.info("新增脚本通知添加成功")
+
 
         data={
             "code":200,
@@ -2547,6 +2579,30 @@ def saveVersionScriptFile(request):
         _Version_data.scriptFile = json.dumps(script)
         _Version_data.save()
 
+        # 保存的脚本添加钉钉通知
+        dingSql='''
+                select ding_version from quality_dingmessage where ding_id=9
+                '''
+        dingVersion=commonList().getModelData(dingSql)[0]['ding_version']
+        log.info(dingVersion)
+        dingData=ast.literal_eval(dingVersion)
+
+
+        # 获取新增脚本的ID
+        newVersionSql='''
+                        select sceiptProject_id from quality_scriptproject where platfromName='{}'
+                        '''.format(platfromName)
+        sceiptProject_id=commonList().getModelData(newVersionSql)[0]['sceiptProject_id']
+        log.info(sceiptProject_id)
+
+        dingData.append(sceiptProject_id)
+
+        updateDingSql='''
+                        update quality_dingmessage set  ding_version='{}' where ding_id=9
+                        '''.format(dingData)
+        commonList().getModelData(updateDingSql)
+
+        log.info("新增脚本通知添加成功")
 
         data = {
             "code": 200,

@@ -221,9 +221,9 @@ def saveXmindCase(request):
             "code": 200,
             "data": "新增测试点成功"
         }
-    if result in ['失败','阻塞']:#执行失败发送企信通知
-        url='https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2'
-        dingXmindMessage(url,xmindStart,username,version, topic, case, caseType, result,remark)
+    # if result in ['失败','阻塞']:#执行失败发送企信通知
+    #     url='https://oapi.dingtalk.com/robot/send?access_token=77ea408f02f921a87f5ee61fd4fb9763581ded15d9627a3b1c1387f64d6fe3b2'
+    #     dingXmindMessage(url,xmindStart,username,version, topic, case, caseType, result,remark)
         
     return JsonResponse(data, safe=False)
 
