@@ -26,7 +26,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'f3*8&q7l8dy^vc$5#4t8wo3#$ygm*6wkw+4oteb^q4rfjsc8p^'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =True
 # DEBUG =False
@@ -44,6 +43,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders', 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -65,6 +65,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -75,7 +76,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 # AUTH_USER_MODEL = "users.UserProfile"
-
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:8030",  # 允许你的前端访问
+]
 ROOT_URLCONF = 'QualityPlatform.urls'
 # APPEND_SLASH=False
 TEMPLATES = [
@@ -96,7 +99,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'QualityPlatform.wsgi.application'
 
-
+CORS_ALLOW_ALL_ORIGINS = True
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.mysql',
@@ -158,8 +161,8 @@ HERE=os.path.dirname(os.path.abspath(__file__))
 HERE=os.path.join(HERE,'../')
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace("\\", "/")
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # STATIC_ROOT=os.path.join(BASE_DIR,'collectstatic')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

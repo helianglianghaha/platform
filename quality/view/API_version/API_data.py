@@ -11,6 +11,7 @@ from django.core import serializers
 from quality.common.logger import Log
 from quality.common.msg import msgMessage, msglogger
 from quality.common.msg import loginRequired
+from django.core.files.storage import default_storage
 import copy, re
 
 log = Log()
@@ -358,6 +359,31 @@ def selectSingleVersion(request):
     sql = "select * from quality_modelversion where modeldata_name=" + "\'" + modelVersion + "\'"
     data = commonList().getModelData(sql)
     return JsonResponse(data, safe=False)
+
+def downloadVideo(request):
+    '''保存视频'''
+    # 解析请求体
+    requestData = json.loads(request.body)
+    title = requestData.get('title', None)
+    video_file = request.FILES.get('file', None)
+
+    # 验证是否有视频文件和标题
+    if not title or not video_file:
+        return JsonResponse({"error": "缺少标题或视频文件"}, status=400)
+
+    # 保存视频文件到本地
+    file_path = default_storage.save(f"videos/{video_file.name}", video_file)
+    video_url = default_storage.url(file_path)
+
+    # 创建视频对象并保存到数据库（假设你有一个 Video 模型）
+    # video = Video.objects.create(title=title, file=file_path)
+
+    return JsonResponse({
+        "message": "视频上传成功",
+        "data": {
+            "file_url": video_url,
+        }
+    }, status=201)
 
 
 # 复制接口测试用例

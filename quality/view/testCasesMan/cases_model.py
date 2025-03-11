@@ -37,6 +37,7 @@ class xmind_data(models.Model):
     caseType = models.CharField(max_length=500, verbose_name="测试点类型", default=None)
     remark=models.CharField(max_length=500, verbose_name="备注", default=None)
     updateTime=models.CharField(max_length=50, verbose_name="更新时间", default=None)
+    createTime=models.CharField(max_length=50, verbose_name="创建时间", default=None)
     prdModel=models.CharField(max_length=100, verbose_name="需求模块", default=None)
     parentCase=models.CharField(max_length=100, verbose_name="测试点", default=None)
     owner=models.CharField(max_length=50, verbose_name="负责人", default=None)

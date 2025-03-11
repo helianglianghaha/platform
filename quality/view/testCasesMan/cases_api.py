@@ -1174,6 +1174,7 @@ def testXmindCasesUpload(request):
         _xmind.creater=name
         _xmind.prdModel=prdModel
         _xmind.parentCase=xmindData['parent_cases']
+        _xmind.createTime=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         _xmind.save()
 
     data = {

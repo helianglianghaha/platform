@@ -7,18 +7,31 @@ from django.urls import  resolvers
 # from django.views
 from quality.view.project import login
 from quality.view.API import API
+from quality.view.API import testTools
 from quality.view.UI import UI_data
-from quality.view.API_version import API_data
+from quality.view.API_version import API_data,video_mac
+
 from quality.view.bugAnalysis import analysis
 from quality.view.bugAnalysis import timeTask
 from quality.view.documentMan import doc_api
 from quality.view.testCasesMan import  cases_api
 from quality.view.report import  testTeport
 from quality.view.API import apiDetail
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
    url('admin/',admin.site.urls),
    path('',TemplateView.as_view(template_name='index.html')),
+
+   # 视频处理模块
+   path('api/generate_video/', video_mac.generate_video, name='generate_video'),
+   path('api/get_videos/', video_mac.get_videos, name='generate_video'),
+   path('api/generate_subtitleVideo/', video_mac.generate_subtitleVideo, name='generate_subtitleVideo'),
+   path('api/download_all_videos/', video_mac.download_all_videos, name='download_all_videos'),
+   path('api/check_final_video/', video_mac.check_final_video, name='check_final_video'),
+   path('api/get_voice_roles/', video_mac.get_voice_roles, name='get_voice_roles'),
+   path('api/generate_speech/', video_mac.generate_speech, name='generate_speech'),
 
    url('quality/casesfilesupload/',cases_api.casesfilesupload, name='casesfilesupload'),
    url('quality/selectXmindData/',cases_api.selectXmindData, name='selectXmindData'),
@@ -82,6 +95,7 @@ urlpatterns = [
    url('quality/saveScriptFile/',API.saveScriptFile, name='saveScriptFile'),
    url('quality/saveXmindScriptFile/',API.saveXmindScriptFile, name='saveXmindScriptFile'),
    url('quality/executeAllXmindScript/',API.executeAllXmindScript, name='executeAllXmindScript'),
+   url('quality/createVoice/',testTools.createVoice, name='createVoice'),
    
 
    url('quality/deleteScriptFile/',API.deleteScriptFile, name='deleteScriptFile'),
@@ -183,6 +197,8 @@ urlpatterns = [
    url('quality/selectTestCaseList/',UI_data.selectTestCaseList, name='selectTestCaseList'),
 
    url('quality/selectCookiesSelection/',API_data.selectCookiesSelection, name='selectCookiesSelection'),
+   url('quality/downloadVideo/',API_data.downloadVideo, name='downloadVideo'),
+
    url('quality/delCookies/',API_data.delCookies, name='delCookies'),
    url('quality/selectCookies/',API_data.selectCookies, name='selectCookies'),
    url('quality/saveCookies/',API_data.saveCookies, name='saveCookies'),
@@ -252,3 +268,7 @@ urlpatterns = [
 
    url('quality/Login/',login.Login, name='Login'),
     ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
