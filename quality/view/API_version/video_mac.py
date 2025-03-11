@@ -28,8 +28,21 @@ from gtts import gTTS
 AUDIO_SAVE_PATH = "media/tts_audio"
 
 # UPLOADS_DIR = os.path.join(settings.MEDIA_ROOT, 'uploads')
+def add_dynamic_watermark(input_video: str, output_video: str, text="@泥鳅炖土豆", fontsize=24, fontcolor="white"): #添加水印
+    """
+    使用 FFmpeg 给视频添加动态水印
+    :param input_video: 输入视频文件路径
+    :param output_video: 输出视频文件路径
+    :param text: 水印文本
+    :param fontsize: 文字大小
+    :param fontcolor: 文字颜色
+    """
+    cmd = '''ffmpeg -i "{}" -vf "drawtext=text='{}':fontcolor={}:fontsize={}:x=w*mod(t\,10)/10:y=h*mod(t\,10)/10" -c:a copy "{}"'''.format(
+    input_video, text, fontcolor, fontsize, output_video)
 
-def get_voice_roles(request):
+    print("执行命令:", cmd)
+    os.system(cmd)
+def get_voice_roles(request): #获取音色列表
     voices = asyncio.run(edge_tts.list_voices())
     voice_roles = []
     for v in voices:
@@ -47,13 +60,21 @@ async def synthesize_speech(text, voice, speech_rate, file_path):
     """
     异步语音合成，支持自定义语速
     """
-    # 语速格式化
+    # 语速处理，确保为整数
+    try:
+        speech_rate = int(speech_rate)  # 将语速转换为整数
+    except ValueError:
+        return JsonResponse({"error": "Invalid speech rate value"}, status=400)
+
+    # 确保语速在有效范围内
+    if speech_rate < -100 or speech_rate > 100:
+        return JsonResponse({"error": "Speech rate must be between -100 and 100"}, status=400)
+
     rate_option = f"+{speech_rate}%" if speech_rate >= 0 else f"{speech_rate}%"
 
     tts = edge_tts.Communicate(text, voice, rate=rate_option)
-    await tts.save(file_path)
-
-def generate_speech(request):
+    await tts.save(file_path) 
+def generate_speech(request): #生成视频配音
     try:
         # 解析前端传递的 JSON 数据
         responseData = json.loads(request.body)
@@ -397,25 +418,40 @@ def get_videos(request):
     video_list = [{"name": video, "url": f"{media_url}{video}"} for video in video_files]
 
     return JsonResponse({"videos": video_list})
+def create_generate_speech(text,voice,speech_rate): #生成视频配音
+    if not text:
+        return JsonResponse({"error": "Text is required"}, status=400)
+
+    # 生成文件名（防止特殊字符）
+    safe_text = "".join(c for c in text if c.isalnum() or c in " _-").strip()
+    file_path = os.path.join(AUDIO_SAVE_PATH, f"{safe_text}.mp3")
+
+    # 先删除旧文件
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    # 生成新语音
+    asyncio.run(synthesize_speech(text, voice, speech_rate, file_path))
+
+    return JsonResponse({"audioUrl": f"http://127.0.0.1:8090/media/tts_audio/{safe_text}.mp3"})
 def generate_subtitleVideo(request):
     '''根据文案和视频生成单个视频'''
     responseData=json.loads(request.body)
     print(responseData)
-    text=responseData['text']
+    text=responseData['text'] #句子
     video_url=responseData['videoUrl']
+    speechRate=responseData['speechRate']#语速
+    voice=responseData['role'] #角色
+
+    watermarkText=responseData['watermarkText'] #水印文字
+    watermarkSize=responseData['watermarkSize'] #水印大小
+    watermarkSpeed=responseData['watermarkSpeed'] #水印速度
+
     videoSplit=video_url.split('/')
     video_name=videoSplit[-1].split('.')[0]
 
     dir_path = os.path.join(os.getcwd(),'media','uploads',video_name)
     os.makedirs(dir_path, exist_ok=True) 
-
-    # 在media根据视频名称创建多个文件夹，包含font、sasFont、outputVideo，没有文件夹自动创建
-    # sub_dirs = ["font", "sasFont", "outputVideo"]
-    # for sub_dir in sub_dirs:
-    #     print(sub_dir)
-    #     print(video_name)
-    #     dir_path = os.path.join(os.getcwd(),'media',video_name, sub_dir)
-    #     os.makedirs(dir_path, exist_ok=True) 
 
     # 把文本转换为字幕
     singleText_to_individual_srt(text,video_name)
@@ -425,11 +461,32 @@ def generate_subtitleVideo(request):
     saa_file=os.path.join(os.getcwd(),'media','uploads',video_name,sas_name )
     video_file=os.path.join(os.getcwd(),'media','uploads',video_name+'.mp4' )
     output_dir=os.path.join(os.getcwd(),'media','uploads',video_name )
-    print('saa_dir',saa_file)
     finalVideoUrl=add_single_text_to_videos(video_file,saa_file,output_dir,video_name)
 
-    # 合成之后返回URL的预览
+    # 合成水印并返回最终视频
+    add_water_video=os.path.join(os.getcwd(),'media','uploads',video_name, f"{video_name}_addWater.mp4") #合成水印视频
+    add_dynamic_watermark(finalVideoUrl,add_water_video,text=watermarkText,fontsize=watermarkSize)
+
+    # 合成语音
+    voice_text="".join(c for c in text if c.isalnum() or c in " _-").strip()
+    voice_path = os.path.join(AUDIO_SAVE_PATH, f"{voice_text}.mp3") #生成声音路径
+    create_generate_speech(text,voice,speechRate)
+
+    #视频和语音合成并返回最终视频
+    finalVideoUrl=merge_video_audio(add_water_video,voice_path,video_name)
     return JsonResponse({"finalVideoUrl": finalVideoUrl})
+
+def merge_video_audio(video_path,audio_path,video_name):
+    '''合成视频和语音'''
+    # 使用 FFmpeg 合成视频和音频
+    finally_output_video=os.path.join(os.getcwd(),'media','uploads',video_name+'_fially.mp4')
+    cmd = f'ffmpeg -i {video_path} -i {audio_path} -c:v libx264 -c:a aac -strict experimental {finally_output_video}'
+    os.system(cmd)
+
+    output_file_path=os.path.join("http://127.0.0.1:8090/",'media','uploads',video_name+'_fially.mp4')
+    return output_file_path
+
+
 def downLoad_video(request):
     '''下载单个'''
 def merge_videos(video_dir, output_video,file_dir): #视频合成
