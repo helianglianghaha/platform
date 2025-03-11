@@ -39,6 +39,7 @@ def add_dynamic_watermark(input_video: str, output_video: str, text="@泥鳅炖�
     """
     cmd = '''ffmpeg -i "{}" -vf "drawtext=text='{}':fontcolor={}:fontsize={}:x=w*mod(t\,10)/10:y=h*mod(t\,10)/10" -c:a copy "{}"'''.format(
     input_video, text, fontcolor, fontsize, output_video)
+    print('==视频新增水印==',cmd)
 
     print("执行命令:", cmd)
     os.system(cmd)
@@ -462,18 +463,23 @@ def generate_subtitleVideo(request):
     video_file=os.path.join(os.getcwd(),'media','uploads',video_name+'.mp4' )
     output_dir=os.path.join(os.getcwd(),'media','uploads',video_name )
     finalVideoUrl=add_single_text_to_videos(video_file,saa_file,output_dir,video_name)
-
-    # 合成水印并返回最终视频
-    add_water_video=os.path.join(os.getcwd(),'media','uploads',video_name, f"{video_name}_addWater.mp4") #合成水印视频
-    add_dynamic_watermark(finalVideoUrl,add_water_video,text=watermarkText,fontsize=watermarkSize)
+    print('=========字幕合成视频完成=============')
 
     # 合成语音
     voice_text="".join(c for c in text if c.isalnum() or c in " _-").strip()
     voice_path = os.path.join(AUDIO_SAVE_PATH, f"{voice_text}.mp3") #生成声音路径
     create_generate_speech(text,voice,speechRate)
+    print('=========语音合成视频完成=============')
+
+    # 合成水印并返回最终视频
+    add_water_video=os.path.join(os.getcwd(),'media','uploads',video_name, f"{video_name}_addWater.mp4") #合成水印视频
+    add_dynamic_watermark(finalVideoUrl,add_water_video,text=watermarkText,fontsize=watermarkSize)
+    print('=========水印合成视频完成=============')
 
     #视频和语音合成并返回最终视频
     finalVideoUrl=merge_video_audio(add_water_video,voice_path,video_name)
+    print('=========合成最终视频完成=============')
+
     return JsonResponse({"finalVideoUrl": finalVideoUrl})
 
 def merge_video_audio(video_path,audio_path,video_name):
@@ -481,6 +487,7 @@ def merge_video_audio(video_path,audio_path,video_name):
     # 使用 FFmpeg 合成视频和音频
     finally_output_video=os.path.join(os.getcwd(),'media','uploads',video_name+'_fially.mp4')
     cmd = f'ffmpeg -i {video_path} -i {audio_path} -c:v libx264 -c:a aac -strict experimental {finally_output_video}'
+    print("====语音合成视频=====",cmd)
     os.system(cmd)
 
     output_file_path=os.path.join("http://127.0.0.1:8090/",'media','uploads',video_name+'_fially.mp4')
