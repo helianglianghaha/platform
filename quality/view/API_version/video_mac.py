@@ -18,17 +18,48 @@ import asyncio
 import edge_tts
 import asyncio
 
-video_dir = r"C:\Users\Administrator\Desktop\视频处理\video"
-subtitle_dir = r"C:\Users\Administrator\Desktop\视频处理\font\output"  # 修改字幕路径
-sas_subtitle_dir=r"C:\Users\Administrator\Desktop\视频处理\font\sasFont"
-final_output = r"C:\Users\Administrator\Desktop\视频处理\final_output.mp4"  # 修改最终合成视频的存放位置
-output_dir=r"C:\Users\Administrator\Desktop\视频处理\outputVideo"
-file_dir=r"C:\Users\Administrator\Desktop\视频处理"
+# video_dir = r"C:\Users\Administrator\Desktop\视频处理\video"
+# subtitle_dir = r"C:\Users\Administrator\Desktop\视频处理\font\output"  # 修改字幕路径
+# sas_subtitle_dir=r"C:\Users\Administrator\Desktop\视频处理\font\sasFont"
+# final_output = r"C:\Users\Administrator\Desktop\视频处理\final_output.mp4"  # 修改最终合成视频的存放位置
+# output_dir=r"C:\Users\Administrator\Desktop\视频处理\outputVideo"
+# file_dir=r"C:\Users\Administrator\Desktop\视频处理"
+
+video_dir = r"/Users/hll/Desktop/视频处理/video"
+subtitle_dir = r"/Users/hll/Desktop/视频处理/font/output"  # 修改字幕路径
+sas_subtitle_dir=r"/Users/hll/Desktop/视频处理/font/sasFont"
+final_output = r"/Users/hll/Desktop/视频处理/final_output.mp4"  # 修改最终合成视频的存放位置
+output_dir=r"/Users/hll/Desktop/视频处理/outputVideo"
+file_dir=r"/Users/hll/Desktop/视频处理"
+font_path=os.path.join(os.getcwd(),'media','font','NotoSerifSC-VariableFont_wght.ttf')
+
 from gtts import gTTS
 AUDIO_SAVE_PATH = "media/tts_audio"
 
+def get_music_list(request):
+    music_directory = os.path.join(settings.MEDIA_ROOT, "music")  # 获取 media/music 目录++
+    print(music_directory)
+    musicList = []
+
+    if os.path.exists(music_directory):
+        for filename in os.listdir(music_directory):
+            print(filename)
+            if filename.endswith((".mp3", ".wav", ".ogg")):  # 只获取音频文件
+                formatted_name = os.path.splitext(filename)[0]  # 去掉文件扩展名
+                file_url = os.path.join("http://127.0.0.1:8090","media","music",filename)  # 生成文件路径
+                # file_url=os.path.normpath(file_url)
+                musicList.append({"label": formatted_name, "value": file_url})  # 添加到列表中
+
+    return JsonResponse({"musicList": musicList})
+
 # UPLOADS_DIR = os.path.join(settings.MEDIA_ROOT, 'uploads')
-def add_dynamic_watermark(input_video: str, output_video: str, text="@泥鳅炖土豆", fontsize=24, fontcolor="white"): #添加水印
+def add_dynamic_watermark(input_video: str, 
+                          output_video: str, 
+                          text="@泥鳅炖土豆",
+                          fontsize=30, 
+                          fontcolor="white",
+                          font_path=font_path
+                            ): #添加水印
     """
     使用 FFmpeg 给视频添加动态水印
     :param input_video: 输入视频文件路径
@@ -37,8 +68,14 @@ def add_dynamic_watermark(input_video: str, output_video: str, text="@泥鳅炖�
     :param fontsize: 文字大小
     :param fontcolor: 文字颜色
     """
-    cmd = '''ffmpeg -i "{}" -vf "drawtext=text='{}':fontcolor={}:fontsize={}:x=w*mod(t\,10)/10:y=h*mod(t\,10)/10" -c:a copy "{}"'''.format(
-    input_video, text, fontcolor, fontsize, output_video)
+    if os.path.exists(output_video):  # 判断文件是否存在
+        os.remove(output_video)  # 删除文件
+        print(f"{output_video} 已删除")
+    else:
+        print(f"{output_video} 不存在")
+
+    cmd = '''ffmpeg -i "{}" -vf "drawtext=text='{}':fontfile='{}':fontcolor={}:fontsize={}:x=w*mod(t\,10)/10:y=h*mod(t\,10)/10" -c:a copy "{}"'''.format(
+    input_video, text,font_path, fontcolor, fontsize, output_video)
     print('==视频新增水印==',cmd)
 
     print("执行命令:", cmd)
@@ -76,36 +113,33 @@ async def synthesize_speech(text, voice, speech_rate, file_path):
     tts = edge_tts.Communicate(text, voice, rate=rate_option)
     await tts.save(file_path) 
 def generate_speech(request): #生成视频配音
-    try:
-        # 解析前端传递的 JSON 数据
-        responseData = json.loads(request.body)
-        print(responseData)
+    # 解析前端传递的 JSON 数据
+    responseData = json.loads(request.body)
+    print(responseData)
 
-        text = responseData['params']['text']
-        voice = responseData['params']['role']  # 语音角色（男声/女声）
-        speech_rate = responseData['params']['speechRate']  # 语速（-100 ~ +100）
+    text = responseData['params']['text']
+    voice = responseData['params']['role']  # 语音角色（男声/女声）
+    speech_rate = responseData['params']['speechRate']  # 语速（-100 ~ +100）
 
-        print("语音角色:", voice)
-        print("语速:", speech_rate)
+    print("语音角色:", voice)
+    print("语速:", speech_rate)
 
-        if not text:
-            return JsonResponse({"error": "Text is required"}, status=400)
+    if not text:
+        return JsonResponse({"error": "Text is required"}, status=400)
 
-        # 生成文件名（防止特殊字符）
-        safe_text = "".join(c for c in text if c.isalnum() or c in " _-").strip()
-        file_path = os.path.join(AUDIO_SAVE_PATH, f"{safe_text}.mp3")
+    # 生成文件名（防止特殊字符）
+    safe_text = "".join(c for c in text if c.isalnum() or c in " _-").strip()
+    file_path = os.path.join(os.getcwd(),AUDIO_SAVE_PATH, f"{safe_text}.mp3")
 
-        # 先删除旧文件
-        if os.path.exists(file_path):
-            os.remove(file_path)
+    # 先删除旧文件
+    if os.path.exists(file_path):
+        os.remove(file_path)
 
-        # 生成新语音
-        asyncio.run(synthesize_speech(text, voice, speech_rate, file_path))
+    # 生成新语音
+    asyncio.run(synthesize_speech(text, voice, speech_rate, file_path))
 
-        return JsonResponse({"audioUrl": f"http://127.0.0.1:8090/media/tts_audio/{safe_text}.mp3"})
+    return JsonResponse({"audioUrl": f"http://127.0.0.1:8090/media/tts_audio/{safe_text}.mp3"})
 
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
 def check_final_video(request):
     """
     检查字幕视频是否已生成
@@ -119,14 +153,14 @@ def check_final_video(request):
     video_first_name=video_name.split('.')[0]
 
     # 生成字幕视频的路径（示例，需根据实际情况修改）
-    video_path = os.path.join(os.getcwd(),'media','uploads',video_first_name,video_first_name+'_single.mp4')
+    video_path = os.path.join(os.getcwd(),'media','uploads',video_first_name,video_first_name+'_backgroundMusic.mp4')
     print(video_path)
     # final_video_url = final_video_path.replace("\\", "/")  # 确保路径格式正确
 
 
     # 判断文件是否存在
     if os.path.exists(video_path):
-        final_video_url=os.path.join('http://127.0.0.1:8090','media','uploads',video_first_name,video_first_name+'_single.mp4')
+        final_video_url=os.path.join('http://127.0.0.1:8090','media','uploads',video_first_name,video_first_name+'_backgroundMusic.mp4')
         final_video_url=final_video_url.replace('\\','/')
         return JsonResponse({"exists": True, "finalVideoUrl": final_video_url})
     
@@ -399,8 +433,8 @@ def add_single_text_to_videos(single_video_dir,singlesas_font_dir,output_dir,vid
     print('==CMD====',cmd)
     os.system(cmd)
     print(f"✅ 单独合成字幕：{output_video}")
-    finally_video_url=os.path.join('http://127.0.0.1:8090/media/uploads/',video_name, f"{video_name}_single.mp4")
-    finally_video_url=finally_video_url.replace('\\','/')
+    finally_video_url=os.path.join(os.getcwd(),'media','uploads',video_name, f"{video_name}_single.mp4")
+    finally_video_url=os.path.normpath(finally_video_url)
     print(finally_video_url)
     return finally_video_url
 def get_videos(request):
@@ -426,10 +460,11 @@ def create_generate_speech(text,voice,speech_rate): #生成视频配音
     # 生成文件名（防止特殊字符）
     safe_text = "".join(c for c in text if c.isalnum() or c in " _-").strip()
     file_path = os.path.join(AUDIO_SAVE_PATH, f"{safe_text}.mp3")
+    # file_path = os.path.normpath(file_path)
 
     # 先删除旧文件
-    if os.path.exists(file_path):
-        os.remove(file_path)
+    # if os.path.exists(file_path):
+    #     os.remove(file_path)
 
     # 生成新语音
     asyncio.run(synthesize_speech(text, voice, speech_rate, file_path))
@@ -443,6 +478,11 @@ def generate_subtitleVideo(request):
     video_url=responseData['videoUrl']
     speechRate=responseData['speechRate']#语速
     voice=responseData['role'] #角色
+    backGroundMusic=responseData['backgroundMusic']
+
+    backGroundMusic_path=os.path.join(os.getcwd(),'media','music',backGroundMusic+'.mp3')
+    print('=======背景音乐=========',backGroundMusic_path)
+
 
     watermarkText=responseData['watermarkText'] #水印文字
     watermarkSize=responseData['watermarkSize'] #水印大小
@@ -457,6 +497,15 @@ def generate_subtitleVideo(request):
     # 把文本转换为字幕
     singleText_to_individual_srt(text,video_name)
 
+    # # 合成语音
+    voice_text="".join(c for c in text if c.isalnum() or c in " _-").strip()
+    voice_path = os.path.join(os.getcwd(),AUDIO_SAVE_PATH, f"{voice_text}.mp3") #生成声音路径
+    voice_path = os.path.normpath(voice_path)
+    print('====voice_path======',voice_path)
+
+    create_generate_speech(text,voice,speechRate)
+    print('=========语音合成已完成=============')
+
     # 字幕和视频合成
     sas_name='subtitle_'+video_name+'.ass'
     saa_file=os.path.join(os.getcwd(),'media','uploads',video_name,sas_name )
@@ -465,14 +514,11 @@ def generate_subtitleVideo(request):
     finalVideoUrl=add_single_text_to_videos(video_file,saa_file,output_dir,video_name)
     print('=========字幕合成视频完成=============')
 
-    # 合成语音
-    voice_text="".join(c for c in text if c.isalnum() or c in " _-").strip()
-    voice_path = os.path.join(AUDIO_SAVE_PATH, f"{voice_text}.mp3") #生成声音路径
-    create_generate_speech(text,voice,speechRate)
-    print('=========语音合成视频完成=============')
-
     # 合成水印并返回最终视频
     add_water_video=os.path.join(os.getcwd(),'media','uploads',video_name, f"{video_name}_addWater.mp4") #合成水印视频
+    # add_water_video = add_water_video.replace("/", "\\")
+    add_water_video=os.path.normpath(add_water_video)
+
     add_dynamic_watermark(finalVideoUrl,add_water_video,text=watermarkText,fontsize=watermarkSize)
     print('=========水印合成视频完成=============')
 
@@ -480,18 +526,86 @@ def generate_subtitleVideo(request):
     finalVideoUrl=merge_video_audio(add_water_video,voice_path,video_name)
     print('=========合成最终视频完成=============')
 
-    return JsonResponse({"finalVideoUrl": finalVideoUrl})
+    font_path=os.path.join(os.getcwd(),'media','font','NotoSerifSC-VariableFont_wght.ttf')
+
+
+    # 第三步：合成字幕、水印和音频（使用 cmd 命令）
+    video_file = os.path.join(os.getcwd(), 'media', 'uploads', f'{video_name}.mp4')
+    output_video_path = os.path.join(os.getcwd(), 'media', 'uploads', video_name, f"{video_name}_finally.mp4")
+    print(output_video_path)
+
+    # 第四步：视频和背景音乐合成
+    if backGroundMusic_path:
+        merge_video_audio_backgroundMusic(output_video_path,backGroundMusic_path,video_name)
+
+
+    # saa_file=saa_file.replace("\\", "\\\\").replace("C:", "C\:")
+
+    # font_path="C\\:/Users/Administrator/Desktop/myVideo/myproject/media/font/NotoSerifSC-VariableFont_wght.ttf"
+
+    # 构建 ffmpeg 命令字符串
+    # ffmpeg_command =f'ffmpeg -i "{video_file}" -i "{voice_path}" ' \
+    #             f'-i "{backGroundMusic_path}" ' \
+    #              f'-filter_complex "[0:v]subtitles=\'{saa_file}\'[v1]; ' \
+    #              f'[v1]drawtext=text=\'{watermarkText}\':fontfile=\'{font_path}\':fontcolor=white:fontsize={watermarkSize}:x=w*mod(t\,10)/10:y=h*mod(t\,10)/10[v2]" ' \
+    #              f'-map "[v2]" -map 1:a -c:v libx264 -c:a aac -b:a 192k -strict experimental -shortest  -y "{output_video_path}"'
+    # print('==ffmpeg_command===',ffmpeg_command)
+    # # 使用 os.system 执行 ffmpeg 命令
+    # os.system(ffmpeg_command)
+    output_file_path=os.path.join("http://127.0.0.1:8090/",'media','uploads',video_name,video_name+'_backgroundMusic.mp4')
+
+    # return output_file_path
+
+
+
+    return JsonResponse({"finalVideoUrl": output_file_path})
 
 def merge_video_audio(video_path,audio_path,video_name):
     '''合成视频和语音'''
+    finally_output_video=os.path.join(os.getcwd(),'media','uploads',video_name,video_name+'_finally.mp4')
+
+    if os.path.exists(finally_output_video):  # 判断文件是否存在
+        os.remove(finally_output_video)  # 删除文件
+        print(f"{finally_output_video} 已删除")
+    else:
+        print(f"{finally_output_video} 不存在")
     # 使用 FFmpeg 合成视频和音频
-    finally_output_video=os.path.join(os.getcwd(),'media','uploads',video_name+'_fially.mp4')
     cmd = f'ffmpeg -i {video_path} -i {audio_path} -c:v libx264 -c:a aac -strict experimental {finally_output_video}'
     print("====语音合成视频=====",cmd)
     os.system(cmd)
+def merge_video_audio_backgroundMusic(video_path, audio_path, video_name):
+    '''合成视频并保留原声，同时加背景音乐并调整背景音乐音量'''
+    # 输出合成后的视频文件路径
+    finally_output_video = os.path.join(os.getcwd(), 'media', 'uploads', video_name, video_name + '_backgroundMusic.mp4')
 
-    output_file_path=os.path.join("http://127.0.0.1:8090/",'media','uploads',video_name+'_fially.mp4')
-    return output_file_path
+    # 检查文件是否已存在，若存在则删除
+    if os.path.exists(finally_output_video):  
+        os.remove(finally_output_video)  # 删除已存在的文件
+        print(f"{finally_output_video} 已删除")
+    else:
+        print(f"{finally_output_video} 不存在")
+
+    # 使用 FFmpeg 合成视频和音频
+    # 保留原音并添加背景音乐，背景音乐音量为原来的0.2倍（可以根据需要调整）
+    cmd = f'ffmpeg -i "{video_path}" -i "{audio_path}" -filter_complex "[0:a][1:a]amix=inputs=2:duration=longest[a];[1:a]volume=[b];[a][b]amix=inputs=2:duration=longest" -c:v libx264 -c:a aac -strict experimental "{finally_output_video}"'
+
+    # 打印出 FFmpeg 命令
+    print("====视频合成命令=====", cmd)
+
+    # 执行 FFmpeg 合成操作
+    os.system(cmd)
+
+    # import subprocess
+    # cmd = [
+    # 'ffmpeg', '-i', video_path, '-i', audio_path,
+    # '-map', '0:v:0', '-map', '1:a:0',
+    # '-c:v', 'libx264', '-c:a', 'aac', '-strict', 'experimental',
+    # finally_output_video
+    # ]
+    # print("====语音合成视频=====", " ".join(cmd))
+    # subprocess.run(cmd, check=True)
+
+    
 
 
 def downLoad_video(request):

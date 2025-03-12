@@ -74,8 +74,6 @@ def download_all_videos(request):
     response = FileResponse(open(zip_path, 'rb'), as_attachment=True, filename=zip_filename)
 
     return response
-
-
 def ensure_paths(): #没有文件夹创建文件夹
     """确保所需的文件夹和文件存在，不存在则创建"""
     # 定义文件夹路径
@@ -175,8 +173,6 @@ def singleText_to_individual_srt(text,video_name, duration_per_sentence=19):# �
     # 转化所有的字幕
     ass_path = output_srt.replace(".srt", ".ass")
     convert_singleSrt_to_ass(output_srt, ass_path) 
-
-
 def convert_srt_to_ass(srt_path, ass_path): #srt 字幕转sas
     """
     将 SRT 字幕转换为 ASS，并优化样式以适应视频播放。
@@ -288,7 +284,6 @@ def convert_singleSrt_to_ass(srt_path, ass_path): #单条文字字幕转sas
                         ass_file.write(f"Dialogue: 0,{start},{end},Default,,&H80808080,10,50,10,0,{j}\n")
                     i += 1
             i += 1
-
 def add_subtitles_to_videos(video_dir, subtitle_dir,output_dir,sas_subtitle_dir): #字幕添加到文本
     """
     遍历视频目录，为所有视频合成字幕（字幕来自 subtitle_dir）
@@ -333,7 +328,6 @@ def add_single_text_to_videos(single_video_dir,singlesas_font_dir,output_dir,vid
     finally_video_url=finally_video_url.replace('\\','/')
     print(finally_video_url)
     return finally_video_url
-
 def get_videos(request):
     '''返回视频列表'''
     media_url = "http://127.0.0.1:8090/media/uploads/"
@@ -350,8 +344,6 @@ def get_videos(request):
     video_list = [{"name": video, "url": f"{media_url}{video}"} for video in video_files]
 
     return JsonResponse({"videos": video_list})
-
-
 def generate_subtitleVideo(request):
     '''根据文案和视频生成单个视频'''
     responseData=json.loads(request.body)
@@ -385,10 +377,8 @@ def generate_subtitleVideo(request):
 
     # 合成之后返回URL的预览
     return JsonResponse({"finalVideoUrl": finalVideoUrl})
-
 def downLoad_video(request):
     '''下载单个'''
-
 def merge_videos(video_dir, output_video,file_dir): #视频合成
     """
     合并文件夹下所有视频
@@ -420,8 +410,6 @@ def merge_videos(video_dir, output_video,file_dir): #视频合成
     # 删除临时的 file_list.txt 文件
     # os.remove(file_list_path)
     print(f"🗑️ 已删除临时文件: {file_list_path}")
-
-
 @csrf_exempt
 def generate_video(request):
     if request.method == 'POST':

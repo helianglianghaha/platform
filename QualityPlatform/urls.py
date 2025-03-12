@@ -32,6 +32,8 @@ urlpatterns = [
    path('api/check_final_video/', video_mac.check_final_video, name='check_final_video'),
    path('api/get_voice_roles/', video_mac.get_voice_roles, name='get_voice_roles'),
    path('api/generate_speech/', video_mac.generate_speech, name='generate_speech'),
+   path('api/get_music_list/', video_mac.get_music_list, name='get_music_list'),
+
 
    url('quality/casesfilesupload/',cases_api.casesfilesupload, name='casesfilesupload'),
    url('quality/selectXmindData/',cases_api.selectXmindData, name='selectXmindData'),
