@@ -347,9 +347,9 @@ def convert_srt_to_ass(srt_path, ass_path): #srt 字幕转sas
                 [V4+ Styles]
                 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing,
                 Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-               Style: Default,Arial,15,&H00FFFFFF,&H000000FF,&H80000000,&H80808080,0,0,0,0,100,100,0,0,1,3,2,5,2,20,20,2,1
+               Style: Default,Arial,15,&H00FFFFFF,&H000000FF,&H80000000,&H80808080,0,0,0,0,100,100,0,0,1,3,2,5,5,20,20,2,1
                 [Events]
-                Format: Layer, Start, End, Style, Name,BackColour, MarginL, MarginR, MarginV, Effect, Text
+                Format: Layer, Start, End, Style, Name,BackColour,Alignment, MarginL, MarginR, MarginV, Effect, Text
                 """
     
     
@@ -382,7 +382,7 @@ def convert_srt_to_ass(srt_path, ass_path): #srt 字幕转sas
                         # print(j)
                         # input()
                         # content.append(lines[i].strip())
-                        ass_file.write(f"Dialogue: 0,{start},{end},Default,,&H80808080,10,50,5,0,{j}\n")
+                        ass_file.write(f"Dialogue: 0,{start},{end},Default,,&H80808080,5,10,50,5,0,\an5 {j}\n")
                     i += 1
                 # print(content)
                 # input()
@@ -407,7 +407,7 @@ def convert_singleSrt_to_ass(srt_path, ass_path): #单条文字字幕转sas
                 [V4+ Styles]
                 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing,
                 Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-               Style: Default,Arial,10,&H00FFFFFF,&H000000FF,&H80000000,&H80808080,0,0,0,0,100,100,0,0,1,3,2,5,2,20,20,2,1
+               Style: Default,Arial,10,&H00FFFFFF,&H000000FF,&H80000000,&H80808080,0,0,0,0,100,100,0,0,1,3,2,2,2,20,20,2,1
                 [Events]
                 Format: Layer, Start, End, Style, Name,BackColour, MarginL, MarginR, MarginV, Effect, Text
                 """
@@ -438,7 +438,8 @@ def convert_singleSrt_to_ass(srt_path, ass_path): #单条文字字幕转sas
                     dataList.reverse()
                     for j in dataList:
                         j=j[0:]
-                        ass_file.write(f"Dialogue: 0,{start},{end},Default,,&H80808080,10,50,10,0,{j}\n")
+                        ass_file.write(f"Dialogue: 0,{start},{end},Default,,&H80808080,2,10,20,10,{j}\n")
+                        # ass_file.write(f"Dialogue: 0,{start},{end},Default,,&H80808080,0,0,0,10,0,{j}\n")
                     i += 1
             i += 1
 def add_subtitles_to_videos(video_dir, subtitle_dir,output_dir,sas_subtitle_dir): #字幕添加到文本
@@ -551,6 +552,7 @@ def generate_subtitleVideo(request):
 
     # 把文本转换为字幕
     singleText_to_individual_srt(text,video_name)
+
 
     # # 合成语音
     voice_text="".join(c for c in text if c.isalnum() or c in " _-").strip()
