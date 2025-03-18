@@ -36,6 +36,54 @@ font_path=os.path.join(os.getcwd(),'media','font','NotoSerifSC-VariableFont_wght
 from gtts import gTTS
 AUDIO_SAVE_PATH = "media/tts_audio"
 
+def musicFilesUpload(request):
+    '''xmind文件上传'''
+    data=[]
+    req = request.FILES.get('file')
+    content = {}
+
+    #测试
+    # path="/Users/hll/Desktop/git/platform/media/xmind"
+
+    #线上
+    path="/Users/hll/Desktop/git/platform/media/music"
+    fileName=os.path.join(path, req.name)
+    # 打开特定的文件进行二进制的写操作
+    destination = open(fileName, 'wb+')
+    for chunk in req.chunks():  # 分块写入文件
+        destination.write(chunk)
+    destination.close()
+    content["name"]=req.name
+    content["url"]=fileName
+
+    #返回状态信息
+    data.append(content)
+    return JsonResponse(data, safe=False)
+
+def videoFilesUpload(request):
+    '''xmind文件上传'''
+    data=[]
+    req = request.FILES.get('file')
+    content = {}
+
+    #测试
+    # path="/Users/hll/Desktop/git/platform/media/xmind"
+
+    #线上
+    path="/Users/hll/Desktop/git/platform/media/uploads"
+    fileName=os.path.join(path, req.name)
+    # 打开特定的文件进行二进制的写操作
+    destination = open(fileName, 'wb+')
+    for chunk in req.chunks():  # 分块写入文件
+        destination.write(chunk)
+    destination.close()
+    content["name"]=req.name
+    content["url"]=fileName
+
+    #返回状态信息
+    data.append(content)
+    return JsonResponse(data, safe=False)
+
 def get_music_list(request):
     music_directory = os.path.join(settings.MEDIA_ROOT, "music")  # 获取 media/music 目录++
     print(music_directory)
@@ -45,10 +93,10 @@ def get_music_list(request):
         for filename in os.listdir(music_directory):
             print(filename)
             if filename.endswith((".mp3", ".wav", ".ogg")):  # 只获取音频文件
-                formatted_name = os.path.splitext(filename)[0]  # 去掉文件扩展名
+                # formatted_name = os.path.splitext(filename)[0]  # 去掉文件扩展名
                 file_url = os.path.join("http://127.0.0.1:8090","media","music",filename)  # 生成文件路径
                 # file_url=os.path.normpath(file_url)
-                musicList.append({"label": formatted_name, "value": file_url})  # 添加到列表中
+                musicList.append({"label": filename, "value": file_url})  # 添加到列表中
 
     return JsonResponse({"musicList": musicList})
 
@@ -153,14 +201,14 @@ def check_final_video(request):
     video_first_name=video_name.split('.')[0]
 
     # 生成字幕视频的路径（示例，需根据实际情况修改）
-    video_path = os.path.join(os.getcwd(),'media','uploads',video_first_name,video_first_name+'_backgroundMusic.mp4')
+    video_path = os.path.join(os.getcwd(),'media','uploads',video_first_name,video_first_name+'_finally.mp4')
     print(video_path)
     # final_video_url = final_video_path.replace("\\", "/")  # 确保路径格式正确
 
 
     # 判断文件是否存在
     if os.path.exists(video_path):
-        final_video_url=os.path.join('http://127.0.0.1:8090','media','uploads',video_first_name,video_first_name+'_backgroundMusic.mp4')
+        final_video_url=os.path.join('http://127.0.0.1:8090','media','uploads',video_first_name,video_first_name+'_finally.mp4')
         final_video_url=final_video_url.replace('\\','/')
         return JsonResponse({"exists": True, "finalVideoUrl": final_video_url})
     
@@ -476,12 +524,19 @@ def generate_subtitleVideo(request):
     print(responseData)
     text=responseData['text'] #句子
     video_url=responseData['videoUrl']
-    speechRate=responseData['speechRate']#语速
-    voice=responseData['role'] #角色
-    backGroundMusic=responseData['backgroundMusic']
+    # speechRate=responseData['speechRate']#语速
+    # voice=responseData['role'] #角色
 
-    backGroundMusic_path=os.path.join(os.getcwd(),'media','music',backGroundMusic+'.mp3')
-    print('=======背景音乐=========',backGroundMusic_path)
+    from pathlib import Path
+    backGroundMusic=responseData['backgroundMusic']
+    print(backGroundMusic)
+    # voice_file_name = Path(backGroundMusic)
+    # print('voice_file_name',voice_file_name)
+
+    
+
+    backGroundMusic_path=os.path.join(os.getcwd(),'media','music',backGroundMusic)
+    backGroundMusic_path=os.path.normpath(backGroundMusic_path)
 
 
     watermarkText=responseData['watermarkText'] #水印文字
@@ -501,10 +556,10 @@ def generate_subtitleVideo(request):
     voice_text="".join(c for c in text if c.isalnum() or c in " _-").strip()
     voice_path = os.path.join(os.getcwd(),AUDIO_SAVE_PATH, f"{voice_text}.mp3") #生成声音路径
     voice_path = os.path.normpath(voice_path)
-    print('====voice_path======',voice_path)
+    # print('====voice_path======',voice_path)
 
-    create_generate_speech(text,voice,speechRate)
-    print('=========语音合成已完成=============')
+    # create_generate_speech(text,voice,speechRate)
+    # print('=========语音合成已完成=============')
 
     # 字幕和视频合成
     sas_name='subtitle_'+video_name+'.ass'
@@ -523,11 +578,10 @@ def generate_subtitleVideo(request):
     print('=========水印合成视频完成=============')
 
     #视频和语音合成并返回最终视频
-    finalVideoUrl=merge_video_audio(add_water_video,voice_path,video_name)
+    finalVideoUrl=merge_video_audio(add_water_video,backGroundMusic_path,video_name)
     print('=========合成最终视频完成=============')
 
     font_path=os.path.join(os.getcwd(),'media','font','NotoSerifSC-VariableFont_wght.ttf')
-
 
     # 第三步：合成字幕、水印和音频（使用 cmd 命令）
     video_file = os.path.join(os.getcwd(), 'media', 'uploads', f'{video_name}.mp4')
@@ -535,8 +589,7 @@ def generate_subtitleVideo(request):
     print(output_video_path)
 
     # 第四步：视频和背景音乐合成
-    if backGroundMusic_path:
-        merge_video_audio_backgroundMusic(output_video_path,backGroundMusic_path,video_name)
+    # merge_video_audio_backgroundMusic(output_video_path,backGroundMusic_path,video_name)
 
 
     # saa_file=saa_file.replace("\\", "\\\\").replace("C:", "C\:")
@@ -552,7 +605,8 @@ def generate_subtitleVideo(request):
     # print('==ffmpeg_command===',ffmpeg_command)
     # # 使用 os.system 执行 ffmpeg 命令
     # os.system(ffmpeg_command)
-    output_file_path=os.path.join("http://127.0.0.1:8090/",'media','uploads',video_name,video_name+'_backgroundMusic.mp4')
+
+    output_file_path=os.path.join("http://127.0.0.1:8090/",'media','uploads',video_name,video_name+'_finally.mp4')
 
     # return output_file_path
 
